@@ -1288,7 +1288,7 @@ function DontPressTheButton() {
 
           {/* ── TV (엔딩14, high on wall, mounted) ── */}
           <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(14); } }}
-            style={{ position:"absolute",right:28,top:"2%",zIndex:10,
+            style={{ position:"absolute",left:"35%",top:"18%",zIndex:10,
               width:160,height:105,borderRadius:10,
               background:"linear-gradient(180deg,#3a3a3a,#2a2a2a,#222)",
               border:"5px solid #444",
@@ -1312,18 +1312,18 @@ function DontPressTheButton() {
           <div onContextMenu={handleNaviContextMenu}
             style={{ position:"absolute",right:16,top:"4%",zIndex:60 }}>
             {/* CRT Monitor outer frame */}
-            <div style={{ width:184,padding:6,
+            <div style={{ width:150,padding:5,
               background:"linear-gradient(180deg,#4a4a4a,#333,#2a2a2a)",
               border:"3px solid #555",borderRadius:10,
               boxShadow:"0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
               position:"relative" }}>
               {/* Screen bezel */}
-              <div style={{ width:"100%",height:240,borderRadius:6,overflow:"hidden",position:"relative",
-                background:"linear-gradient(180deg,#0a1828,#0c2040,#081828)",
-                boxShadow:"inset 0 0 30px rgba(0,40,80,0.4), inset 0 2px 0 rgba(0,0,0,0.3)" }}>
+              <div style={{ width:"100%",height:216,borderRadius:6,overflow:"hidden",position:"relative",
+                background:"linear-gradient(180deg,#102858,#1a3c78,#0e2450)",
+                boxShadow:"inset 0 0 30px rgba(30,80,160,0.5), inset 0 2px 0 rgba(0,0,0,0.3)" }}>
                 {/* Blue ambient glow */}
                 <div style={{ position:"absolute",inset:0,
-                  background:"radial-gradient(ellipse at 50% 60%,rgba(60,120,200,0.08),transparent 70%)",
+                  background:"radial-gradient(ellipse at 50% 60%,rgba(60,130,220,0.15),transparent 70%)",
                   pointerEvents:"none" }}/>
                 {/* Character */}
                 <div style={{ position:"absolute",bottom:0,left:"50%",transform:"translateX(-50%)",zIndex:1 }}>
@@ -1373,8 +1373,8 @@ function DontPressTheButton() {
 
           {/* ── 나비 말풍선 (below CRT monitor) ── */}
           {nText && !naviGone && (
-            <div key={nKey} style={{ position:"absolute",right:16,top:"calc(4% + 290px)",zIndex:70,
-              width:184,padding:"12px 16px",
+            <div key={nKey} style={{ position:"absolute",right:16,top:"calc(4% + 258px)",zIndex:70,
+              width:150,padding:"10px 14px",
               background:"rgba(10,20,40,0.92)",backdropFilter:"blur(8px)",
               border:"1px solid rgba(100,180,255,0.15)",
               borderRadius:"4px 4px 12px 12px",
