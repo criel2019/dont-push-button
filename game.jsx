@@ -916,6 +916,9 @@ function DontPressTheButton() {
         @keyframes titleGlow{0%,100%{text-shadow:0 0 20px #e8573d22}50%{text-shadow:0 0 40px #e8573d44,0 0 80px #e8573d11}}
         @keyframes buttonAura{0%,100%{box-shadow:0 0 30px #e8573d15,0 0 60px #e8573d08}50%{box-shadow:0 0 50px #e8573d25,0 0 100px #e8573d12}}
         @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes crtScan{0%{top:-20%}100%{top:120%}}
+        @keyframes crtFlicker{0%,100%{opacity:0.02}50%{opacity:0.05}}
+        @keyframes crtStatic{0%{background-position:0 0}100%{background-position:100% 100%}}
         .cursor-blink{animation:pulse 0.6s step-end infinite;opacity:0.5}
         *{box-sizing:border-box;margin:0;padding:0;user-select:none;}
       `}</style>
@@ -1100,7 +1103,7 @@ function DontPressTheButton() {
 
           {/* ── 문 (엔딩18) - FULL HEIGHT from ceiling to floor ── */}
           <RoomObj onClick={(e) => { e.stopPropagation(); handleDoorKnock(); }}
-            style={{ position:"absolute",left:24,top:"1%",width:100,height:"62%",zIndex:10,
+            style={{ position:"absolute",left:24,top:"1%",width:100,height:"49%",zIndex:10,
               background:doorOpen?"linear-gradient(180deg,#1a1008,#0a0804)":"linear-gradient(178deg,#c49a68,#a87848,#926838)",
               border:"6px solid #7a5a3a",borderRadius:"4px 4px 0 0",
               boxShadow:doorOpen
@@ -1305,29 +1308,80 @@ function DontPressTheButton() {
               width:32,height:12,background:"linear-gradient(180deg,#444,#333)",borderRadius:"0 0 5px 5px" }}/>
           </RoomObj>
 
-          {/* ── 나비 캐릭터 (standing at floor level, feet near baseboard) ── */}
+          {/* ── 나비 캐릭터 (CRT 모니터 프레임) ── */}
           <div onContextMenu={handleNaviContextMenu}
-            style={{ position:"absolute",right:45,bottom:"calc(50% - 8px)",zIndex:60 }}>
-            {!catEars && !activeEvent && (
-              <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(11); } }}
-                style={{ position:"absolute",top:-6,left:"50%",transform:"translateX(-50%)",
-                  fontSize:12,opacity:0.2,zIndex:2 }} hoverGlow="#ff8fab">
-                {"\uD83D\uDC31"}
-              </RoomObj>
-            )}
-            <NaviCharacter emotion={nEmo} frame={frame} sleeping={naviSleeping} catEars={catEars} gone={naviGone} size={160}/>
-            <div style={{ textAlign:"center",fontSize:11,color:"#b0a09055",letterSpacing:3,marginTop:-4,fontWeight:700 }}>NAVI</div>
+            style={{ position:"absolute",right:16,top:"4%",zIndex:60 }}>
+            {/* CRT Monitor outer frame */}
+            <div style={{ width:184,padding:6,
+              background:"linear-gradient(180deg,#4a4a4a,#333,#2a2a2a)",
+              border:"3px solid #555",borderRadius:10,
+              boxShadow:"0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
+              position:"relative" }}>
+              {/* Screen bezel */}
+              <div style={{ width:"100%",height:240,borderRadius:6,overflow:"hidden",position:"relative",
+                background:"linear-gradient(180deg,#0a1828,#0c2040,#081828)",
+                boxShadow:"inset 0 0 30px rgba(0,40,80,0.4), inset 0 2px 0 rgba(0,0,0,0.3)" }}>
+                {/* Blue ambient glow */}
+                <div style={{ position:"absolute",inset:0,
+                  background:"radial-gradient(ellipse at 50% 60%,rgba(60,120,200,0.08),transparent 70%)",
+                  pointerEvents:"none" }}/>
+                {/* Character */}
+                <div style={{ position:"absolute",bottom:0,left:"50%",transform:"translateX(-50%)",zIndex:1 }}>
+                  {!catEars && !activeEvent && (
+                    <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(11); } }}
+                      style={{ position:"absolute",top:-6,left:"50%",transform:"translateX(-50%)",
+                        fontSize:12,opacity:0.25,zIndex:2 }} hoverGlow="#ff8fab">
+                      {"\uD83D\uDC31"}
+                    </RoomObj>
+                  )}
+                  <NaviCharacter emotion={nEmo} frame={frame} sleeping={naviSleeping} catEars={catEars} gone={naviGone} size={130}/>
+                </div>
+                {/* CRT Scanlines overlay */}
+                <div style={{ position:"absolute",inset:0,zIndex:5,pointerEvents:"none",
+                  backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px)",
+                  backgroundSize:"100% 4px" }}/>
+                {/* CRT moving scan bar */}
+                <div style={{ position:"absolute",left:0,right:0,height:"15%",zIndex:6,pointerEvents:"none",
+                  background:"linear-gradient(180deg,transparent,rgba(100,180,255,0.06),transparent)",
+                  animation:"crtScan 3s linear infinite" }}/>
+                {/* CRT static noise */}
+                <div style={{ position:"absolute",inset:0,zIndex:4,pointerEvents:"none",opacity:0.03,
+                  backgroundImage:`url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+                  animation:"crtFlicker 0.15s ease infinite" }}/>
+                {/* Screen vignette */}
+                <div style={{ position:"absolute",inset:0,zIndex:7,pointerEvents:"none",
+                  boxShadow:"inset 0 0 40px rgba(0,0,0,0.5), inset 0 0 80px rgba(0,0,0,0.2)",
+                  borderRadius:6 }}/>
+                {/* Screen edge glow */}
+                <div style={{ position:"absolute",inset:0,zIndex:8,pointerEvents:"none",
+                  border:"1px solid rgba(100,180,255,0.08)",borderRadius:6 }}/>
+              </div>
+              {/* Monitor bottom strip */}
+              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",
+                marginTop:5,padding:"0 8px" }}>
+                <div style={{ fontSize:8,color:"#666",letterSpacing:2,fontWeight:700 }}>OPERATOR</div>
+                <div style={{ display:"flex",alignItems:"center",gap:6 }}>
+                  <div style={{ fontSize:8,color:"#555",letterSpacing:1 }}>NAVI</div>
+                  {/* Power LED */}
+                  <div style={{ width:5,height:5,borderRadius:"50%",
+                    background:naviGone?"#555":"#3fb950",
+                    boxShadow:naviGone?"none":"0 0 6px #3fb950" }}/>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* ── 나비 말풍선 ── */}
+          {/* ── 나비 말풍선 (below CRT monitor) ── */}
           {nText && !naviGone && (
-            <div key={nKey} style={{ position:"absolute",right:16,top:"4%",zIndex:70,
-              maxWidth:260,padding:"16px 20px",
-              background:"rgba(255,255,255,0.97)",backdropFilter:"blur(12px)",
-              border:"2px solid rgba(0,0,0,0.06)",
-              borderRadius:"20px 6px 20px 20px",
-              fontSize:15,lineHeight:1.8,color:"#3a2a1a",fontWeight:500,
-              boxShadow:"0 8px 36px rgba(0,0,0,0.1)",animation:"slideDown 0.3s ease" }}>
+            <div key={nKey} style={{ position:"absolute",right:16,top:"calc(4% + 290px)",zIndex:70,
+              width:184,padding:"12px 16px",
+              background:"rgba(10,20,40,0.92)",backdropFilter:"blur(8px)",
+              border:"1px solid rgba(100,180,255,0.15)",
+              borderRadius:"4px 4px 12px 12px",
+              fontSize:13,lineHeight:1.8,color:"#c8dce8",fontWeight:400,
+              boxShadow:"0 6px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(100,180,255,0.05)",
+              animation:"slideDown 0.3s ease",
+              fontFamily:"'Noto Sans KR',monospace" }}>
               <TypeWriter key={nKey} text={nText}/>
             </div>
           )}
