@@ -91,143 +91,68 @@ function pickRandom(arr, lastRef) {
 }
 
 // ============================================================
-// SVG 나비 캐릭터 (풀바디 치비 애니메 스타일)
+// 나비 캐릭터 (스프라이트 시트 기반)
 // ============================================================
+const NAVI_SPRITES = {
+  idle:    "nabi/sprites/idle.webp",
+  excited: "nabi/sprites/excited.webp",
+  pouty:   "nabi/sprites/pouty.webp",
+  shocked: "nabi/sprites/shocked.webp",
+  smug:    "nabi/sprites/smug.webp",
+  cry:     "nabi/sprites/cry.webp",
+  catears: "nabi/sprites/catears.webp",
+};
+const NAVI_SPRITE_COLS = 6;
+const NAVI_SPRITE_ROWS = 4;
+const NAVI_SPRITE_FRAMES = 24;
+const NAVI_FRAME_W = 160;
+const NAVI_FRAME_H = 256;
+
+function preloadNaviSprite(emotion) {
+  const img = new Image();
+  img.src = NAVI_SPRITES[emotion];
+  return img;
+}
+
+// Preload idle immediately
+preloadNaviSprite("idle");
+
 function NaviCharacter({ emotion = "idle", frame = 0, sleeping = false, catEars = false, gone = false, size = 140 }) {
   const bob = Math.sin(frame * 0.25) * 3;
-  const breathe = Math.sin(frame * 0.15) * 1.5;
-  const blink = frame % 18 === 0;
-  const emo = sleeping ? "sleep" : emotion;
-  const ratio = size / 100;
+  const sheet = catEars ? "catears" : (sleeping ? "idle" : emotion);
+  const spriteFrame = frame % NAVI_SPRITE_FRAMES;
+  const col = spriteFrame % NAVI_SPRITE_COLS;
+  const row = Math.floor(spriteFrame / NAVI_SPRITE_COLS);
 
-  const eyes = {
-    idle:    { ly:"M36,62 Q40,56 44,62", ry:"M56,62 Q60,56 64,62", fill:"#5a3050", hl:true },
-    excited: { ly:"M34,60 L40,54 L46,60", ry:"M54,60 L60,54 L66,60", fill:"#ff7eb3", hl:true },
-    pouty:   { ly:"M36,60 Q40,64 44,60", ry:"M56,60 Q60,64 64,60", fill:"#5a3050", hl:false },
-    shocked: { ly:null, ry:null, fill:"#5a3050", hl:true, circle:true, r:7 },
-    smug:    { ly:"M36,62 Q40,58 44,62", ry:"M56,60 L64,58", fill:"#5a3050", hl:true },
-    cry:     { ly:null, ry:null, fill:"#5a3050", hl:true, circle:true, r:6, tears:true },
-    sleep:   { ly:"M35,62 L45,62", ry:"M55,62 L65,62", fill:"#5a3050", hl:false },
-  };
-  const mouth = {
-    idle:    "M42,74 Q50,78 58,74",
-    excited: "M42,72 Q50,80 58,72",
-    pouty:   "M44,76 Q50,73 56,76",
-    shocked: "M44,72 Q50,78 56,72",
-    smug:    "M43,74 Q48,77 56,73",
-    cry:     "M43,76 Q50,72 57,76",
-    sleep:   "M44,74 L56,74",
-  };
-
-  const e = eyes[emo] || eyes.idle;
-  const m = mouth[emo] || mouth.idle;
+  const w = size;
+  const h = size * (NAVI_FRAME_H / NAVI_FRAME_W);
+  const sheetW = NAVI_SPRITE_COLS * w;
+  const sheetH = NAVI_SPRITE_ROWS * h;
 
   return (
-    <svg viewBox="0 0 100 160" width={size} height={size * 1.6}
-      style={{ filter:"drop-shadow(0 10px 30px rgba(100,50,80,0.25))",
-        opacity:gone?0:1, transition:"opacity 2s, transform 1s",
-        transform:`translateY(${gone?30:bob}px)` }}>
-
-      <ellipse cx="50" cy="55" rx="38" ry="42" fill="url(#hairGrad)"/>
-      <path d="M16,65 Q12,90 20,120 L30,100 Q20,80 22,65 Z" fill="url(#hairGrad)" opacity="0.9"/>
-      <path d="M84,65 Q88,90 80,120 L70,100 Q80,80 78,65 Z" fill="url(#hairGrad)" opacity="0.9"/>
-
-      <ellipse cx="50" cy={58+breathe*0.3} rx="30" ry="32" fill="#ffecd2"/>
-      <ellipse cx="50" cy={58+breathe*0.3} rx="30" ry="32" fill="url(#faceShade)" opacity="0.15"/>
-
-      <ellipse cx="32" cy="70" rx="6" ry="3.5" fill="#ffb4b4" opacity={emo==="excited"||emo==="cry"?0.6:0.3}/>
-      <ellipse cx="68" cy="70" rx="6" ry="3.5" fill="#ffb4b4" opacity={emo==="excited"||emo==="cry"?0.6:0.3}/>
-
-      {blink && emo !== "sleep" ? (
-        <>
-          <line x1="35" y1="62" x2="45" y2="62" stroke="#5a3050" strokeWidth="2" strokeLinecap="round"/>
-          <line x1="55" y1="62" x2="65" y2="62" stroke="#5a3050" strokeWidth="2" strokeLinecap="round"/>
-        </>
-      ) : e.circle ? (
-        <>
-          <circle cx="40" cy="61" r={e.r} fill="white" stroke="#5a3050" strokeWidth="1.5"/>
-          <circle cx="40" cy="61" r={e.r*0.45} fill={e.fill}/>
-          <circle cx="42" cy="59" r="2" fill="white" opacity="0.9"/>
-          <circle cx="60" cy="61" r={e.r} fill="white" stroke="#5a3050" strokeWidth="1.5"/>
-          <circle cx="60" cy="61" r={e.r*0.45} fill={e.fill}/>
-          <circle cx="62" cy="59" r="2" fill="white" opacity="0.9"/>
-          {e.tears && <>
-            <path d="M36,68 Q34,78 36,85" fill="none" stroke="#88ccff" strokeWidth="2" opacity="0.6">
-              <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1s" repeatCount="indefinite"/>
-            </path>
-            <path d="M64,68 Q66,78 64,85" fill="none" stroke="#88ccff" strokeWidth="2" opacity="0.6">
-              <animate attributeName="opacity" values="0.2;0.6;0.2" dur="1s" repeatCount="indefinite"/>
-            </path>
-          </>}
-        </>
-      ) : (
-        <>
-          <ellipse cx="40" cy="61" rx="7" ry="8" fill="white"/>
-          <path d={e.ly} fill="none" stroke={e.fill} strokeWidth="2.5" strokeLinecap="round"/>
-          {e.hl && <circle cx="42" cy="59" r="2" fill="white" opacity="0.8"/>}
-          <ellipse cx="60" cy="61" rx="7" ry="8" fill="white"/>
-          <path d={e.ry} fill="none" stroke={e.fill} strokeWidth="2.5" strokeLinecap="round"/>
-          {e.hl && <circle cx="62" cy="59" r="2" fill="white" opacity="0.8"/>}
-        </>
+    <div style={{
+      position: "relative",
+      width: w,
+      height: h,
+      backgroundImage: `url(${NAVI_SPRITES[sheet]})`,
+      backgroundPosition: `-${col * w}px -${row * h}px`,
+      backgroundSize: `${sheetW}px ${sheetH}px`,
+      backgroundRepeat: "no-repeat",
+      filter: sleeping
+        ? "drop-shadow(0 10px 30px rgba(100,50,80,0.25)) brightness(0.6) saturate(0.4)"
+        : "drop-shadow(0 10px 30px rgba(100,50,80,0.25))",
+      opacity: gone ? 0 : 1,
+      transition: "opacity 2s, transform 1s, filter 0.5s",
+      transform: `translateY(${gone ? 30 : bob}px)`,
+    }}>
+      {sleeping && (
+        <div style={{
+          position: "absolute", top: -4, right: -8,
+          fontSize: size * 0.11, opacity: 0.7,
+          animation: "zzz 2s ease infinite",
+        }}>💤</div>
       )}
-
-      <path d={m} fill="none" stroke={emo==="cry"?"#cc8888":"#e8889a"} strokeWidth="1.8" strokeLinecap="round"/>
-
-      <path d="M18,48 Q24,22 50,20 Q76,22 82,48 L78,52 Q72,30 50,28 Q28,30 22,52 Z" fill="url(#hairGrad)"/>
-      <path d="M30,48 Q34,34 42,30 L38,50 Z" fill="url(#hairGrad)" opacity="0.7"/>
-      <path d="M58,30 Q66,34 70,48 L62,50 Z" fill="url(#hairGrad)" opacity="0.7"/>
-      <path d="M32,36 Q38,30 44,34" fill="none" stroke="#ffcce0" strokeWidth="1.5" opacity="0.5" strokeLinecap="round"/>
-
-      <g transform="translate(50,22)">
-        <path d="M0,0 L-10,-6 L-4,0 L-10,6 Z" fill="#e8573d"/>
-        <path d="M0,0 L10,-6 L4,0 L10,6 Z" fill="#e8573d"/>
-        <circle cx="0" cy="0" r="3" fill="#ff8a80"/>
-        <path d="M-10,-6 L-4,0 L-10,6" fill="none" stroke="#c0392b" strokeWidth="0.5" opacity="0.3"/>
-      </g>
-
-      {catEars && <>
-        <path d="M22,30 L18,8 L36,26 Z" fill="#ffa4c4" stroke="#ff8fab" strokeWidth="1"/>
-        <path d="M25,25 L22,14 L32,24 Z" fill="#ffcce0"/>
-        <path d="M78,30 L82,8 L64,26 Z" fill="#ffa4c4" stroke="#ff8fab" strokeWidth="1"/>
-        <path d="M75,25 L78,14 L68,24 Z" fill="#ffcce0"/>
-      </>}
-
-      <g transform={`translate(0,${breathe*0.5})`}>
-        <path d="M32,88 Q30,92 30,100 L30,130 Q30,138 38,138 L62,138 Q70,138 70,130 L70,100 Q70,92 68,88 Q60,84 50,84 Q40,84 32,88 Z"
-          fill="url(#bodyGrad)"/>
-        <path d="M36,88 L50,96 L64,88" fill="none" stroke="#fff" strokeWidth="1.5" opacity="0.4"/>
-        <rect x="46" y="96" width="8" height="10" rx="2" fill="#ffd54f" opacity="0.7"/>
-        <path d="M30,94 Q22,100 20,112 Q22,114 26,112 Q28,104 32,98 Z" fill="url(#bodyGrad)"/>
-        <path d="M70,94 Q78,100 80,112 Q78,114 74,112 Q72,104 68,98 Z" fill="url(#bodyGrad)"/>
-        <circle cx="21" cy="113" r="5" fill="#ffecd2"/>
-        <circle cx="79" cy="113" r="5" fill="#ffecd2"/>
-      </g>
-
-      {emo==="excited" && <>
-        <text x="82" y="44" fontSize="10" opacity="0.8">✨</text>
-        <text x="10" y="50" fontSize="8" opacity="0.6">✦</text>
-      </>}
-      {emo==="shocked" && <text x="72" y="38" fontSize="12" opacity="0.8">❗</text>}
-      {emo==="pouty" && <text x="76" y="78" fontSize="9" opacity="0.7">💢</text>}
-      {emo==="smug" && <text x="8" y="44" fontSize="9" opacity="0.6">♪</text>}
-      {sleeping && <text x="70" y="40" fontSize="14" opacity="0.7" style={{animation:"zzz 2s ease infinite"}}>💤</text>}
-
-      <defs>
-        <linearGradient id="hairGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ffb4d9"/>
-          <stop offset="50%" stopColor="#ff8fab"/>
-          <stop offset="100%" stopColor="#d4a4ff"/>
-        </linearGradient>
-        <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#7c4dff"/>
-          <stop offset="100%" stopColor="#536dfe"/>
-        </linearGradient>
-        <radialGradient id="faceShade" cx="0.5" cy="1" r="0.8">
-          <stop offset="0%" stopColor="#d4a088"/>
-          <stop offset="100%" stopColor="transparent"/>
-        </radialGradient>
-      </defs>
-    </svg>
+    </div>
   );
 }
 
@@ -750,6 +675,13 @@ function DontPressTheButton() {
   const doShake = useCallback(() => { setScreenShake(true); setTimeout(() => setScreenShake(false), 400); }, []);
 
   useEffect(() => { const iv = setInterval(() => setFrame(p => p + 1), 350); return () => clearInterval(iv); }, []);
+
+  // ── 스프라이트 프리로드 (room 진입 시 나머지 시트) ──
+  useEffect(() => {
+    if (gs === "room") {
+      ["excited","pouty","shocked","smug","cry","catears"].forEach(preloadNaviSprite);
+    }
+  }, [gs]);
 
   // ── 인트로 ──
   useEffect(() => {
