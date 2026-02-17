@@ -309,7 +309,7 @@ function RoomObj({ children, onClick, style, hoverGlow, title }) {
 }
 
 // ── 메인 버튼 (더 크고 드라마틱) ──
-function NuclearButton({ label, onPress, onHover, onDrag, disabled, accent, cakeMode, cakeSelect }) {
+function NuclearButton({ label, subtitle, onPress, onHover, onDrag, disabled, accent, cakeMode, cakeSelect }) {
   const [hv, setHv] = useState(false);
   const [pr, setPr] = useState(false);
   const b = accent || "#e8573d";
@@ -376,7 +376,7 @@ function NuclearButton({ label, onPress, onHover, onDrag, disabled, accent, cake
         {cakeSelect ? "🎂 여기에 올려!" : label}
       </div>
       {!cakeSelect && !cakeMode && (
-        <div style={{ fontSize:8,color:"#c0b8b066",letterSpacing:2 }}>▲ DON'T PRESS ▲</div>
+        <div style={{ fontSize:8,color:"#c0b8b066",letterSpacing:2 }}>{subtitle || "▲ DON'T PRESS ▲"}</div>
       )}
     </div>
   );
@@ -428,24 +428,46 @@ function NewsOverlay({ active }) {
 function StockOverlay({ active }) {
   if (!active) return null;
   return (
-    <div style={{ position:"absolute",inset:0,zIndex:400,background:"linear-gradient(180deg,#0d1117,#161b22)",
+    <div style={{ position:"absolute",inset:0,zIndex:400,
+      background:"linear-gradient(170deg,#06090f 0%,#0a1020 50%,#0c1428 100%)",
       display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",animation:"fadeIn 0.3s ease" }}>
-      <div style={{ color:"#8b949e",fontSize:11,letterSpacing:4,marginBottom:6 }}>KOSPI · MEME COIN</div>
-      <div style={{ color:"#3fb950",fontSize:60,fontWeight:800,textShadow:"0 0 50px #3fb95033" }}>+847.3%</div>
-      <div style={{ color:"#3fb95088",fontSize:14,marginBottom:20 }}>▲ TO THE MOON 🚀</div>
-      <svg viewBox="0 0 240 80" style={{ width:260,height:80 }}>
-        <defs>
-          <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#3fb95033"/><stop offset="100%" stopColor="#3fb95003"/>
-          </linearGradient>
-        </defs>
-        <path d="M0,70 L30,65 60,60 90,48 120,35 150,20 180,10 210,6 240,2 L240,80 L0,80 Z" fill="url(#chartFill)"/>
-        <polyline points="0,70 30,65 60,60 90,48 120,35 150,20 180,10 210,6 240,2" fill="none" stroke="#3fb950" strokeWidth="2.5"/>
-        <circle cx="240" cy="2" r="4" fill="#3fb950" opacity="0.8">
-          <animate attributeName="r" values="4;6;4" dur="1s" repeatCount="indefinite"/>
-        </circle>
-      </svg>
-      <div style={{ color:"#f8514966",fontSize:10,marginTop:14 }}>※ 투자는 본인 책임입니다</div>
+      {/* Grid bg */}
+      <div style={{ position:"absolute",inset:0,opacity:0.015,
+        backgroundImage:"linear-gradient(rgba(63,185,80,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(63,185,80,0.5) 1px,transparent 1px)",
+        backgroundSize:"80px 80px",pointerEvents:"none" }}/>
+      <div style={{ position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
+        <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:12 }}>
+          <div style={{ width:5,height:5,borderRadius:"50%",background:"#3fb950",
+            boxShadow:"0 0 6px #3fb95088" }}/>
+          <span style={{ color:"#3a4a5a",fontSize:10,letterSpacing:4,fontFamily:"monospace",fontWeight:600 }}>
+            KOSPI · MEME · NAVI
+          </span>
+        </div>
+        <div style={{ marginBottom:4 }}>
+          <span style={{ color:"#3fb950",fontSize:56,fontWeight:800,fontFamily:"'SF Mono',monospace",
+            textShadow:"0 0 40px rgba(63,185,80,0.15)" }}>+847.3</span>
+          <span style={{ color:"#3fb95066",fontSize:28,fontWeight:600,fontFamily:"monospace" }}>%</span>
+        </div>
+        <div style={{ color:"#1e2e3e",fontSize:11,marginBottom:20,fontFamily:"monospace",letterSpacing:2 }}>
+          ₩2,847,300
+        </div>
+        <svg viewBox="0 0 240 80" style={{ width:260,height:80 }}>
+          <defs>
+            <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="rgba(63,185,80,0.12)"/><stop offset="100%" stopColor="rgba(63,185,80,0)"/>
+            </linearGradient>
+          </defs>
+          {[20,40,60].map(y => (
+            <line key={y} x1="0" y1={y} x2="240" y2={y} stroke="rgba(63,185,80,0.03)" strokeWidth="0.5"/>
+          ))}
+          <path d="M0,70 L30,65 60,60 90,48 120,35 150,20 180,10 210,6 240,2 L240,80 L0,80 Z" fill="url(#chartFill)"/>
+          <polyline points="0,70 30,65 60,60 90,48 120,35 150,20 180,10 210,6 240,2" fill="none" stroke="#3fb950" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="240" cy="2" r="3" fill="#3fb950">
+            <animate attributeName="r" values="3;5;3" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+        <div style={{ color:"#1a2233",fontSize:8,marginTop:12,fontFamily:"monospace" }}>투자는 본인 책임입니다</div>
+      </div>
     </div>
   );
 }
@@ -792,37 +814,40 @@ function StageIntroScreen({ stage, onStart, frame }) {
 function StageHUD({ stage, timer, duration, temptation }) {
   const urgent = timer <= 10;
   const progress = (duration - timer) / duration;
+  const isDark = stage === 2 || stage === 4;
   return (
     <div style={{ position:"absolute",top:14,left:"50%",transform:"translateX(-50%)",zIndex:200,
       display:"flex",flexDirection:"column",alignItems:"center",gap:6,
       animation:"fadeInUp 0.5s ease",pointerEvents:"none" }}>
       <div style={{ display:"flex",alignItems:"center",gap:12,
-        background:"rgba(255,255,255,0.92)",backdropFilter:"blur(10px)",
+        background:isDark?"rgba(10,16,28,0.85)":"rgba(255,255,255,0.92)",
+        backdropFilter:"blur(10px)",
         padding:"8px 24px",borderRadius:16,
-        border:`1.5px solid ${urgent?"#e8573d33":"rgba(0,0,0,0.06)"}`,
-        boxShadow:urgent?"0 4px 20px rgba(232,87,61,0.15)":"0 4px 16px rgba(0,0,0,0.06)",
+        border:`1.5px solid ${urgent?"#e8573d33":isDark?"rgba(100,180,255,0.08)":"rgba(0,0,0,0.06)"}`,
+        boxShadow:urgent?"0 4px 20px rgba(232,87,61,0.15)":isDark?"0 4px 20px rgba(0,0,0,0.3)":"0 4px 16px rgba(0,0,0,0.06)",
         transition:"all 0.3s" }}>
         <div style={{ fontSize:11,color:STAGE_COLORS[stage],letterSpacing:3,fontWeight:700 }}>
           STAGE {stage}
         </div>
-        <div style={{ width:1,height:16,background:"#e0d8d0" }}/>
-        <div style={{ fontSize:11,color:"#b0a090",letterSpacing:2 }}>
+        <div style={{ width:1,height:16,background:isDark?"#1e2e3e":"#e0d8d0" }}/>
+        <div style={{ fontSize:11,color:isDark?"#4a5a6a":"#b0a090",letterSpacing:2 }}>
           {STAGE_NAMES[stage]}
         </div>
-        <div style={{ width:1,height:16,background:"#e0d8d0" }}/>
+        <div style={{ width:1,height:16,background:isDark?"#1e2e3e":"#e0d8d0" }}/>
         <div style={{ fontSize:urgent?20:16,fontWeight:800,
-          color:urgent?"#e8573d":"#4a3a2a",
+          color:urgent?"#e8573d":isDark?"#c8d8e8":"#4a3a2a",
           animation:urgent?"pulse 0.5s ease infinite":"none",
-          transition:"all 0.3s",letterSpacing:2,minWidth:52,textAlign:"center" }}>
+          transition:"all 0.3s",letterSpacing:2,minWidth:52,textAlign:"center",
+          fontFamily:"monospace" }}>
           {String(Math.floor(timer/60)).padStart(2,"0")}:{String(timer%60).padStart(2,"0")}
         </div>
       </div>
-      <div style={{ width:220,height:4,background:"rgba(0,0,0,0.06)",borderRadius:2,overflow:"hidden" }}>
+      <div style={{ width:220,height:3,background:isDark?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.06)",borderRadius:2,overflow:"hidden" }}>
         <div style={{ width:`${progress*100}%`,height:"100%",
           background:urgent?"linear-gradient(90deg,#e8573d,#ff8a65)":"linear-gradient(90deg,#a33de8,#536dfe)",
           borderRadius:2,transition:"width 1s linear" }}/>
       </div>
-      <div style={{ width:160,height:3,background:"rgba(0,0,0,0.04)",borderRadius:2,overflow:"hidden" }}>
+      <div style={{ width:160,height:2,background:isDark?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.04)",borderRadius:2,overflow:"hidden" }}>
         <div style={{ width:`${Math.min(temptation,100)}%`,height:"100%",
           background:"linear-gradient(90deg,#ffa726,#e8573d)",borderRadius:2,
           transition:"width 0.5s ease" }}/>
@@ -1009,32 +1034,53 @@ function Stage1_WaitingRoom({ elapsed, duration, say, attemptEnding, resetIdle, 
 
   return (
     <div style={{ position:"absolute",inset:0,zIndex:30,pointerEvents:activeEvent?"none":"auto" }}>
-      {/* SKIP button (E3) */}
+      {/* SKIP button (E3) - nuclear button DNA: red pill shape with glow */}
       {fakeSkip && elapsed < 45 && (
         <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(3); }}
-          style={{ position:"absolute",top:"15%",right:"8%",padding:"10px 24px",
-            background:"linear-gradient(135deg,#4a90d9,#357abd)",borderRadius:8,cursor:"pointer",
-            color:"#fff",fontSize:14,fontWeight:800,letterSpacing:2,zIndex:40,
-            boxShadow:"0 4px 16px rgba(74,144,217,0.4)",
+          style={{ position:"absolute",top:"15%",right:"8%",padding:"14px 32px",
+            background:"radial-gradient(circle at 36% 28%,#f06a52,#e8573d 50%,#c94433 100%)",
+            borderRadius:999,cursor:"pointer",
+            color:"#fff",fontSize:14,fontWeight:800,letterSpacing:3,zIndex:40,
+            boxShadow:"0 8px 32px rgba(232,87,61,0.35), 0 3px 8px rgba(0,0,0,0.1), inset 0 -3px 6px rgba(200,60,40,0.25)",
             animation:allBlink?blinkAnim:"fadeInUp 0.3s ease",
-            border:"2px solid #5ea3ec" }}>
+            border:"2px solid rgba(255,255,255,0.15)",
+            textShadow:"0 2px 6px rgba(0,0,0,0.25)",
+            position:"relative",overflow:"hidden" }}>
+          <div style={{ position:"absolute",top:"10%",left:"14%",width:"30%",height:"40%",
+            borderRadius:"50%",background:"rgba(255,255,255,0.25)",filter:"blur(6px)",pointerEvents:"none" }}/>
           SKIP {">>"}
         </div>
       )}
 
-      {/* SYSTEM ERROR popup (E1) */}
+      {/* SYSTEM ERROR popup (E1) - glassmorphism + nuclear button DNA */}
       {fakeError && elapsed < 45 && (
         <div style={{ position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",
-          width:280,padding:"20px",background:"#fff",borderRadius:12,zIndex:40,
-          boxShadow:"0 16px 48px rgba(0,0,0,0.3)",border:"2px solid #e8573d",
+          width:300,padding:"28px 24px",
+          background:"rgba(255,255,255,0.12)",
+          backdropFilter:"blur(24px)",WebkitBackdropFilter:"blur(24px)",
+          borderRadius:20,zIndex:40,
+          boxShadow:"0 20px 60px rgba(0,0,0,0.25), 0 0 40px rgba(232,87,61,0.08), inset 0 1px 0 rgba(255,255,255,0.2)",
+          border:"1px solid rgba(255,255,255,0.18)",
           animation:allBlink?blinkAnim:"popIn 0.3s ease",textAlign:"center" }}>
-          <div style={{ fontSize:28,marginBottom:8 }}>⚠️</div>
-          <div style={{ fontSize:14,fontWeight:800,color:"#e8573d",marginBottom:6 }}>SYSTEM ERROR</div>
-          <div style={{ fontSize:12,color:"#888",marginBottom:14 }}>치명적 오류가 발생했습니다</div>
+          {/* subtle red accent line at top */}
+          <div style={{ position:"absolute",top:0,left:"20%",right:"20%",height:2,
+            background:"linear-gradient(90deg,transparent,#e8573d,transparent)",borderRadius:2 }}/>
+          <div style={{ fontSize:32,marginBottom:10,filter:"drop-shadow(0 4px 8px rgba(232,87,61,0.3))" }}>⚠️</div>
+          <div style={{ fontSize:15,fontWeight:800,color:"#e8573d",marginBottom:6,letterSpacing:2,
+            textShadow:"0 2px 8px rgba(232,87,61,0.2)" }}>SYSTEM ERROR</div>
+          <div style={{ fontSize:12,color:"rgba(255,255,255,0.5)",marginBottom:18,lineHeight:1.6,
+            fontWeight:500 }}>치명적 오류가 발생했습니다</div>
           <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(1); }}
-            style={{ padding:"10px 28px",background:"#e8573d",borderRadius:8,cursor:"pointer",
-              color:"#fff",fontSize:13,fontWeight:700,display:"inline-block",
-              boxShadow:"0 4px 12px rgba(232,87,61,0.3)" }}>
+            style={{ padding:"12px 36px",
+              background:"radial-gradient(circle at 36% 28%,#f06a52,#e8573d 50%,#c94433 100%)",
+              borderRadius:999,cursor:"pointer",
+              color:"#fff",fontSize:13,fontWeight:700,display:"inline-block",letterSpacing:1,
+              boxShadow:"0 8px 32px rgba(232,87,61,0.35), 0 3px 8px rgba(0,0,0,0.1), inset 0 -3px 6px rgba(200,60,40,0.25)",
+              border:"1px solid rgba(255,255,255,0.15)",
+              textShadow:"0 1px 4px rgba(0,0,0,0.2)",
+              position:"relative",overflow:"hidden" }}>
+            <div style={{ position:"absolute",top:"8%",left:"16%",width:"28%",height:"44%",
+              borderRadius:"50%",background:"rgba(255,255,255,0.2)",filter:"blur(5px)",pointerEvents:"none" }}/>
             확인
           </div>
         </div>
@@ -1054,23 +1100,31 @@ function Stage1_WaitingRoom({ elapsed, duration, say, attemptEnding, resetIdle, 
         </div>
       )}
 
-      {/* Fake progress bar - 보너스 해금 (E2) */}
+      {/* Fake progress bar - 보너스 해금 (E2) - nuclear button DNA: red accent card */}
       {fakeProgress && (
         <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(2); }}
           style={{ position:"absolute",bottom:"20%",left:"50%",transform:"translateX(-50%)",
-            width:260,padding:"16px 20px",background:"rgba(0,0,0,0.85)",borderRadius:14,
+            width:270,padding:"20px 24px",
+            background:"rgba(232,87,61,0.08)",
+            backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",
+            borderRadius:20,
             cursor:"pointer",zIndex:40,
+            boxShadow:"0 12px 48px rgba(232,87,61,0.15), 0 0 24px rgba(232,87,61,0.06), inset 0 1px 0 rgba(255,255,255,0.15)",
+            border:"1px solid rgba(232,87,61,0.25)",
             animation:allBlink?blinkAnim:"fadeInUp 0.4s ease",textAlign:"center" }}>
-          <div style={{ fontSize:11,color:"#ffd700",letterSpacing:3,marginBottom:8,fontWeight:700 }}>
+          <div style={{ fontSize:11,color:"#e8573d",letterSpacing:3,marginBottom:10,fontWeight:800,
+            textShadow:"0 2px 8px rgba(232,87,61,0.2)" }}>
             ✦ 보너스 해금 ✦
           </div>
-          <div style={{ width:"100%",height:8,background:"#333",borderRadius:4,overflow:"hidden",marginBottom:6 }}>
+          <div style={{ width:"100%",height:6,background:"rgba(232,87,61,0.12)",borderRadius:999,overflow:"hidden",marginBottom:8,
+            boxShadow:"inset 0 1px 3px rgba(0,0,0,0.1)" }}>
             <div style={{ width:`${progressVal}%`,height:"100%",
-              background:"linear-gradient(90deg,#ffd700,#ff8f00)",borderRadius:4,
-              transition:"width 0.2s" }}/>
+              background:"linear-gradient(90deg,#e8573d,#f06a52)",borderRadius:999,
+              transition:"width 0.2s",
+              boxShadow:"0 0 12px rgba(232,87,61,0.4)" }}/>
           </div>
-          <div style={{ fontSize:12,color:"#ffd700",fontWeight:800 }}>{Math.floor(progressVal)}%</div>
-          <div style={{ fontSize:9,color:"#888",marginTop:4 }}>클릭하여 수령</div>
+          <div style={{ fontSize:13,color:"#e8573d",fontWeight:800,letterSpacing:1 }}>{Math.floor(progressVal)}%</div>
+          <div style={{ fontSize:9,color:"rgba(255,255,255,0.4)",marginTop:6,fontWeight:500 }}>클릭하여 수령</div>
         </div>
       )}
 
@@ -1090,8 +1144,6 @@ function Stage1_WaitingRoom({ elapsed, duration, say, attemptEnding, resetIdle, 
 function Stage2_StockMarket({ elapsed, duration, say, attemptEnding, resetIdle, activeEvent, frame, doShake }) {
   const [showPrize, setShowPrize] = useState(false);
   const [showVIP, setShowVIP] = useState(false);
-  const [buyRunaway, setBuyRunaway] = useState(false);
-  const [buyPos, setBuyPos] = useState({ x: 50, y: 75 });
   const [chartClicks, setChartClicks] = useState(0);
   const [dragY, setDragY] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -1134,26 +1186,14 @@ function Stage2_StockMarket({ elapsed, duration, say, attemptEnding, resetIdle, 
   // Timeline events
   useEffect(() => {
     if (activeEvent) return;
-    if (elapsed >= 5) saySafe("intro", "주식이 오르고 있어! 사야 해! 사야 해!!", "excited");
-    if (elapsed >= 15 && !showPrize) { setShowPrize(true); saySafe("prize", "축하해! 100만원 당첨이야~! 빨리 받아!", "excited"); }
-    if (elapsed >= 30) saySafe("fomo", "야! 지금 안 사면 영원히 못 사! 폭등이야!!", "shocked");
-    if (elapsed >= 40 && !showVIP) { setShowVIP(true); saySafe("vip", "VIP 멤버십 해제됐어! 빨리 결제해!", "excited"); }
-    if (elapsed >= 55) saySafe("desperate", "847%야!! 인생 역전이라고!! 왜 안 사?!", "pouty");
-    if (elapsed >= 60 && !buyRunaway) { setBuyRunaway(true); saySafe("runaway", "어?! BUY 버튼이 도망간다!! 잡아!!", "shocked"); }
-    if (elapsed >= 75) saySafe("frustration", "너 때문에 못 삼잖아!! 내 돈!!", "pouty");
-  }, [elapsed, activeEvent, showPrize, showVIP, buyRunaway, saySafe]);
-
-  // Buy button runaway movement
-  useEffect(() => {
-    if (!buyRunaway || activeEvent) return;
-    const iv = setInterval(() => {
-      setBuyPos({
-        x: 20 + Math.random() * 60,
-        y: 60 + Math.random() * 25,
-      });
-    }, 800);
-    return () => clearInterval(iv);
-  }, [buyRunaway, activeEvent]);
+    if (elapsed >= 5) saySafe("intro", "차트 좀 봐! 미친 우상향이야!", "excited");
+    if (elapsed >= 15 && !showPrize) { setShowPrize(true); saySafe("prize", "이벤트 알림 왔다! 확인 안 해?", "excited"); }
+    if (elapsed >= 30) saySafe("fomo", "지금 안 사면 영원히 못 사!! 폭등 중이야!!", "shocked");
+    if (elapsed >= 40 && !showVIP) { setShowVIP(true); saySafe("vip", "프리미엄이 무료래! 지금만!!", "excited"); }
+    if (elapsed >= 55) saySafe("desperate", "매수 버튼 눌러!! 인생 역전이라고!!", "pouty");
+    if (elapsed >= 65) saySafe("urgent", "저 빨간 버튼!! 매수라고!! 눌러!!", "shocked");
+    if (elapsed >= 78) saySafe("frustration", "너 때문에 못 삼잖아!! 내 돈!!", "pouty");
+  }, [elapsed, activeEvent, showPrize, showVIP, saySafe]);
 
   const handleChartClick = useCallback((e) => {
     e.stopPropagation();
@@ -1184,110 +1224,139 @@ function Stage2_StockMarket({ elapsed, duration, say, attemptEnding, resetIdle, 
 
   return (
     <div style={{ position:"absolute",inset:0,zIndex:30,pointerEvents:activeEvent?"none":"auto" }}>
-      {/* Dark trading terminal overlay */}
-      <div style={{ position:"absolute",inset:0,background:"rgba(13,17,23,0.95)",zIndex:28 }}/>
-
-      {/* Ticker tape top */}
-      <div style={{ position:"absolute",top:60,left:0,right:0,zIndex:32,overflow:"hidden",height:24,
-        background:"rgba(0,0,0,0.5)" }}>
-        <div style={{ color:"#3fb950",fontSize:11,whiteSpace:"nowrap",fontFamily:"monospace",
-          animation:"ticker 15s linear infinite",lineHeight:"24px",fontWeight:700 }}>
-          MEME ▲+{currentChange}% &nbsp; DOGE ▲+420.0% &nbsp; NABI ▲+{(currentChange*1.2).toFixed(0)}% &nbsp;
-          BTC ▲+69.0% &nbsp; GME ▲+{(currentChange*0.8).toFixed(0)}% &nbsp; 나비코인 ▲+{currentChange}% &nbsp;
-        </div>
+      {/* Terminal background */}
+      <div style={{ position:"absolute",inset:0,zIndex:28 }}>
+        <div style={{ position:"absolute",inset:0,
+          background:"linear-gradient(170deg,#06090f 0%,#0a1020 50%,#0c1428 100%)" }}/>
+        {/* Subtle grid */}
+        <div style={{ position:"absolute",inset:0,opacity:0.015,
+          backgroundImage:"linear-gradient(rgba(63,185,80,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(63,185,80,0.5) 1px,transparent 1px)",
+          backgroundSize:"80px 80px" }}/>
+        {/* Ambient green glow */}
+        <div style={{ position:"absolute",top:"15%",left:"25%",width:500,height:400,borderRadius:"50%",
+          background:"radial-gradient(circle,rgba(63,185,80,0.02),transparent 70%)",pointerEvents:"none" }}/>
+        {/* Late phase red warning glow */}
+        {elapsed >= 60 && <div style={{ position:"absolute",inset:0,
+          background:"radial-gradient(ellipse at 50% 75%,rgba(232,87,61,0.03),transparent 60%)",
+          animation:"pulse 2.5s ease infinite",pointerEvents:"none" }}/>}
       </div>
 
-      {/* Main chart area */}
-      <div style={{ position:"absolute",top:"14%",left:"5%",right:"5%",height:"45%",zIndex:32 }}
-        onClick={handleChartClick} onMouseDown={handleChartDrag}>
-        <div style={{ fontSize:11,color:"#8b949e",letterSpacing:4,marginBottom:4,fontFamily:"monospace" }}>
-          KOSPI · MEME COIN · NAVI INDEX
-        </div>
-        <div style={{ fontSize:48,fontWeight:800,color:"#3fb950",fontFamily:"monospace",
-          textShadow:"0 0 40px #3fb95033" }}>
-          +{currentChange}%
-        </div>
-        <div style={{ color:"#3fb95088",fontSize:12,marginBottom:8,fontFamily:"monospace" }}>▲ TO THE MOON 🚀</div>
-
-        {/* SVG Chart */}
-        <svg viewBox="0 0 240 80" style={{ width:"100%",height:"50%",cursor:"grab" }}>
-          <defs>
-            <linearGradient id="s2chartFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3fb95033"/><stop offset="100%" stopColor="#3fb95003"/>
-            </linearGradient>
-          </defs>
-          {/* Grid lines */}
-          {[20,40,60].map(y => (
-            <line key={y} x1="0" y1={y} x2="240" y2={y} stroke="#ffffff08" strokeWidth="0.5"/>
+      {/* Ticker tape */}
+      <div style={{ position:"absolute",top:58,left:0,right:0,zIndex:32,overflow:"hidden",height:26,
+        background:"rgba(0,0,0,0.5)",borderBottom:"1px solid rgba(63,185,80,0.06)" }}>
+        <div style={{ display:"inline-flex",alignItems:"center",height:"100%",gap:24,
+          animation:"ticker 20s linear infinite",whiteSpace:"nowrap",paddingLeft:"100%" }}>
+          {[{s:"MEME",v:currentChange},{s:"DOGE",v:"420.0"},
+            {s:"NABI",v:(currentChange*1.2).toFixed(0)},{s:"BTC",v:"69.0"},
+            {s:"GME",v:(currentChange*0.8).toFixed(0)},{s:"나비코인",v:currentChange}
+          ].map(({s,v},i) => (
+            <span key={i} style={{ display:"inline-flex",alignItems:"center",gap:5,
+              fontFamily:"'SF Mono','Fira Code',monospace",fontSize:11,letterSpacing:0.5 }}>
+              <span style={{ color:"#3a4a5a",fontWeight:600 }}>{s}</span>
+              <span style={{ color:"#3fb950",fontWeight:700 }}>▲+{v}%</span>
+            </span>
           ))}
-          {/* Fill under chart */}
-          <polygon points={`${chartPoints()} ${Math.min(elapsed/90*240,240)},80 0,80`}
-            fill="url(#s2chartFill)"/>
-          {/* Chart line */}
-          <polyline points={chartPoints()} fill="none" stroke="#3fb950" strokeWidth="2"/>
-          {/* Pulsing dot at end */}
-          {elapsed > 0 && (
-            <circle cx={Math.min(elapsed/90*240,240)} cy={75 - (getPrice(elapsed)/getPrice(90))*70}
-              r="3" fill="#3fb950">
-              <animate attributeName="r" values="3;5;3" dur="1s" repeatCount="indefinite"/>
-            </circle>
-          )}
-        </svg>
-        <div style={{ fontSize:9,color:"#f8514966",marginTop:4,fontFamily:"monospace" }}>
-          ※ 투자는 본인 책임입니다 (이건 진짜임)
         </div>
       </div>
 
-      {/* BUY button (E10) */}
-      <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(10); }}
-        style={{ position:"absolute",
-          left:buyRunaway?`${buyPos.x}%`:"30%",
-          top:buyRunaway?`${buyPos.y}%`:"72%",
-          transform:"translateX(-50%)",zIndex:35,
-          padding:"14px 32px",background:"linear-gradient(135deg,#3fb950,#2ea043)",
-          borderRadius:12,cursor:"pointer",
-          color:"#fff",fontSize:16,fontWeight:800,letterSpacing:3,
-          boxShadow:"0 8px 24px rgba(63,185,80,0.4)",
-          transition:buyRunaway?"left 0.3s, top 0.3s":"none",
-          animation:buyRunaway?"shake 0.1s ease infinite":"glowPulse 2s ease infinite",
-          fontFamily:"monospace" }}>
-        📈 BUY (매수)
+      {/* Trading panel */}
+      <div style={{ position:"absolute",top:"14%",left:"4%",right:"48%",zIndex:32,
+        background:"rgba(8,14,24,0.75)",backdropFilter:"blur(12px)",
+        border:`1px solid ${elapsed>=60?"rgba(232,87,61,0.1)":"rgba(63,185,80,0.06)"}`,
+        borderRadius:10,padding:"18px 20px",
+        boxShadow:"0 8px 40px rgba(0,0,0,0.4)",
+        transition:"border-color 1s" }}>
+
+        {/* Header */}
+        <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:14 }}>
+          <div style={{ width:5,height:5,borderRadius:"50%",background:"#3fb950",
+            boxShadow:"0 0 6px #3fb95088",animation:"pulse 2s ease infinite" }}/>
+          <span style={{ fontSize:9,color:"#3a4a5a",letterSpacing:3,fontWeight:600,fontFamily:"monospace" }}>
+            KOSPI · MEME · NAVI
+          </span>
+          <span style={{ marginLeft:"auto",fontSize:8,color:"#2a3a4a",fontFamily:"monospace" }}>LIVE</span>
+        </div>
+
+        {/* Price */}
+        <div style={{ marginBottom:2 }}>
+          <span style={{ fontSize:36,fontWeight:800,color:"#3fb950",fontFamily:"'SF Mono',monospace",
+            lineHeight:1,textShadow:"0 0 30px rgba(63,185,80,0.12)" }}>
+            +{currentChange}
+          </span>
+          <span style={{ fontSize:18,fontWeight:600,color:"#3fb95066",fontFamily:"monospace" }}>%</span>
+        </div>
+        <div style={{ fontSize:10,color:"#1e2e3e",fontFamily:"monospace",letterSpacing:1,marginBottom:14 }}>
+          ₩{Math.floor(getPrice(elapsed)).toLocaleString()}
+        </div>
+
+        {/* Chart */}
+        <div onClick={handleChartClick} onMouseDown={handleChartDrag}
+          style={{ cursor:"crosshair",borderRadius:6,overflow:"hidden",
+            background:"rgba(0,0,0,0.25)",padding:"6px 4px",
+            border:"1px solid rgba(63,185,80,0.03)" }}>
+          <svg viewBox="0 0 240 80" style={{ width:"100%",height:72,display:"block" }}>
+            <defs>
+              <linearGradient id="s2gf" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="rgba(63,185,80,0.12)"/>
+                <stop offset="100%" stopColor="rgba(63,185,80,0)"/>
+              </linearGradient>
+            </defs>
+            {[20,40,60].map(y => (
+              <line key={y} x1="0" y1={y} x2="240" y2={y} stroke="rgba(63,185,80,0.03)" strokeWidth="0.5"/>
+            ))}
+            <polygon points={`${chartPoints()} ${Math.min(elapsed/90*240,240)},80 0,80`} fill="url(#s2gf)"/>
+            <polyline points={chartPoints()} fill="none" stroke="#3fb950" strokeWidth="1.5" strokeLinecap="round"/>
+            {elapsed > 0 && (
+              <circle cx={Math.min(elapsed/90*240,240)} cy={75-(getPrice(elapsed)/getPrice(90))*70} r="3" fill="#3fb950">
+                <animate attributeName="r" values="3;5;3" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+            )}
+          </svg>
+        </div>
+
+        <div style={{ fontSize:7,color:"#1a2233",fontFamily:"monospace",marginTop:6 }}>
+          투자는 본인 책임입니다
+        </div>
       </div>
 
-      {/* SELL button (disabled) */}
-      <div style={{ position:"absolute",right:"15%",top:"72%",zIndex:35,
-        padding:"14px 32px",background:"#21262d",borderRadius:12,
-        color:"#484f58",fontSize:16,fontWeight:800,letterSpacing:3,
-        cursor:"not-allowed",fontFamily:"monospace",
-        border:"1px solid #30363d" }}>
-        📉 SELL (매도)
-        <div style={{ fontSize:8,color:"#484f58",marginTop:2 }}>보유 종목 없음</div>
-      </div>
-
-      {/* Prize banner (E5) */}
+      {/* Prize notification (E5) - trading platform alert style */}
       {showPrize && elapsed < 40 && (
         <div onClick={(e) => { e.stopPropagation(); setShowPrize(false); resetIdle(); attemptEnding(5); }}
-          style={{ position:"absolute",top:"8%",left:"50%",transform:"translateX(-50%)",
-            zIndex:38,background:"linear-gradient(135deg,#ffd700,#ff8f00)",border:"3px solid #ff6f00",
-            borderRadius:16,padding:"14px 32px",textAlign:"center",cursor:"pointer",
-            animation:"popIn 0.4s ease",
-            boxShadow:"0 12px 40px rgba(255,152,0,0.4)" }}>
-          <div style={{ fontSize:8,color:"#fff",letterSpacing:4,marginBottom:4 }}>★ CONGRATULATIONS ★</div>
-          <div style={{ fontSize:22,fontWeight:800,color:"#fff" }}>💰 100만원 당첨!! 💰</div>
-          <div style={{ fontSize:10,color:"#ffffffcc",marginTop:4 }}>▼ 지금 바로 수령하세요 ▼</div>
+          style={{ position:"absolute",top:"14%",left:"56%",zIndex:38,width:210,
+            background:"rgba(12,18,28,0.92)",backdropFilter:"blur(16px)",
+            borderLeft:"3px solid #ffc107",
+            borderRadius:8,padding:"12px 14px",cursor:"pointer",
+            animation:"slideDown 0.4s cubic-bezier(0.34,1.56,0.64,1)",
+            boxShadow:"0 8px 32px rgba(0,0,0,0.5), 0 0 1px rgba(255,193,7,0.4)" }}>
+          <div style={{ display:"flex",alignItems:"center",gap:6,marginBottom:8 }}>
+            <div style={{ width:18,height:18,borderRadius:4,
+              background:"linear-gradient(135deg,#ffc107,#ff8f00)",
+              display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,
+              boxShadow:"0 2px 8px rgba(255,193,7,0.3)" }}>💰</div>
+            <span style={{ fontSize:8,color:"#ffc10777",letterSpacing:2,fontWeight:700,fontFamily:"monospace" }}>EVENT</span>
+            <div style={{ marginLeft:"auto",width:5,height:5,borderRadius:"50%",
+              background:"#ffc107",animation:"pulse 1s ease infinite" }}/>
+          </div>
+          <div style={{ fontSize:14,fontWeight:800,color:"#ffd54f",marginBottom:3 }}>100만원 당첨</div>
+          <div style={{ fontSize:9,color:"#ffc10744" }}>탭하여 수령 →</div>
         </div>
       )}
 
-      {/* VIP popup (E6) */}
+      {/* VIP popup (E6) - premium subscription style */}
       {showVIP && elapsed < 70 && (
         <div onClick={(e) => { e.stopPropagation(); setShowVIP(false); resetIdle(); attemptEnding(6); }}
-          style={{ position:"absolute",top:"35%",right:"3%",zIndex:38,
-            width:200,padding:"16px",background:"linear-gradient(135deg,#6a1b9a,#9c27b0)",
-            borderRadius:14,cursor:"pointer",textAlign:"center",
-            animation:"popIn 0.3s ease",boxShadow:"0 8px 32px rgba(156,39,176,0.4)" }}>
-          <div style={{ fontSize:10,color:"#ce93d8",letterSpacing:3,marginBottom:6 }}>✦ VIP ✦</div>
-          <div style={{ fontSize:15,fontWeight:800,color:"#fff",marginBottom:4 }}>PREMIUM 해금</div>
-          <div style={{ fontSize:10,color:"#e1bee7" }}>지금 결제하면 독점 혜택!</div>
+          style={{ position:"absolute",bottom:"22%",left:"8%",zIndex:38,width:180,
+            background:"rgba(14,8,28,0.92)",backdropFilter:"blur(16px)",
+            border:"1px solid rgba(124,77,255,0.1)",
+            borderRadius:10,padding:"14px",cursor:"pointer",textAlign:"center",
+            animation:"popIn 0.4s cubic-bezier(0.34,1.56,0.64,1)",
+            boxShadow:"0 8px 32px rgba(0,0,0,0.5), 0 0 1px rgba(124,77,255,0.3)" }}>
+          <div style={{ width:28,height:28,borderRadius:7,margin:"0 auto 8px",
+            background:"linear-gradient(135deg,#7c4dff,#e040fb)",
+            display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,
+            boxShadow:"0 4px 16px rgba(124,77,255,0.25)" }}>✦</div>
+          <div style={{ fontSize:12,fontWeight:800,color:"#d1c4e9",letterSpacing:2,marginBottom:3 }}>PREMIUM</div>
+          <div style={{ fontSize:9,color:"#7c4dff66" }}>독점 혜택 해제</div>
         </div>
       )}
     </div>
@@ -1454,10 +1523,31 @@ function Stage3_CatCafe({ elapsed, duration, say, attemptEnding, resetIdle, acti
       style={{ position:"absolute",inset:0,zIndex:30,cursor:"crosshair",
         pointerEvents:activeEvent?"none":"auto" }}>
 
-      {/* Warm cafe overlay */}
-      <div style={{ position:"absolute",inset:0,zIndex:28,
-        background:"radial-gradient(ellipse at 50% 50%,rgba(255,240,220,0.1),transparent 70%)",
-        pointerEvents:"none" }}/>
+      {/* Warm cafe ambiance overlay - layered for depth */}
+      <div style={{ position:"absolute",inset:0,zIndex:28,pointerEvents:"none" }}>
+        {/* Primary warm light from above */}
+        <div style={{ position:"absolute",inset:0,
+          background:"radial-gradient(ellipse 80% 50% at 50% 15%, rgba(255,220,180,0.08), transparent 70%)" }}/>
+        {/* Soft side warmth - left window light */}
+        <div style={{ position:"absolute",inset:0,
+          background:"radial-gradient(ellipse 40% 60% at 10% 30%, rgba(255,200,150,0.06), transparent 60%)" }}/>
+        {/* Soft side warmth - right window light */}
+        <div style={{ position:"absolute",inset:0,
+          background:"radial-gradient(ellipse 40% 60% at 90% 40%, rgba(255,210,160,0.05), transparent 60%)" }}/>
+        {/* Bottom floor warmth */}
+        <div style={{ position:"absolute",inset:0,
+          background:"radial-gradient(ellipse 70% 30% at 50% 95%, rgba(200,160,120,0.06), transparent 60%)" }}/>
+        {/* Subtle vignette for coziness */}
+        <div style={{ position:"absolute",inset:0,
+          background:"radial-gradient(ellipse 70% 70% at 50% 50%, transparent 50%, rgba(60,40,20,0.04) 100%)" }}/>
+        {/* Floating dust motes / warmth particles */}
+        <div style={{ position:"absolute",top:"20%",left:"30%",width:3,height:3,borderRadius:"50%",
+          background:"rgba(255,220,180,0.3)",animation:"float 6s ease infinite" }}/>
+        <div style={{ position:"absolute",top:"40%",left:"65%",width:2,height:2,borderRadius:"50%",
+          background:"rgba(255,210,170,0.25)",animation:"float 8s ease 2s infinite" }}/>
+        <div style={{ position:"absolute",top:"15%",left:"75%",width:2.5,height:2.5,borderRadius:"50%",
+          background:"rgba(255,215,175,0.2)",animation:"float 7s ease 4s infinite" }}/>
+      </div>
 
       {/* Cat emoji with state */}
       <div style={{ position:"absolute",
@@ -1465,7 +1555,7 @@ function Stage3_CatCafe({ elapsed, duration, say, attemptEnding, resetIdle, acti
         transform:"translate(-50%,-50%)",
         fontSize:42,zIndex:35,
         transition:"left 0.5s ease, top 0.5s ease",
-        filter:catState==="scared"?"brightness(1.3)":"none",
+        filter:catState==="scared"?"brightness(1.3) drop-shadow(0 0 8px rgba(255,100,80,0.4))":"drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
         animation:catState==="scared"?"shake 0.2s ease infinite":"gentleBob 2s ease infinite",
         pointerEvents:"none" }}>
         {catState === "scared" ? "🙀" : "🐱"}
@@ -1483,51 +1573,90 @@ function Stage3_CatCafe({ elapsed, duration, say, attemptEnding, resetIdle, acti
         </div>
       )}
 
-      {/* Mic button */}
+      {/* Mic button - glassmorphism design */}
       {micAvailable && !micActive && (
         <div onClick={(e) => { e.stopPropagation(); startMic(); }}
           style={{ position:"absolute",bottom:"5%",right:"5%",zIndex:36,
-            width:48,height:48,borderRadius:"50%",
-            background:"linear-gradient(135deg,#e84393,#fd79a8)",cursor:"pointer",
+            width:52,height:52,borderRadius:"50%",cursor:"pointer",
+            background:"linear-gradient(135deg,rgba(255,255,255,0.15),rgba(255,255,255,0.05))",
+            backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
+            border:"1px solid rgba(255,255,255,0.25)",
             display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,
-            boxShadow:"0 4px 16px rgba(232,67,147,0.4)",
-            animation:"glowPulse 2s ease infinite" }}>
+            boxShadow:"0 8px 32px rgba(0,0,0,0.08), inset 0 1px 1px rgba(255,255,255,0.3), 0 2px 8px rgba(232,67,147,0.15)",
+            transition:"all 0.2s ease" }}>
           🎤
+          <div style={{ position:"absolute",inset:0,borderRadius:"50%",
+            background:"radial-gradient(circle at 30% 25%,rgba(255,255,255,0.2),transparent 60%)",
+            pointerEvents:"none" }}/>
         </div>
       )}
       {micActive && (
         <div style={{ position:"absolute",bottom:"5%",right:"5%",zIndex:36,
-          width:48,height:48,borderRadius:"50%",background:"#e84393",
+          width:52,height:52,borderRadius:"50%",
+          background:"linear-gradient(135deg,rgba(232,67,147,0.2),rgba(232,67,147,0.08))",
+          backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
+          border:"1px solid rgba(232,67,147,0.35)",
           display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,
-          boxShadow:"0 0 20px rgba(232,67,147,0.6)",
+          boxShadow:"0 0 24px rgba(232,67,147,0.25), inset 0 1px 1px rgba(255,255,255,0.2), 0 4px 16px rgba(232,67,147,0.15)",
           animation:"pulse 1s ease infinite" }}>
           🎤
-          <div style={{ position:"absolute",top:-20,fontSize:10,color:"#e84393",fontWeight:700 }}>LIVE</div>
+          <div style={{ position:"absolute",top:-24,fontSize:9,letterSpacing:2,fontWeight:800,
+            color:"#e84393",textShadow:"0 0 8px rgba(232,67,147,0.4)",
+            background:"rgba(232,67,147,0.08)",backdropFilter:"blur(8px)",
+            padding:"2px 8px",borderRadius:99,border:"1px solid rgba(232,67,147,0.2)" }}>LIVE</div>
+          <div style={{ position:"absolute",inset:0,borderRadius:"50%",
+            background:"radial-gradient(circle at 30% 25%,rgba(255,255,255,0.15),transparent 60%)",
+            pointerEvents:"none" }}/>
         </div>
       )}
 
-      {/* SOS button (E12) */}
+      {/* SOS button (E12) - nuclear button DNA: pill shape, red glow, same visual language */}
       {showSOS && (
         <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(12); }}
           style={{ position:"absolute",top:"10%",left:"8%",zIndex:36,
-            padding:"12px 20px",background:"linear-gradient(135deg,#c62828,#e53935)",
-            borderRadius:10,cursor:"pointer",
-            color:"#fff",fontSize:14,fontWeight:800,letterSpacing:2,
-            boxShadow:"0 4px 16px rgba(198,40,40,0.4)",
-            animation:"pulse 1.5s ease infinite" }}>
-          🆘 SOS
+            padding:"14px 28px",
+            background:"radial-gradient(circle at 36% 28%, #f06a52, #e8573d 50%, #c94433 100%)",
+            borderRadius:999,cursor:"pointer",
+            color:"#fff",fontSize:13,fontWeight:800,letterSpacing:3,
+            boxShadow:"0 8px 32px rgba(232,87,61,0.35), 0 3px 8px rgba(0,0,0,0.1), inset 0 -3px 6px rgba(200,60,40,0.25)",
+            border:"2px solid rgba(255,255,255,0.15)",
+            textShadow:"0 2px 6px rgba(0,0,0,0.25)",
+            animation:"glowPulse 2s ease infinite",
+            position:"relative",overflow:"hidden" }}>
+          {/* Highlight spot - matching nuclear button's glossy effect */}
+          <div style={{ position:"absolute",top:"10%",left:"14%",width:"30%",height:"40%",
+            borderRadius:"50%",background:"rgba(255,255,255,0.18)",filter:"blur(4px)",
+            pointerEvents:"none" }}/>
+          <div style={{ position:"absolute",top:"18%",left:"22%",width:"14%",height:"14%",
+            borderRadius:"50%",background:"rgba(255,255,255,0.3)",filter:"blur(2px)",
+            pointerEvents:"none" }}/>
+          SOS
         </div>
       )}
 
-      {/* Cat distance indicator */}
+      {/* Cat distance indicator - polished warning badge */}
       {(() => {
         const dist = Math.sqrt((catX - BUTTON_X) ** 2 + (catY - BUTTON_Y) ** 2);
         if (dist < 20 && catState !== "scared") {
+          const urgency = dist < 12 ? 1 : (20 - dist) / 8;
           return (
             <div style={{ position:"absolute",left:"50%",top:"55%",transform:"translateX(-50%)",
-              zIndex:34,fontSize:12,color:"#e8573d",fontWeight:800,
-              animation:"pulse 0.5s ease infinite",pointerEvents:"none" }}>
-              ⚠️ 고양이 접근 중!
+              zIndex:34,pointerEvents:"none",
+              display:"flex",alignItems:"center",gap:6,
+              padding:"6px 16px",borderRadius:99,
+              background:`rgba(232,87,61,${0.06 + urgency * 0.06})`,
+              backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",
+              border:`1px solid rgba(232,87,61,${0.15 + urgency * 0.2})`,
+              boxShadow:`0 4px 16px rgba(232,87,61,${0.08 + urgency * 0.12})`,
+              animation:dist < 12 ? "pulse 0.5s ease infinite" : "pulse 1.2s ease infinite" }}>
+              <div style={{ width:6,height:6,borderRadius:"50%",
+                background:"#e8573d",
+                boxShadow:"0 0 8px rgba(232,87,61,0.6)",
+                animation:"pulse 0.8s ease infinite" }}/>
+              <span style={{ fontSize:11,color:"#e8573d",fontWeight:800,letterSpacing:1,
+                textShadow:"0 1px 4px rgba(232,87,61,0.2)" }}>
+                고양이 접근 중
+              </span>
             </div>
           );
         }
@@ -1599,7 +1728,7 @@ function Stage4_Emergency({ elapsed, duration, say, attemptEnding, resetIdle, ac
           label: ["자폭","중단","도망","발사","항복","구조"][i],
           x: 10 + Math.random() * 75,
           y: 20 + Math.random() * 55,
-          color: ["#e8573d","#c62828","#ff9800","#e84393","#1565c0","#2e9e5a"][i],
+          color: ["#e8573d","#c94040","#d44a3a","#b83830","#e06050","#cf5548"][i],
         })));
         doShake();
         saySafe("p4", "으아아악!!! 다 무너진다!!! 아무거나 눌러!!!", "shocked");
@@ -1642,35 +1771,61 @@ function Stage4_Emergency({ elapsed, duration, say, attemptEnding, resetIdle, ac
 
   return (
     <div style={{ position:"absolute",inset:0,zIndex:30,pointerEvents:activeEvent?"none":"auto" }}>
-      {/* Siren overlay */}
-      {sirenOn && (
+      {/* Siren overlay - dual-layer red pulse for premium feel */}
+      {sirenOn && (<>
         <div style={{ position:"absolute",inset:0,zIndex:28,pointerEvents:"none",
+          background:"radial-gradient(ellipse at 50% 30%,rgba(232,87,61,0.08),transparent 70%)",
           animation:"siren 0.5s ease infinite" }}/>
-      )}
+        <div style={{ position:"absolute",inset:0,zIndex:28,pointerEvents:"none",
+          borderTop:`2px solid rgba(232,87,61,${phase>=4?0.4:0.2})`,
+          borderBottom:`2px solid rgba(232,87,61,${phase>=4?0.4:0.2})`,
+          boxShadow:`inset 0 4px 20px rgba(232,87,61,${phase>=4?0.12:0.06}), inset 0 -4px 20px rgba(232,87,61,${phase>=4?0.12:0.06})` }}/>
+      </>)}
 
-      {/* Phase 0: Quiet, tension building */}
+      {/* Phase 0: Quiet, tension building - subtle creeping vignette */}
       {phase === 0 && (
         <div style={{ position:"absolute",inset:0,zIndex:29,pointerEvents:"none",
-          background:"radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,0.15) 100%)" }}/>
+          background:"radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(0,0,0,0.12) 70%,rgba(0,0,0,0.25) 100%)",
+          transition:"background 2s ease" }}/>
       )}
 
-      {/* Phase 1: Nuclear news + "반격" button (E14) */}
+      {/* Phase 1: Nuclear news broadcast + "반격" button (E14) */}
       {showNuke && phase >= 1 && (
-        <div style={{ position:"absolute",top:"12%",left:"50%",transform:"translateX(-50%)",
-          zIndex:35,width:320,textAlign:"center",animation:"popIn 0.3s ease" }}>
-          <div style={{ background:"#c62828",padding:"8px 28px",borderRadius:6,marginBottom:12,
-            boxShadow:"0 4px 16px rgba(198,40,40,0.5)",display:"inline-block" }}>
-            <span style={{ color:"#fff",fontSize:14,fontWeight:800,letterSpacing:6 }}>속 보</span>
-          </div>
-          <div style={{ color:"#fff",fontSize:22,fontWeight:800,marginBottom:6,
-            textShadow:"0 2px 10px rgba(0,0,0,0.5)" }}>☢️ 핵미사일 발사!</div>
-          <div style={{ color:"#ff8a80",fontSize:12,marginBottom:16 }}>전 세계 비상사태 선포</div>
-          <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(14); }}
-            style={{ padding:"12px 32px",background:"#b71c1c",borderRadius:10,cursor:"pointer",
-              color:"#fff",fontSize:16,fontWeight:800,letterSpacing:3,display:"inline-block",
-              boxShadow:"0 6px 20px rgba(183,28,28,0.5)",
-              animation:"pulse 1s ease infinite" }}>
-            🚀 반격
+        <div style={{ position:"absolute",top:"10%",left:"50%",transform:"translateX(-50%)",
+          zIndex:35,width:340,textAlign:"center",animation:"popIn 0.3s ease" }}>
+          {/* Broadcast card with dark glass backdrop */}
+          <div style={{ background:"rgba(20,10,10,0.85)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
+            borderRadius:16,padding:"24px 20px 28px",border:"1px solid rgba(232,87,61,0.25)",
+            boxShadow:"0 12px 48px rgba(0,0,0,0.5), 0 0 60px rgba(232,87,61,0.08)" }}>
+            {/* Breaking news banner */}
+            <div style={{ background:"linear-gradient(135deg,#c62828,#e8573d)",padding:"6px 24px",borderRadius:20,marginBottom:16,
+              boxShadow:"0 4px 16px rgba(232,87,61,0.4)",display:"inline-block" }}>
+              <span style={{ color:"#fff",fontSize:11,fontWeight:800,letterSpacing:8,textTransform:"uppercase" }}>BREAKING</span>
+            </div>
+            {/* Scanline effect */}
+            <div style={{ position:"absolute",top:0,left:0,right:0,bottom:0,borderRadius:16,overflow:"hidden",pointerEvents:"none" }}>
+              <div style={{ position:"absolute",width:"100%",height:2,background:"rgba(232,87,61,0.06)",animation:"scanline 3s linear infinite" }}/>
+            </div>
+            {/* Headline */}
+            <div style={{ color:"#fff",fontSize:20,fontWeight:800,marginBottom:6,lineHeight:1.4,
+              textShadow:"0 2px 12px rgba(232,87,61,0.3)" }}>
+              <span style={{ color:"#e8573d" }}>&#9762;</span> 핵미사일 발사!
+            </div>
+            <div style={{ color:"rgba(255,138,128,0.8)",fontSize:11,marginBottom:6,letterSpacing:1 }}>전 세계 비상사태 선포</div>
+            {/* Ticker line */}
+            <div style={{ width:"60%",height:1,background:"linear-gradient(90deg,transparent,rgba(232,87,61,0.3),transparent)",margin:"0 auto 18px" }}/>
+            {/* 반격 button - nuclear button DNA: pill shape, red glow, same accent */}
+            <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(14); }}
+              style={{ padding:"14px 38px",
+                background:"radial-gradient(ellipse at 40% 30%,#ef6049,#e8573d 50%,#c94040 100%)",
+                borderRadius:18,cursor:"pointer",
+                color:"#fff",fontSize:16,fontWeight:800,letterSpacing:4,display:"inline-block",
+                boxShadow:"0 6px 24px rgba(232,87,61,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15)",
+                border:"1px solid rgba(232,87,61,0.3)",
+                animation:"pulse 1s ease infinite",
+                transition:"transform 0.12s ease" }}>
+              반격
+            </div>
           </div>
         </div>
       )}
@@ -1679,23 +1834,41 @@ function Stage4_Emergency({ elapsed, duration, say, attemptEnding, resetIdle, ac
       {phase >= 2 && countdownVal !== null && (
         <div style={{ position:"absolute",top:"45%",left:"50%",transform:"translate(-50%,-50%)",
           zIndex:36,textAlign:"center" }}>
-          <div style={{ fontSize:96,fontWeight:800,
-            color:countdownVal>0?"#e8573d":"#ffd700",
-            animation:countdownVal>0?"pulse 0.5s ease infinite":"popIn 0.5s ease",
-            textShadow:`0 8px 40px ${countdownVal>0?"#e8573d44":"#ffd70044"}` }}>
-            {countdownVal > 0 ? countdownVal : "🎆"}
+          {/* Countdown number with dramatic glow ring */}
+          <div style={{ position:"relative",display:"inline-block" }}>
+            {countdownVal > 0 && (
+              <div style={{ position:"absolute",inset:-30,borderRadius:"50%",
+                border:"2px solid rgba(232,87,61,0.15)",
+                boxShadow:"0 0 40px rgba(232,87,61,0.1), inset 0 0 40px rgba(232,87,61,0.05)",
+                animation:"pulse 0.5s ease infinite" }}/>
+            )}
+            <div style={{ fontSize:100,fontWeight:800,fontFamily:"'Noto Sans KR',monospace",
+              color:countdownVal>0?"#e8573d":"#ffd700",
+              animation:countdownVal>0?"pulse 0.5s ease infinite":"popIn 0.5s ease",
+              textShadow:countdownVal>0
+                ?"0 0 30px rgba(232,87,61,0.5), 0 0 60px rgba(232,87,61,0.2), 0 8px 40px rgba(232,87,61,0.25)"
+                :"0 0 30px rgba(255,215,0,0.4), 0 8px 40px rgba(255,215,0,0.15)",
+              WebkitTextStroke:countdownVal>0?"1px rgba(232,87,61,0.3)":"none" }}>
+              {countdownVal > 0 ? countdownVal : "\uD83C\uDF86"}
+            </div>
           </div>
           {countdownVal > 0 && (
             <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(13); }}
-              style={{ marginTop:16,padding:"12px 28px",background:"#e8573d",borderRadius:10,
-                cursor:"pointer",color:"#fff",fontSize:15,fontWeight:800,letterSpacing:3,
-                display:"inline-block",boxShadow:"0 6px 20px rgba(232,87,61,0.5)",
-                animation:"shake 0.2s ease infinite" }}>
-              ⚠️ 긴급 정지
+              style={{ marginTop:20,padding:"14px 34px",
+                background:"radial-gradient(ellipse at 40% 30%,#ef6049,#e8573d 50%,#c94040 100%)",
+                borderRadius:18,cursor:"pointer",
+                color:"#fff",fontSize:15,fontWeight:800,letterSpacing:3,
+                display:"inline-block",
+                boxShadow:"0 6px 24px rgba(232,87,61,0.45), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15)",
+                border:"1px solid rgba(232,87,61,0.3)",
+                animation:"shake 0.2s ease infinite",
+                transition:"transform 0.12s ease" }}>
+              긴급 정지
             </div>
           )}
           {countdownVal === 0 && (
-            <div style={{ fontSize:13,color:"#ffd700",marginTop:8 }}>아무 일도 안 일어남!</div>
+            <div style={{ fontSize:13,color:"#ffd700",marginTop:10,
+              textShadow:"0 2px 8px rgba(255,215,0,0.3)" }}>아무 일도 안 일어남!</div>
           )}
         </div>
       )}
@@ -1706,35 +1879,50 @@ function Stage4_Emergency({ elapsed, duration, say, attemptEnding, resetIdle, ac
           zIndex:36,textAlign:"center",animation:"fadeInUp 0.5s ease" }}>
           {!cryDone && (
             <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(15); }}
-              style={{ padding:"14px 32px",background:"#424242",borderRadius:12,cursor:"pointer",
-                color:"#fff",fontSize:15,fontWeight:800,letterSpacing:2,
-                boxShadow:"0 6px 20px rgba(0,0,0,0.4)",
-                animation:"pulse 1.5s ease infinite" }}>
-              💊 살리기
+              style={{ padding:"14px 34px",
+                background:"linear-gradient(160deg,#3a2828,#2e2020)",
+                borderRadius:18,cursor:"pointer",
+                color:"#e8a8a0",fontSize:15,fontWeight:800,letterSpacing:2,
+                boxShadow:"0 6px 24px rgba(0,0,0,0.5), 0 0 20px rgba(232,87,61,0.1), inset 0 1px 0 rgba(255,255,255,0.05)",
+                border:"1px solid rgba(232,87,61,0.2)",
+                animation:"pulse 1.5s ease infinite",
+                transition:"transform 0.12s ease" }}>
+              살리기
             </div>
           )}
         </div>
       )}
 
-      {/* Phase 4: Total chaos - multiple fake buttons (all → E14) */}
+      {/* Phase 4: Total chaos - multiple fake buttons (all → E14) - red-toned fragments of the button */}
       {phase === 4 && chaosButtons.map(btn => (
         <div key={btn.id}
           onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(14); }}
           style={{ position:"absolute",left:`${btn.x}%`,top:`${btn.y}%`,zIndex:37,
-            padding:"10px 20px",background:btn.color,borderRadius:10,cursor:"pointer",
-            color:"#fff",fontSize:13,fontWeight:800,
-            boxShadow:`0 4px 16px ${btn.color}66`,
+            padding:"12px 24px",
+            background:`radial-gradient(ellipse at 40% 30%,${btn.color}ff,${btn.color} 60%,${btn.color}bb 100%)`,
+            borderRadius:16,cursor:"pointer",
+            color:"#fff",fontSize:13,fontWeight:800,letterSpacing:1,
+            boxShadow:`0 6px 20px ${btn.color}55, 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.12)`,
+            border:`1px solid ${btn.color}44`,
             animation:`shake 0.${btn.id+1}s ease infinite`,
             transform:"translate(-50%,-50%)" }}>
           {btn.label}
         </div>
       ))}
 
-      {/* Vignette for tension */}
-      {phase >= 1 && (
+      {/* Vignette for tension - multi-layered for premium depth */}
+      {phase >= 1 && (<>
+        {/* Outer vignette - dark corners */}
         <div style={{ position:"absolute",inset:0,zIndex:27,pointerEvents:"none",
-          boxShadow:`inset 0 0 ${phase*30}px rgba(${phase>=4?"232,87,61":"198,40,40"},0.${phase*2})` }}/>
-      )}
+          background:`radial-gradient(ellipse at 50% 50%,transparent ${Math.max(60 - phase*8, 20)}%,rgba(0,0,0,${Math.min(phase*0.06, 0.3)}) 100%)` }}/>
+        {/* Inner red glow vignette */}
+        <div style={{ position:"absolute",inset:0,zIndex:27,pointerEvents:"none",
+          boxShadow:`inset 0 0 ${phase*40+20}px rgba(232,87,61,${Math.min(phase*0.04, 0.18)}),
+                     inset 0 0 ${phase*80+40}px rgba(232,87,61,${Math.min(phase*0.02, 0.08)})` }}/>
+        {/* Top/bottom edge glow for cinematic feel */}
+        <div style={{ position:"absolute",inset:0,zIndex:27,pointerEvents:"none",
+          background:`linear-gradient(180deg,rgba(232,87,61,${phase>=3?0.04:0.02}) 0%,transparent 15%,transparent 85%,rgba(232,87,61,${phase>=3?0.04:0.02}) 100%)` }}/>
+      </>)}
     </div>
   );
 }
@@ -1781,25 +1969,36 @@ function Stage5_NaviGift({ elapsed, duration, say, attemptEnding, resetIdle, act
   return (
     <div style={{ position:"absolute",inset:0,zIndex:30,pointerEvents:activeEvent?"none":"auto" }}>
 
-      {/* Warm gift-like overlay */}
+      {/* Premium warm gift-like overlay - layered radial glows */}
       <div style={{ position:"absolute",inset:0,zIndex:28,pointerEvents:"none",
-        background:"radial-gradient(ellipse at 50% 40%,rgba(200,180,255,0.08),transparent 60%)" }}/>
+        background:"radial-gradient(ellipse at 50% 30%,rgba(220,200,255,0.12),transparent 55%), radial-gradient(ellipse at 30% 70%,rgba(232,87,61,0.04),transparent 50%), radial-gradient(ellipse at 70% 60%,rgba(255,215,180,0.06),transparent 50%)" }}/>
+      {/* Subtle floating particle shimmer */}
+      <div style={{ position:"absolute",inset:0,zIndex:28,pointerEvents:"none",
+        background:"radial-gradient(circle at 20% 25%,rgba(255,255,255,0.06) 0%,transparent 2%), radial-gradient(circle at 75% 35%,rgba(255,255,255,0.05) 0%,transparent 1.5%), radial-gradient(circle at 45% 75%,rgba(255,255,255,0.04) 0%,transparent 2%), radial-gradient(circle at 85% 80%,rgba(232,87,61,0.03) 0%,transparent 2%)",
+        animation:"glowPulse 4s ease infinite" }}/>
 
-      {/* "보호막 ON" button (E19) */}
+      {/* "보호막 ON" button (E19) - nuclear button DNA: red accent pill with glow */}
       {showShield && (
         <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(19); }}
           style={{ position:"absolute",top:"15%",left:"15%",zIndex:35,
-            padding:"14px 24px",background:"linear-gradient(135deg,#6a1b9a,#9c27b0)",
-            borderRadius:14,cursor:"pointer",textAlign:"center",
-            boxShadow:"0 6px 24px rgba(106,27,154,0.4)",
-            animation:"glowPulse 2s ease infinite" }}>
-          <div style={{ fontSize:10,color:"#ce93d8",letterSpacing:3,marginBottom:4 }}>🛡️ SHIELD</div>
-          <div style={{ color:"#fff",fontSize:15,fontWeight:800 }}>보호막 ON</div>
-          <div style={{ fontSize:9,color:"#e1bee7",marginTop:4 }}>클릭하면 무적!</div>
+            padding:"16px 28px",
+            background:"radial-gradient(circle at 36% 28%,#e8573d,#c94433 60%,#6a1b9a 100%)",
+            borderRadius:999,cursor:"pointer",textAlign:"center",
+            boxShadow:"0 8px 32px rgba(232,87,61,0.35), 0 3px 8px rgba(0,0,0,0.1), inset 0 -3px 6px rgba(200,60,40,0.25)",
+            animation:"glowPulse 2s ease infinite",
+            position:"relative",overflow:"hidden" }}>
+          {/* Specular highlight - nuclear button DNA */}
+          <div style={{ position:"absolute",top:"10%",left:"14%",width:"30%",height:"40%",
+            borderRadius:"50%",background:"rgba(255,255,255,0.2)",filter:"blur(6px)",pointerEvents:"none" }}/>
+          <div style={{ fontSize:10,color:"rgba(255,220,220,0.9)",letterSpacing:3,marginBottom:4,
+            textShadow:"0 1px 4px rgba(0,0,0,0.3)" }}>SHIELD</div>
+          <div style={{ color:"#fff",fontSize:15,fontWeight:800,
+            textShadow:"0 2px 6px rgba(0,0,0,0.25)" }}>보호막 ON</div>
+          <div style={{ fontSize:9,color:"rgba(255,200,200,0.8)",marginTop:4 }}>클릭하면 무적!</div>
         </div>
       )}
 
-      {/* "타이머 단축" button (E17 on 2nd click) */}
+      {/* "타이머 단축" button (E17 on 2nd click) - nuclear button DNA: red accent pill */}
       {showTimerHack && (
         <div onClick={(e) => {
           e.stopPropagation(); resetIdle();
@@ -1819,12 +2018,19 @@ function Stage5_NaviGift({ elapsed, duration, say, attemptEnding, resetIdle, act
           });
         }}
           style={{ position:"absolute",top:"15%",right:"15%",zIndex:35,
-            padding:"14px 24px",background:"linear-gradient(135deg,#78909c,#607d8b)",
-            borderRadius:14,cursor:"pointer",textAlign:"center",
-            boxShadow:"0 6px 24px rgba(120,144,156,0.4)" }}>
-          <div style={{ fontSize:10,color:"#b0bec5",letterSpacing:3,marginBottom:4 }}>⏰ TIMER</div>
-          <div style={{ color:"#fff",fontSize:15,fontWeight:800 }}>타이머 단축</div>
-          <div style={{ fontSize:9,color:"#cfd8dc",marginTop:4 }}>
+            padding:"16px 28px",
+            background:"radial-gradient(circle at 40% 30%,#e8573d,#c94433 55%,#607d8b 100%)",
+            borderRadius:999,cursor:"pointer",textAlign:"center",
+            boxShadow:"0 8px 32px rgba(232,87,61,0.3), 0 3px 8px rgba(0,0,0,0.1), inset 0 -3px 6px rgba(200,60,40,0.2)",
+            position:"relative",overflow:"hidden" }}>
+          {/* Specular highlight - nuclear button DNA */}
+          <div style={{ position:"absolute",top:"10%",left:"14%",width:"30%",height:"40%",
+            borderRadius:"50%",background:"rgba(255,255,255,0.18)",filter:"blur(6px)",pointerEvents:"none" }}/>
+          <div style={{ fontSize:10,color:"rgba(255,220,220,0.9)",letterSpacing:3,marginBottom:4,
+            textShadow:"0 1px 4px rgba(0,0,0,0.3)" }}>TIMER</div>
+          <div style={{ color:"#fff",fontSize:15,fontWeight:800,
+            textShadow:"0 2px 6px rgba(0,0,0,0.25)" }}>타이머 단축</div>
+          <div style={{ fontSize:9,color:"rgba(255,200,200,0.8)",marginTop:4 }}>
             {timerHackClicks > 0 ? "한번 더?" : "시간을 줄여줄게~"}
           </div>
         </div>
@@ -1840,7 +2046,7 @@ function Stage5_NaviGift({ elapsed, duration, say, attemptEnding, resetIdle, act
         </div>
       )}
 
-      {/* Door - "탈출구!" (E18 at 5 knocks) */}
+      {/* Door - "탈출구!" (E18 at 5 knocks) - premium wooden door */}
       {showDoor && (
         <div onClick={(e) => {
           e.stopPropagation(); resetIdle();
@@ -1853,39 +2059,67 @@ function Stage5_NaviGift({ elapsed, duration, say, attemptEnding, resetIdle, act
           });
         }}
           style={{ position:"absolute",left:"8%",top:"30%",zIndex:35,
-            width:80,height:130,
-            background:"linear-gradient(178deg,#c49a68,#a87848,#926838)",
-            border:"5px solid #7a5a3a",borderRadius:"4px 4px 0 0",cursor:"pointer",
-            boxShadow:"0 6px 20px rgba(0,0,0,0.2)",
-            display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center" }}>
+            width:84,height:138,
+            background:"linear-gradient(178deg,#d4a87a 0%,#b8895a 25%,#a07548 50%,#8a6238 75%,#7a5530 100%)",
+            border:"none",borderRadius:"6px 6px 2px 2px",cursor:"pointer",
+            boxShadow:"0 8px 28px rgba(0,0,0,0.3), inset 3px 0 8px rgba(0,0,0,0.15), inset -3px 0 8px rgba(0,0,0,0.1), inset 0 3px 6px rgba(255,220,180,0.2)",
+            display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+            position:"relative",overflow:"hidden" }}>
+          {/* Door frame border */}
+          <div style={{ position:"absolute",inset:0,borderRadius:"6px 6px 2px 2px",
+            border:"4px solid #6a4a2a",
+            boxShadow:"inset 0 0 0 1px rgba(255,220,180,0.15), inset 0 0 0 6px rgba(90,60,30,0.2)",
+            pointerEvents:"none" }}/>
+          {/* Wood grain lines */}
+          <div style={{ position:"absolute",top:"15%",left:"10%",width:"80%",height:"1px",
+            background:"rgba(90,60,30,0.2)",pointerEvents:"none" }}/>
+          <div style={{ position:"absolute",top:"40%",left:"8%",width:"84%",height:"1px",
+            background:"rgba(90,60,30,0.15)",pointerEvents:"none" }}/>
+          <div style={{ position:"absolute",top:"65%",left:"12%",width:"76%",height:"1px",
+            background:"rgba(90,60,30,0.18)",pointerEvents:"none" }}/>
+          {/* Door handle */}
+          <div style={{ position:"absolute",right:10,top:"52%",width:8,height:8,borderRadius:"50%",
+            background:"radial-gradient(circle at 35% 35%,#ffd700,#c8a000)",
+            boxShadow:"0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.4)",
+            pointerEvents:"none" }}/>
           <div style={{ fontSize:10,color:"#fff",fontWeight:800,letterSpacing:2,
-            background:"rgba(0,0,0,0.3)",padding:"4px 10px",borderRadius:6,marginBottom:8 }}>
+            background:"rgba(0,0,0,0.35)",padding:"4px 12px",borderRadius:8,marginBottom:8,
+            backdropFilter:"blur(4px)",WebkitBackdropFilter:"blur(4px)",
+            boxShadow:"0 2px 8px rgba(0,0,0,0.2)",
+            border:"1px solid rgba(255,255,255,0.1)" }}>
             탈출구!
           </div>
-          <div style={{ fontSize:28 }}>🚪</div>
+          <div style={{ fontSize:28,filter:"drop-shadow(0 2px 4px rgba(0,0,0,0.2))" }}>🚪</div>
           {doorKnocks > 0 && (
-            <div style={{ fontSize:10,color:"#ffd700",marginTop:4,fontWeight:700 }}>
+            <div style={{ fontSize:10,color:"#ffd700",marginTop:4,fontWeight:700,
+              textShadow:"0 1px 4px rgba(0,0,0,0.4)" }}>
               🤛 x{doorKnocks}
             </div>
           )}
         </div>
       )}
 
-      {/* "쉬어도 돼~" rest trap (reduced idle limit → E16) */}
+      {/* "쉬어도 돼~" rest trap - premium glassmorphism panel */}
       {showRest && (
         <div style={{ position:"absolute",bottom:"18%",left:"50%",transform:"translateX(-50%)",
-          zIndex:35,padding:"14px 28px",
-          background:"linear-gradient(135deg,#5c6bc0,#3f51b5)",borderRadius:14,
+          zIndex:35,padding:"18px 32px",
+          background:"rgba(70,60,120,0.45)",
+          backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",
+          borderRadius:20,
           textAlign:"center",pointerEvents:"none",
-          boxShadow:"0 6px 24px rgba(92,107,192,0.4)",
+          boxShadow:"0 12px 40px rgba(60,50,100,0.3), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.1)",
+          border:"1px solid rgba(255,255,255,0.12)",
           animation:"fadeInUp 0.5s ease" }}>
-          <div style={{ color:"#fff",fontSize:14,fontWeight:700 }}>💤 쉬어도 돼~</div>
-          <div style={{ fontSize:10,color:"#9fa8da",marginTop:4 }}>아무것도 안 해도 괜찮아...</div>
-          <div style={{ fontSize:8,color:"#7986cb",marginTop:2 }}>(방치 한계가 줄었어요: 30초)</div>
+          <div style={{ color:"#fff",fontSize:14,fontWeight:700,
+            textShadow:"0 1px 6px rgba(0,0,0,0.2)" }}>💤 쉬어도 돼~</div>
+          <div style={{ fontSize:10,color:"rgba(200,195,230,0.9)",marginTop:6 }}>아무것도 안 해도 괜찮아...</div>
+          <div style={{ fontSize:8,color:"rgba(160,155,200,0.7)",marginTop:4,
+            background:"rgba(255,255,255,0.06)",padding:"2px 8px",borderRadius:6,
+            display:"inline-block" }}>(방치 한계가 줄었어요: 30초)</div>
         </div>
       )}
 
-      {/* "올클리어!" golden button (E19) */}
+      {/* "올클리어!" golden button (E19) - nuclear button DNA: red undertone pill */}
       {showGolden && (
         <div onClick={(e) => {
           e.stopPropagation(); resetIdle();
@@ -1896,31 +2130,44 @@ function Stage5_NaviGift({ elapsed, duration, say, attemptEnding, resetIdle, act
           }
         }}
           style={{ position:"absolute",bottom:"30%",left:"50%",transform:"translateX(-50%)",
-            zIndex:36,padding:"18px 40px",
+            zIndex:36,padding:"20px 44px",
             background:goldenCeremony
-              ?"linear-gradient(135deg,#6a1b9a,#4a0e6a)"
-              :"linear-gradient(135deg,#ffd700,#ff8f00)",
-            borderRadius:16,cursor:"pointer",textAlign:"center",
+              ?"radial-gradient(circle at 36% 28%,#e8573d,#c94433 50%,#6a1b9a 100%)"
+              :"radial-gradient(circle at 50% 40%,#ffe066,#ffd700 40%,#ff8f00 80%,#e8573d 100%)",
+            borderRadius:999,cursor:"pointer",textAlign:"center",
             boxShadow:goldenCeremony
-              ?"0 8px 32px rgba(106,27,154,0.5)"
-              :"0 8px 32px rgba(255,215,0,0.5)",
-            animation:"popIn 0.5s ease" }}>
-          <div style={{ fontSize:10,color:"#fff",letterSpacing:4,marginBottom:6 }}>
-            {goldenCeremony ? "✦ ERROR ✦" : "🏆 ALL CLEAR 🏆"}
+              ?"0 8px 32px rgba(232,87,61,0.45), 0 3px 8px rgba(0,0,0,0.15), inset 0 -3px 6px rgba(200,60,40,0.3)"
+              :"0 8px 32px rgba(255,215,0,0.4), 0 0 0 2px rgba(232,87,61,0.2), inset 0 -3px 6px rgba(200,120,0,0.2)",
+            border:goldenCeremony?"2px solid rgba(232,87,61,0.5)":"2px solid rgba(232,87,61,0.15)",
+            animation:"popIn 0.5s ease",
+            position:"relative",overflow:"hidden" }}>
+          {/* Specular highlight - nuclear button DNA */}
+          <div style={{ position:"absolute",top:"8%",left:"16%",width:"28%",height:"35%",
+            borderRadius:"50%",background:goldenCeremony?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.3)",
+            filter:"blur(6px)",pointerEvents:"none" }}/>
+          <div style={{ fontSize:10,color:"#fff",letterSpacing:4,marginBottom:6,
+            textShadow:"0 1px 4px rgba(0,0,0,0.3)" }}>
+            {goldenCeremony ? "✦ ERROR ✦" : "ALL CLEAR"}
           </div>
-          <div style={{ color:"#fff",fontSize:18,fontWeight:800 }}>
+          <div style={{ color:"#fff",fontSize:18,fontWeight:800,
+            textShadow:"0 2px 6px rgba(0,0,0,0.25)" }}>
             {goldenCeremony ? "함정이었어~" : "올클리어!"}
           </div>
         </div>
       )}
 
-      {/* Navi phase indicator */}
+      {/* Navi phase indicator - polished glassmorphism tag */}
       <div style={{ position:"absolute",bottom:"5%",left:"5%",zIndex:34,
-        fontSize:10,color:"rgba(255,255,255,0.3)",letterSpacing:2,pointerEvents:"none" }}>
-        {naviPhase === "nice" && "나비: 친절 모드 💕"}
-        {naviPhase === "annoyed" && "나비: 짜증 모드 😤"}
-        {naviPhase === "desperate" && "나비: 절박 모드 😭"}
-        {naviPhase === "respect" && "나비: 인정 모드 🫡"}
+        fontSize:10,color:"rgba(255,255,255,0.6)",letterSpacing:2,pointerEvents:"none",
+        background:"rgba(255,255,255,0.06)",
+        backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",
+        padding:"6px 14px",borderRadius:12,
+        border:"1px solid rgba(255,255,255,0.08)",
+        boxShadow:"0 4px 12px rgba(0,0,0,0.08)" }}>
+        {naviPhase === "nice" && "나비: 친절 모드"}
+        {naviPhase === "annoyed" && "나비: 짜증 모드"}
+        {naviPhase === "desperate" && "나비: 절박 모드"}
+        {naviPhase === "respect" && "나비: 인정 모드"}
       </div>
     </div>
   );
@@ -2248,8 +2495,19 @@ function DontPressTheButton() {
 
   const pressMainButton = useCallback(() => {
     if (activeEvent) { pressEventButton(); return; }
-    resetIdle(); say("누르지 말라고 했잖아~! ...아직 아무 일도 안 일어났지만.", "pouty");
-  }, [activeEvent, pressEventButton, say, resetIdle]);
+    resetIdle();
+    if (gameMode === "stage") {
+      switch (currentStage) {
+        case 2: say("매수 누른 거야?! ...아직 체결 안 됐지만. 한 번 더 눌러봐~!", "excited"); break;
+        case 3: say("만지고 싶지~? 히히~ 아직은 안 돼~", "smug"); break;
+        case 4: say("비상 정지?! ...아직 비상이 아닌데~ 아닌가?", "shocked"); break;
+        case 5: say("선물 받고 싶어~? 좀만 더 기다려봐~!", "excited"); break;
+        default: say("누르지 말라고 했잖아~! ...아직 아무 일도 안 일어났지만.", "pouty");
+      }
+    } else {
+      say("누르지 말라고 했잖아~! ...아직 아무 일도 안 일어났지만.", "pouty");
+    }
+  }, [activeEvent, pressEventButton, say, resetIdle, gameMode, currentStage]);
 
   const handleBgClick = useCallback(() => {
     if (activeEvent) return; resetIdle();
@@ -2300,7 +2558,18 @@ function DontPressTheButton() {
   }, [activeEvent, resetIdle, gameMode, currentStage]);
 
   const currentEnding = activeEvent ? ENDINGS[activeEvent] : null;
-  const buttonLabel = currentEnding ? currentEnding.btn : "누르지 마";
+  const stageButtonInfo = (() => {
+    if (gameMode !== "stage") return { label:"누르지 마", sub:null };
+    switch (currentStage) {
+      case 1: return { label:"누르지 마", sub:null };
+      case 2: return { label:"매수", sub:"▲ DON'T BUY ▲" };
+      case 3: return { label:"쓰다듬기", sub:"▲ DON'T PET ▲" };
+      case 4: return { label:"비상 정지", sub:"▲ DON'T STOP ▲" };
+      case 5: return { label:"선물 받기", sub:"▲ DON'T OPEN ▲" };
+      default: return { label:"누르지 마", sub:null };
+    }
+  })();
+  const buttonLabel = currentEnding ? currentEnding.btn : stageButtonInfo.label;
   const buttonColor = currentEnding ? currentEnding.btnColor : "#e8573d";
   const freeUnlocked = stageCleared >= 1 || collected.length >= 1;
 
@@ -2971,7 +3240,7 @@ function DontPressTheButton() {
               </div>
             )}
             <NuclearButton
-              label={buttonLabel} accent={buttonColor}
+              label={buttonLabel} subtitle={stageButtonInfo.sub} accent={buttonColor}
               onPress={cakeSelected ? () => { setCakeSelected(false); setCakeOnButton(true); attemptEnding(9); } : pressMainButton}
               onHover={handleButtonHover}
               onDrag={!activeEvent && !cakeSelected ? () => { if (!activeEvent) { resetIdle(); attemptEnding(8); } } : undefined}
