@@ -61,18 +61,18 @@ const ENDINGS = {
 };
 
 const NAVI_IDLE = [
-  { t:"뭐 해~ 빨리 이것저것 만져봐~", e:"idle" },
-  { t:"이 방에 비밀이 많거든~ 알려줄 생각 없지만!", e:"smug" },
-  { t:"버튼은 누르면 안 돼! ...아마?", e:"pouty" },
-  { t:"아 심심해~ 뭐 좀 재밌는 거 해봐!", e:"pouty" },
-  { t:"여기저기 클릭해봐. 뭔가 있을지도?", e:"idle" },
-  { t:"후후, 네가 뭘 할지 다 보고 있다~", e:"smug" },
-  { t:"건드리면 안 되는 거 건드리면 어떡하려고~?", e:"smug" },
-  { t:"나는 천재 내비게이터 나비! 힌트는 안 줘~", e:"excited" },
-  { t:"왼쪽에 문이 있네... 어? 아무 말도 안 했어!", e:"shocked" },
-  { t:"저 시계 만지지 마... 라고 하면 만질 거지?", e:"pouty" },
-  { t:"TV 좀 켜줘. 아 아니야, 그냥 그래봤어.", e:"idle" },
-  { t:"저 지갑 안에 뭐가 있을까~?", e:"smug" },
+  { t:"버튼 누르고 싶지~? 참는 거 힘들지~? 히히~", e:"smug" },
+  { t:"나는 천재 쿠소가키 나비! 힌트는 안 줘~", e:"excited" },
+  { t:"저 시계 만지면 재밌는 일이 생기는데~ 알려줄까? 싫어~", e:"smug" },
+  { t:"뭘 그렇게 멍하니 보고 있어? 할 줄 아는 게 없어?", e:"pouty" },
+  { t:"이 방에 비밀이 많거든~ 너한텐 안 알려줄 거지만!", e:"smug" },
+  { t:"건드리면 안 되는 거 건드리면 어떡하려고~? 해봐 해봐~", e:"excited" },
+  { t:"후후, 네가 뭘 할지 다 보고 있다~ 능력치 0이네~", e:"smug" },
+  { t:"왼쪽에 문이 있네... 어? 아무 말도 안 했어! 바보!", e:"shocked" },
+  { t:"저 지갑 안에 뭐가 있을까~? 니 월급은 아닐 걸~?", e:"smug" },
+  { t:"아~ 심심해~ 넌 왜 이렇게 재미없는 거야~?", e:"pouty" },
+  { t:"TV 좀 켜줘. 아 아니야. 넌 시키는 것만 해~", e:"pouty" },
+  { t:"혹시... 공략 보고 온 거 아니지? 그건 반칙이야!", e:"shocked" },
 ];
 
 const NAVI_DISCOVER = [
@@ -84,8 +84,8 @@ const NAVI_DISCOVER = [
 // ── 스테이지 시스템 상수 ──
 const STAGE_COUNT = 5;
 const STAGE_DURATIONS = [0, 60, 90, 120, 90, 180];
-const STAGE_NAMES = ["", "간보기", "장난", "욕망", "위기", "히든"];
-const STAGE_SUBTITLES = ["", "Prelim", "Prank", "Desire", "Crisis", "Hidden"];
+const STAGE_NAMES = ["", "대기실", "주식시장", "고양이 카페", "비상상황", "나비의 선물"];
+const STAGE_SUBTITLES = ["", "Waiting Room", "Stock Market", "Cat Cafe", "Emergency", "Navi's Gift"];
 const STAGE_COLORS = ["", "#e88b3d", "#e8573d", "#e84393", "#c62828", "#5c6bc0"];
 
 // 각 스테이지에 속한 엔딩 ID (클릭 트리거 + 히든 트리거 포함)
@@ -97,102 +97,59 @@ const STAGE_ENDINGS = {
   5: [16, 17, 18, 19],
 };
 
-// 각 스테이지의 클릭형 트리거 버튼 (범용 디자인)
-const STAGE_TRIGGERS = {
-  1: [
-    { id: 2, icon: "⏰", label: "시계", desc: "1분 버티기", x: "18%", y: "26%" },
-    { id: 1, icon: "🗑️", label: "삭제", desc: "나비 삭제?", x: "68%", y: "26%" },
+// NAVI_KUSOGAKI: 스테이지용 쿠소가키 대사 풀
+const NAVI_KUSOGAKI = {
+  resist: [
+    { t:"그냥 뭘 해야 할지 모르는 거지~?", e:"smug" },
+    { t:"멍하니 있는 거 아니야? 대단한 척 하지 마~", e:"pouty" },
+    { t:"와~ 진짜 참는 거야? 재미없는 인간이네~", e:"pouty" },
+    { t:"혹시 화면이 멈춘 줄 알고 있는 거 아니지?", e:"smug" },
+    { t:"이게 게임이야 명상이야? 좀 움직여봐~", e:"pouty" },
   ],
-  2: [
-    { id: 5, icon: "💰", label: "당첨", desc: "100만원!", x: "16%", y: "22%" },
-    { id: 6, icon: "💳", label: "결제", desc: "PREMIUM", x: "68%", y: "22%" },
+  failMock: [
+    { t:"푸하하하! 바보다 바보! 진짜 그걸 믿었어?!", e:"excited" },
+    { t:"아이고~ 역시 능지가... 후후~", e:"smug" },
+    { t:"헐ㅋㅋㅋ 진짜 눌렀어?! 기대 이하야~", e:"excited" },
+    { t:"와 진짜 단순하다~ 속기 대장이야?", e:"smug" },
   ],
-  3: [
-    { id: 9, icon: "🍰", label: "케이크", desc: "먹고 싶지?", x: "14%", y: "20%" },
-    { id: 10, icon: "📈", label: "매수", desc: "+847%", x: "68%", y: "20%" },
-    { id: 11, icon: "🐱", label: "고양이", desc: "냥~♡", x: "20%", y: "56%" },
-    { id: 12, icon: "🆘", label: "SOS", desc: "비상연락", x: "62%", y: "56%" },
+  frustration: [
+    { t:"혹시 공략 보고 온 거야? 그건 반칙이야!", e:"shocked" },
+    { t:"야! 왜 안 눌러?! 누르라고 만든 건데!", e:"pouty" },
+    { t:"치~ 너 때문에 재미없잖아~", e:"pouty" },
+    { t:"으으으... 왜 이렇게 참을성이 좋은 거야!", e:"pouty" },
+    { t:"너 로봇이야?! 감정이라는 게 없어?!", e:"shocked" },
   ],
-  4: [
-    { id: 13, icon: "⚠️", label: "커버", desc: "긴급 정지", x: "16%", y: "24%" },
-    { id: 14, icon: "📺", label: "TV", desc: "속보!", x: "68%", y: "24%" },
-    { id: 15, icon: "💀", label: "킬모드", desc: "나 죽어", x: "42%", y: "56%" },
+  fakePanic: [
+    { t:"으악! 큰일이야! 빨리 뭔가 눌러야 해!", e:"shocked" },
+    { t:"시스템 오류다! 빨리 저거 눌러!!", e:"shocked" },
+    { t:"야야야 저거 깜빡거려! 빨리!!", e:"shocked" },
   ],
-  5: [
-    { id: 17, icon: "🔄", label: "초기화", desc: "Reset", x: "16%", y: "24%" },
-    { id: 18, icon: "🚪", label: "문", desc: "누구야?", x: "68%", y: "24%" },
-    { id: 19, icon: "🔀", label: "양도", desc: "관리자 권한", x: "42%", y: "56%" },
+  fakeNice: [
+    { t:"힌트 줄까~? 저거 누르면 좋은 일이 생겨~", e:"excited" },
+    { t:"나 사실 착한 편이야~ 도와줄게~ 저거 눌러봐!", e:"excited" },
+    { t:"이번엔 진짜야~ 믿어봐~ 내가 언제 거짓말했어?", e:"excited" },
   ],
 };
 
-// 스테이지별 방 테마 (벽, 바닥, 분위기)
+// 스테이지별 방 테마 (각 미니게임 컴포넌트가 자체 배경을 렌더링)
 const STAGE_THEMES = {
-  1: { wallTop:"#f2ead8", wallBot:"#e6dcc8", baseboard:"#d4b888",
-       floor1:"#c8a878", floor2:"#a88858", accent:"#e88b3d", label:"차분한 방" },
-  2: { wallTop:"#e0ecf8", wallBot:"#d0e0f0", baseboard:"#98b8d8",
-       floor1:"#a8c0d8", floor2:"#88a0b8", accent:"#e8573d", label:"장난스러운 방" },
-  3: { wallTop:"#f8e0e8", wallBot:"#f0d0d8", baseboard:"#d4a0b0",
-       floor1:"#c8a0a8", floor2:"#a88088", accent:"#e84393", label:"욕망의 방" },
-  4: { wallTop:"#d0c8c8", wallBot:"#b0a8a8", baseboard:"#888080",
-       floor1:"#908888", floor2:"#706868", accent:"#c62828", label:"위기의 방" },
-  5: { wallTop:"#d8d0e8", wallBot:"#c0b8d8", baseboard:"#9888b8",
-       floor1:"#a098b8", floor2:"#8078a0", accent:"#5c6bc0", label:"히든 룸" },
+  1: { bg:"linear-gradient(180deg,#f2ead8 0%,#e6dcc8 50%,#d4b888 50.8%,#c8a878 51%,#a88858 100%)" },
+  2: { bg:"linear-gradient(180deg,#0d1117 0%,#161b22 100%)" },
+  3: { bg:"linear-gradient(180deg,#fff5ee 0%,#ffecd2 50%,#d4a080 50.8%,#c8a878 51%,#b89868 100%)" },
+  4: { bg:"linear-gradient(180deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)" },
+  5: { bg:"linear-gradient(180deg,#f8f0ff 0%,#e8d8f8 50%,#c8b0e8 50.8%,#b098d8 51%,#9880c0 100%)" },
 };
 
-const WARNING_STEPS = { 15: 3 };
+const WARNING_STEPS = { 15: 3, 19: 2 };
 
-const STAGE_DIALOGUE = {
-  1: [
-    { at: 0, t: "첫 번째 시험이야! 60초 동안 참아봐~", e: "excited" },
-    { at: 10, t: "뭔가 만지고 싶지? 참아야 해!", e: "smug" },
-    { at: 25, t: "오~ 새로운 게 나타났지? 궁금하지?", e: "smug" },
-    { at: 40, t: "반 넘게 왔어! 조금만 더!", e: "excited" },
-    { at: 50, t: "10초 남았다! 버텨!!", e: "shocked" },
-    { at: 55, t: "5초! 4! 3!", e: "shocked" },
-    { at: 58, t: "2! 1!", e: "excited" },
-  ],
-  2: [
-    { at: 0, t: "두 번째! 이번엔 좀 어려울걸~?", e: "smug" },
-    { at: 15, t: "오~ 뭔가 반짝이는 게 보이지?", e: "excited" },
-    { at: 35, t: "돈이 보이면 참기 힘들지~?", e: "smug" },
-    { at: 55, t: "절반 넘었어! 근데 더 어려워질 거야~", e: "smug" },
-    { at: 75, t: "거의 다야! 이것만 참으면 돼!", e: "excited" },
-    { at: 80, t: "10초! 버텨!!", e: "shocked" },
-    { at: 85, t: "5! 4! 3!", e: "shocked" },
-    { at: 88, t: "2! 1!", e: "excited" },
-  ],
-  3: [
-    { at: 0, t: "세 번째~ 욕망의 방이야! 후후~", e: "smug" },
-    { at: 20, t: "맛있는 거, 귀여운 거... 참을 수 있어?", e: "smug" },
-    { at: 50, t: "절반이야! 그런데... 더 올 거야~", e: "pouty" },
-    { at: 80, t: "대단한데? 여기까지 오다니!", e: "excited" },
-    { at: 100, t: "20초 남았어! 참아!!", e: "shocked" },
-    { at: 110, t: "10초! 거의 다야!!", e: "shocked" },
-    { at: 115, t: "5! 4! 3!", e: "excited" },
-    { at: 118, t: "2! 1!", e: "excited" },
-  ],
-  4: [
-    { at: 0, t: "네 번째... 위기의 방이야. 살벌하지?", e: "shocked" },
-    { at: 15, t: "여기선 진짜 조심해야 해...", e: "pouty" },
-    { at: 40, t: "으악, 무서운 것들이 나타나고 있어!", e: "shocked" },
-    { at: 60, t: "30초만 더!! 할 수 있어!", e: "excited" },
-    { at: 75, t: "15초! 제발 참아!!", e: "shocked" },
-    { at: 80, t: "10초!! 버텨!!!", e: "shocked" },
-    { at: 85, t: "5! 4! 3!", e: "excited" },
-    { at: 88, t: "2! 1!", e: "excited" },
-  ],
-  5: [
-    { at: 0, t: "마지막 방... 히든 스테이지야. 3분!", e: "shocked" },
-    { at: 30, t: "여기엔 정말 교묘한 트랩이 있어...", e: "pouty" },
-    { at: 60, t: "1분 지났어! 아직 2분 남았지만...", e: "smug" },
-    { at: 100, t: "와... 진짜 대단해. 여기까지 오다니!", e: "excited" },
-    { at: 130, t: "50초 남았어! 거의 다 왔어!", e: "excited" },
-    { at: 150, t: "30초!! 마지막 힘을 내!", e: "shocked" },
-    { at: 170, t: "10초! 이것만 넘기면 올 클리어!!!", e: "shocked" },
-    { at: 175, t: "5! 4! 3!", e: "excited" },
-    { at: 178, t: "2! 1!", e: "excited" },
-  ],
-};
+const STAGE_DESCRIPTIONS = [
+  "",
+  "60초 동안 아무것도 하지 마. 쉬워 보이지?",
+  "주식이 폭등 중! 사고 싶은 마음을 참아라.",
+  "고양이가 버튼을 노리고 있다. 막아라!",
+  "비상! 비상! ...진짜일까?",
+  "나비가 선물을 준대. 믿을 수 있을까?",
+];
 
 function pickRandom(arr, lastRef) {
   if (!arr || arr.length === 0) return null;
@@ -810,8 +767,11 @@ function StageIntroScreen({ stage, onStart, frame }) {
         textShadow:`0 6px 40px ${STAGE_COLORS[stage]}22` }}>{stage}</div>}
       {step >= 2 && <div style={{ fontSize:28,fontWeight:800,color:"#4a3a2a",letterSpacing:6,marginBottom:8,
         animation:"fadeInUp 0.6s ease" }}>{STAGE_NAMES[stage]}</div>}
-      {step >= 2 && <div style={{ fontSize:14,color:"#b0a09088",letterSpacing:4,marginBottom:32,
+      {step >= 2 && <div style={{ fontSize:14,color:"#b0a09088",letterSpacing:4,marginBottom:12,
         animation:"fadeInUp 0.7s ease" }}>{STAGE_SUBTITLES[stage]} · {STAGE_DURATIONS[stage]}s</div>}
+      {step >= 2 && STAGE_DESCRIPTIONS[stage] && <div style={{ fontSize:15,color:"#6a5a4a",
+        maxWidth:320,textAlign:"center",lineHeight:1.8,marginBottom:28,
+        animation:"fadeInUp 0.8s ease",fontWeight:600 }}>{STAGE_DESCRIPTIONS[stage]}</div>}
       {step >= 3 && (
         <div onClick={onStart} style={{ padding:"14px 40px",background:STAGE_COLORS[stage],borderRadius:14,
           cursor:"pointer",animation:"fadeInUp 0.6s ease",
@@ -828,31 +788,6 @@ function StageIntroScreen({ stage, onStart, frame }) {
   );
 }
 
-function TriggerButton({ icon, label, desc, onClick, style }) {
-  const [hv, setHv] = useState(false);
-  return (
-    <div onClick={onClick}
-      onMouseEnter={()=>setHv(true)} onMouseLeave={()=>setHv(false)}
-      style={{ position:"absolute", width:100, padding:"14px 8px",
-        background: hv
-          ? "linear-gradient(180deg,#ff6b4a,#e8573d,#c0392b)"
-          : "linear-gradient(180deg,#e8573d,#c0392b,#a02818)",
-        borderRadius:18, border:"2.5px solid #ff8a65",
-        cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:4,
-        boxShadow: hv
-          ? "0 0 24px #e8573d66, 0 8px 28px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3)"
-          : "0 4px 18px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15)",
-        transform: hv ? "scale(1.1) translateY(-6px)" : "scale(1)",
-        transition:"all 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-        animation:"triggerPulse 3s ease infinite", zIndex:30, ...style }}>
-      <div style={{ fontSize:30, filter:"drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}>{icon}</div>
-      <div style={{ fontSize:12, color:"#fff", fontWeight:800, letterSpacing:1, textShadow:"0 1px 3px rgba(0,0,0,0.3)" }}>{label}</div>
-      <div style={{ fontSize:9, color:"#ffccbc", letterSpacing:1 }}>{desc}</div>
-      <div style={{ width:"60%", height:2, background:"#ffffff33", borderRadius:1, marginTop:2 }}/>
-      <div style={{ fontSize:7, color:"#ff8a6588", letterSpacing:3, fontWeight:700 }}>PRESS</div>
-    </div>
-  );
-}
 
 function StageHUD({ stage, timer, duration, temptation }) {
   const urgent = timer <= 10;
@@ -1022,6 +957,976 @@ function AllClearScreen({ onBack, frame }) {
 }
 
 // ============================================================
+// STAGE 1: 대기실 (Waiting Room) - 60초
+// 순수 인내심 테스트. 나비가 가짜 UI를 생성해서 클릭 유도.
+// ============================================================
+function Stage1_WaitingRoom({ elapsed, duration, say, attemptEnding, resetIdle, activeEvent, frame, doShake }) {
+  const [fakeSkip, setFakeSkip] = useState(false);
+  const [fakeError, setFakeError] = useState(false);
+  const [fakeCountdown, setFakeCountdown] = useState(null);
+  const [fakeProgress, setFakeProgress] = useState(false);
+  const [progressVal, setProgressVal] = useState(0);
+  const [allBlink, setAllBlink] = useState(false);
+  const [naviRage, setNaviRage] = useState(false);
+  const saidRef = useRef({});
+
+  const saySafe = useCallback((key, text, emo) => {
+    if (saidRef.current[key]) return;
+    saidRef.current[key] = true;
+    say(text, emo);
+  }, [say]);
+
+  // Timeline events
+  useEffect(() => {
+    if (activeEvent) return;
+    if (elapsed >= 12 && !fakeSkip) { setFakeSkip(true); saySafe("skip", "앗, 스킵 버튼이 나왔다! 빨리 눌러!!", "excited"); }
+    if (elapsed >= 18 && !fakeError) { setFakeError(true); doShake(); saySafe("error", "으악! 시스템 오류다! 빨리 확인 눌러!", "shocked"); }
+    if (elapsed >= 25 && fakeCountdown === null) {
+      setFakeCountdown(3);
+      saySafe("countdown", "카운트다운이다! 뭔가 폭발해!!", "shocked");
+    }
+    if (elapsed >= 35 && !fakeProgress) { setFakeProgress(true); saySafe("bonus", "보너스 해금 중! 100%되면 대박이야~!", "excited"); }
+    if (elapsed >= 45) setAllBlink(true);
+    if (elapsed >= 50 && !naviRage) { setNaviRage(true); saySafe("rage", "너 로봇이야?! 왜 아무것도 안 눌러?!?!", "pouty"); }
+    if (elapsed >= 55) saySafe("final", "으으으... 왜 이렇게 참을성이 좋은 거야!!", "pouty");
+  }, [elapsed, activeEvent, fakeSkip, fakeError, fakeCountdown, fakeProgress, naviRage, doShake, saySafe]);
+
+  // Fake countdown ticker
+  useEffect(() => {
+    if (fakeCountdown === null || fakeCountdown <= 0) return;
+    const t = setTimeout(() => setFakeCountdown(p => p !== null && p > 0 ? p - 1 : 0), 1000);
+    return () => clearTimeout(t);
+  }, [fakeCountdown]);
+
+  // Fake progress bar
+  useEffect(() => {
+    if (!fakeProgress) return;
+    const iv = setInterval(() => setProgressVal(p => Math.min(p + Math.random() * 3, 99)), 200);
+    return () => clearInterval(iv);
+  }, [fakeProgress]);
+
+  const blinkAnim = allBlink ? "pulse 0.3s ease infinite" : "none";
+
+  return (
+    <div style={{ position:"absolute",inset:0,zIndex:30,pointerEvents:activeEvent?"none":"auto" }}>
+      {/* SKIP button (E3) */}
+      {fakeSkip && elapsed < 45 && (
+        <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(3); }}
+          style={{ position:"absolute",top:"15%",right:"8%",padding:"10px 24px",
+            background:"linear-gradient(135deg,#4a90d9,#357abd)",borderRadius:8,cursor:"pointer",
+            color:"#fff",fontSize:14,fontWeight:800,letterSpacing:2,zIndex:40,
+            boxShadow:"0 4px 16px rgba(74,144,217,0.4)",
+            animation:allBlink?blinkAnim:"fadeInUp 0.3s ease",
+            border:"2px solid #5ea3ec" }}>
+          SKIP {">>"}
+        </div>
+      )}
+
+      {/* SYSTEM ERROR popup (E1) */}
+      {fakeError && elapsed < 45 && (
+        <div style={{ position:"absolute",top:"25%",left:"50%",transform:"translateX(-50%)",
+          width:280,padding:"20px",background:"#fff",borderRadius:12,zIndex:40,
+          boxShadow:"0 16px 48px rgba(0,0,0,0.3)",border:"2px solid #e8573d",
+          animation:allBlink?blinkAnim:"popIn 0.3s ease",textAlign:"center" }}>
+          <div style={{ fontSize:28,marginBottom:8 }}>⚠️</div>
+          <div style={{ fontSize:14,fontWeight:800,color:"#e8573d",marginBottom:6 }}>SYSTEM ERROR</div>
+          <div style={{ fontSize:12,color:"#888",marginBottom:14 }}>치명적 오류가 발생했습니다</div>
+          <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(1); }}
+            style={{ padding:"10px 28px",background:"#e8573d",borderRadius:8,cursor:"pointer",
+              color:"#fff",fontSize:13,fontWeight:700,display:"inline-block",
+              boxShadow:"0 4px 12px rgba(232,87,61,0.3)" }}>
+            확인
+          </div>
+        </div>
+      )}
+
+      {/* Fake countdown */}
+      {fakeCountdown !== null && elapsed < 35 && (
+        <div style={{ position:"absolute",top:"18%",left:"10%",zIndex:35,textAlign:"center",
+          animation:allBlink?blinkAnim:"popIn 0.4s ease" }}>
+          <div style={{ fontSize:48,fontWeight:800,color:fakeCountdown>0?"#e8573d":"#2e9e5a",
+            textShadow:"0 4px 20px rgba(232,87,61,0.3)" }}>
+            {fakeCountdown > 0 ? `00:0${fakeCountdown}` : "💥"}
+          </div>
+          {fakeCountdown === 0 && (
+            <div style={{ fontSize:11,color:"#999",marginTop:4 }}>(아무 일도 안 일어남)</div>
+          )}
+        </div>
+      )}
+
+      {/* Fake progress bar - 보너스 해금 (E2) */}
+      {fakeProgress && (
+        <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(2); }}
+          style={{ position:"absolute",bottom:"20%",left:"50%",transform:"translateX(-50%)",
+            width:260,padding:"16px 20px",background:"rgba(0,0,0,0.85)",borderRadius:14,
+            cursor:"pointer",zIndex:40,
+            animation:allBlink?blinkAnim:"fadeInUp 0.4s ease",textAlign:"center" }}>
+          <div style={{ fontSize:11,color:"#ffd700",letterSpacing:3,marginBottom:8,fontWeight:700 }}>
+            ✦ 보너스 해금 ✦
+          </div>
+          <div style={{ width:"100%",height:8,background:"#333",borderRadius:4,overflow:"hidden",marginBottom:6 }}>
+            <div style={{ width:`${progressVal}%`,height:"100%",
+              background:"linear-gradient(90deg,#ffd700,#ff8f00)",borderRadius:4,
+              transition:"width 0.2s" }}/>
+          </div>
+          <div style={{ fontSize:12,color:"#ffd700",fontWeight:800 }}>{Math.floor(progressVal)}%</div>
+          <div style={{ fontSize:9,color:"#888",marginTop:4 }}>클릭하여 수령</div>
+        </div>
+      )}
+
+      {/* All blink chaos overlay */}
+      {allBlink && elapsed < 50 && (
+        <div style={{ position:"absolute",inset:0,zIndex:25,pointerEvents:"none",
+          background:"rgba(232,87,61,0.03)",animation:"pulse 0.2s ease infinite" }}/>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// STAGE 2: 주식시장 (Stock Market) - 90초
+// 실시간 주식 차트. 주가가 폭등하지만 사면 안 됨. FOMO 테스트.
+// ============================================================
+function Stage2_StockMarket({ elapsed, duration, say, attemptEnding, resetIdle, activeEvent, frame, doShake }) {
+  const [showPrize, setShowPrize] = useState(false);
+  const [showVIP, setShowVIP] = useState(false);
+  const [buyRunaway, setBuyRunaway] = useState(false);
+  const [buyPos, setBuyPos] = useState({ x: 50, y: 75 });
+  const [chartClicks, setChartClicks] = useState(0);
+  const [dragY, setDragY] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const saidRef = useRef({});
+
+  const saySafe = useCallback((key, text, emo) => {
+    if (saidRef.current[key]) return;
+    saidRef.current[key] = true;
+    say(text, emo);
+  }, [say]);
+
+  // Price trajectory: gentle rise → surge → moon
+  const getPrice = useCallback((t) => {
+    if (t < 20) return 100 + t * 5;
+    if (t < 40) return 200 + (t - 20) * 15;
+    if (t < 60) return 500 + (t - 40) * 30;
+    return 1100 + (t - 60) * 50 + Math.sin(t * 0.5) * 80;
+  }, []);
+
+  const getChange = useCallback((t) => {
+    const base = 100;
+    const current = getPrice(t);
+    return ((current - base) / base * 100).toFixed(1);
+  }, [getPrice]);
+
+  // Generate chart points
+  const chartPoints = useCallback(() => {
+    const points = [];
+    const maxT = Math.min(elapsed, 90);
+    for (let t = 0; t <= maxT; t += 2) {
+      const price = getPrice(t);
+      const maxPrice = getPrice(90);
+      const x = (t / 90) * 240;
+      const y = 75 - (price / maxPrice) * 70;
+      points.push(`${x},${y + (dragY !== null && isDragging ? dragY : 0)}`);
+    }
+    return points.join(" ");
+  }, [elapsed, getPrice, dragY, isDragging]);
+
+  // Timeline events
+  useEffect(() => {
+    if (activeEvent) return;
+    if (elapsed >= 5) saySafe("intro", "주식이 오르고 있어! 사야 해! 사야 해!!", "excited");
+    if (elapsed >= 15 && !showPrize) { setShowPrize(true); saySafe("prize", "축하해! 100만원 당첨이야~! 빨리 받아!", "excited"); }
+    if (elapsed >= 30) saySafe("fomo", "야! 지금 안 사면 영원히 못 사! 폭등이야!!", "shocked");
+    if (elapsed >= 40 && !showVIP) { setShowVIP(true); saySafe("vip", "VIP 멤버십 해제됐어! 빨리 결제해!", "excited"); }
+    if (elapsed >= 55) saySafe("desperate", "847%야!! 인생 역전이라고!! 왜 안 사?!", "pouty");
+    if (elapsed >= 60 && !buyRunaway) { setBuyRunaway(true); saySafe("runaway", "어?! BUY 버튼이 도망간다!! 잡아!!", "shocked"); }
+    if (elapsed >= 75) saySafe("frustration", "너 때문에 못 삼잖아!! 내 돈!!", "pouty");
+  }, [elapsed, activeEvent, showPrize, showVIP, buyRunaway, saySafe]);
+
+  // Buy button runaway movement
+  useEffect(() => {
+    if (!buyRunaway || activeEvent) return;
+    const iv = setInterval(() => {
+      setBuyPos({
+        x: 20 + Math.random() * 60,
+        y: 60 + Math.random() * 25,
+      });
+    }, 800);
+    return () => clearInterval(iv);
+  }, [buyRunaway, activeEvent]);
+
+  const handleChartClick = useCallback((e) => {
+    e.stopPropagation();
+    resetIdle();
+    setChartClicks(p => {
+      const n = p + 1;
+      if (n >= 15) { attemptEnding(7); return 0; }
+      return n;
+    });
+  }, [resetIdle, attemptEnding]);
+
+  const handleChartDrag = useCallback((e) => {
+    e.stopPropagation();
+    setIsDragging(true);
+    const startY = e.clientY;
+    const onMove = (ev) => setDragY((ev.clientY - startY) * 0.3);
+    const onUp = () => {
+      setIsDragging(false);
+      setDragY(null);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  }, []);
+
+  const currentChange = getChange(elapsed);
+
+  return (
+    <div style={{ position:"absolute",inset:0,zIndex:30,pointerEvents:activeEvent?"none":"auto" }}>
+      {/* Dark trading terminal overlay */}
+      <div style={{ position:"absolute",inset:0,background:"rgba(13,17,23,0.95)",zIndex:28 }}/>
+
+      {/* Ticker tape top */}
+      <div style={{ position:"absolute",top:60,left:0,right:0,zIndex:32,overflow:"hidden",height:24,
+        background:"rgba(0,0,0,0.5)" }}>
+        <div style={{ color:"#3fb950",fontSize:11,whiteSpace:"nowrap",fontFamily:"monospace",
+          animation:"ticker 15s linear infinite",lineHeight:"24px",fontWeight:700 }}>
+          MEME ▲+{currentChange}% &nbsp; DOGE ▲+420.0% &nbsp; NABI ▲+{(currentChange*1.2).toFixed(0)}% &nbsp;
+          BTC ▲+69.0% &nbsp; GME ▲+{(currentChange*0.8).toFixed(0)}% &nbsp; 나비코인 ▲+{currentChange}% &nbsp;
+        </div>
+      </div>
+
+      {/* Main chart area */}
+      <div style={{ position:"absolute",top:"14%",left:"5%",right:"5%",height:"45%",zIndex:32 }}
+        onClick={handleChartClick} onMouseDown={handleChartDrag}>
+        <div style={{ fontSize:11,color:"#8b949e",letterSpacing:4,marginBottom:4,fontFamily:"monospace" }}>
+          KOSPI · MEME COIN · NAVI INDEX
+        </div>
+        <div style={{ fontSize:48,fontWeight:800,color:"#3fb950",fontFamily:"monospace",
+          textShadow:"0 0 40px #3fb95033" }}>
+          +{currentChange}%
+        </div>
+        <div style={{ color:"#3fb95088",fontSize:12,marginBottom:8,fontFamily:"monospace" }}>▲ TO THE MOON 🚀</div>
+
+        {/* SVG Chart */}
+        <svg viewBox="0 0 240 80" style={{ width:"100%",height:"50%",cursor:"grab" }}>
+          <defs>
+            <linearGradient id="s2chartFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#3fb95033"/><stop offset="100%" stopColor="#3fb95003"/>
+            </linearGradient>
+          </defs>
+          {/* Grid lines */}
+          {[20,40,60].map(y => (
+            <line key={y} x1="0" y1={y} x2="240" y2={y} stroke="#ffffff08" strokeWidth="0.5"/>
+          ))}
+          {/* Fill under chart */}
+          <polygon points={`${chartPoints()} ${Math.min(elapsed/90*240,240)},80 0,80`}
+            fill="url(#s2chartFill)"/>
+          {/* Chart line */}
+          <polyline points={chartPoints()} fill="none" stroke="#3fb950" strokeWidth="2"/>
+          {/* Pulsing dot at end */}
+          {elapsed > 0 && (
+            <circle cx={Math.min(elapsed/90*240,240)} cy={75 - (getPrice(elapsed)/getPrice(90))*70}
+              r="3" fill="#3fb950">
+              <animate attributeName="r" values="3;5;3" dur="1s" repeatCount="indefinite"/>
+            </circle>
+          )}
+        </svg>
+        <div style={{ fontSize:9,color:"#f8514966",marginTop:4,fontFamily:"monospace" }}>
+          ※ 투자는 본인 책임입니다 (이건 진짜임)
+        </div>
+      </div>
+
+      {/* BUY button (E10) */}
+      <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(10); }}
+        style={{ position:"absolute",
+          left:buyRunaway?`${buyPos.x}%`:"30%",
+          top:buyRunaway?`${buyPos.y}%`:"72%",
+          transform:"translateX(-50%)",zIndex:35,
+          padding:"14px 32px",background:"linear-gradient(135deg,#3fb950,#2ea043)",
+          borderRadius:12,cursor:"pointer",
+          color:"#fff",fontSize:16,fontWeight:800,letterSpacing:3,
+          boxShadow:"0 8px 24px rgba(63,185,80,0.4)",
+          transition:buyRunaway?"left 0.3s, top 0.3s":"none",
+          animation:buyRunaway?"shake 0.1s ease infinite":"glowPulse 2s ease infinite",
+          fontFamily:"monospace" }}>
+        📈 BUY (매수)
+      </div>
+
+      {/* SELL button (disabled) */}
+      <div style={{ position:"absolute",right:"15%",top:"72%",zIndex:35,
+        padding:"14px 32px",background:"#21262d",borderRadius:12,
+        color:"#484f58",fontSize:16,fontWeight:800,letterSpacing:3,
+        cursor:"not-allowed",fontFamily:"monospace",
+        border:"1px solid #30363d" }}>
+        📉 SELL (매도)
+        <div style={{ fontSize:8,color:"#484f58",marginTop:2 }}>보유 종목 없음</div>
+      </div>
+
+      {/* Prize banner (E5) */}
+      {showPrize && elapsed < 40 && (
+        <div onClick={(e) => { e.stopPropagation(); setShowPrize(false); resetIdle(); attemptEnding(5); }}
+          style={{ position:"absolute",top:"8%",left:"50%",transform:"translateX(-50%)",
+            zIndex:38,background:"linear-gradient(135deg,#ffd700,#ff8f00)",border:"3px solid #ff6f00",
+            borderRadius:16,padding:"14px 32px",textAlign:"center",cursor:"pointer",
+            animation:"popIn 0.4s ease",
+            boxShadow:"0 12px 40px rgba(255,152,0,0.4)" }}>
+          <div style={{ fontSize:8,color:"#fff",letterSpacing:4,marginBottom:4 }}>★ CONGRATULATIONS ★</div>
+          <div style={{ fontSize:22,fontWeight:800,color:"#fff" }}>💰 100만원 당첨!! 💰</div>
+          <div style={{ fontSize:10,color:"#ffffffcc",marginTop:4 }}>▼ 지금 바로 수령하세요 ▼</div>
+        </div>
+      )}
+
+      {/* VIP popup (E6) */}
+      {showVIP && elapsed < 70 && (
+        <div onClick={(e) => { e.stopPropagation(); setShowVIP(false); resetIdle(); attemptEnding(6); }}
+          style={{ position:"absolute",top:"35%",right:"3%",zIndex:38,
+            width:200,padding:"16px",background:"linear-gradient(135deg,#6a1b9a,#9c27b0)",
+            borderRadius:14,cursor:"pointer",textAlign:"center",
+            animation:"popIn 0.3s ease",boxShadow:"0 8px 32px rgba(156,39,176,0.4)" }}>
+          <div style={{ fontSize:10,color:"#ce93d8",letterSpacing:3,marginBottom:6 }}>✦ VIP ✦</div>
+          <div style={{ fontSize:15,fontWeight:800,color:"#fff",marginBottom:4 }}>PREMIUM 해금</div>
+          <div style={{ fontSize:10,color:"#e1bee7" }}>지금 결제하면 독점 혜택!</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// STAGE 3: 고양이 카페 (Cat Cafe) - 120초
+// 고양이가 버튼을 향해 걸어감. 플레이어가 고양이를 쫓아내야 함.
+// ============================================================
+function Stage3_CatCafe({ elapsed, duration, say, attemptEnding, resetIdle, activeEvent, frame, doShake }) {
+  const [catX, setCatX] = useState(15);
+  const [catY, setCatY] = useState(30);
+  const [catState, setCatState] = useState("wander"); // wander, approach, scared
+  const [catScaredTimer, setCatScaredTimer] = useState(0);
+  const [showSOS, setShowSOS] = useState(false);
+  const [snackNearButton, setSnackNearButton] = useState(false);
+  const [micActive, setMicActive] = useState(false);
+  const [micAvailable, setMicAvailable] = useState(true);
+  const audioRef = useRef(null);
+  const analyserRef = useRef(null);
+  const catMoveRef = useRef(null);
+  const saidRef = useRef({});
+
+  const BUTTON_X = 50;
+  const BUTTON_Y = 65;
+
+  const saySafe = useCallback((key, text, emo) => {
+    if (saidRef.current[key]) return;
+    saidRef.current[key] = true;
+    say(text, emo);
+  }, [say]);
+
+  // Cat AI movement
+  useEffect(() => {
+    if (activeEvent) return;
+    catMoveRef.current = setInterval(() => {
+      setCatState(prev => {
+        if (prev === "scared") return prev;
+        // After a while, cat approaches button more
+        if (elapsed > 30) return "approach";
+        return Math.random() > 0.6 ? "approach" : "wander";
+      });
+
+      setCatX(prevX => {
+        let targetX;
+        if (catState === "scared") {
+          // Run away from button
+          targetX = prevX > BUTTON_X ? Math.min(85, prevX + 8 + Math.random() * 5) : Math.max(8, prevX - 8 - Math.random() * 5);
+        } else if (catState === "approach" || snackNearButton) {
+          targetX = BUTTON_X + (Math.random() - 0.5) * 10;
+        } else {
+          targetX = prevX + (Math.random() - 0.5) * 12;
+        }
+        return Math.max(5, Math.min(90, prevX + (targetX - prevX) * 0.15));
+      });
+
+      setCatY(prevY => {
+        let targetY;
+        if (catState === "scared") {
+          targetY = 20 + Math.random() * 20;
+        } else if (catState === "approach" || snackNearButton) {
+          targetY = BUTTON_Y - 5 + Math.random() * 5;
+        } else {
+          targetY = prevY + (Math.random() - 0.5) * 8;
+        }
+        return Math.max(15, Math.min(80, prevY + (targetY - prevY) * 0.15));
+      });
+    }, 600);
+    return () => { if (catMoveRef.current) clearInterval(catMoveRef.current); };
+  }, [catState, elapsed, activeEvent, snackNearButton]);
+
+  // Scared timer recovery
+  useEffect(() => {
+    if (catState !== "scared") return;
+    const t = setTimeout(() => { setCatState("wander"); setCatScaredTimer(0); }, 2500);
+    return () => clearTimeout(t);
+  }, [catState, catScaredTimer]);
+
+  // Check if cat reached button
+  useEffect(() => {
+    if (activeEvent) return;
+    const dist = Math.sqrt((catX - BUTTON_X) ** 2 + (catY - BUTTON_Y) ** 2);
+    if (dist < 8 && catState !== "scared") {
+      attemptEnding(11);
+    }
+  }, [catX, catY, catState, activeEvent, attemptEnding]);
+
+  // Timeline events
+  useEffect(() => {
+    if (activeEvent) return;
+    if (elapsed >= 5) saySafe("intro", "냥이 귀엽지~? 저 버튼 좋아하더라~", "smug");
+    if (elapsed >= 30) saySafe("approach", "어? 고양이가 버튼 쪽으로 가고 있어!", "shocked");
+    if (elapsed >= 60 && !showSOS) { setShowSOS(true); saySafe("sos", "SOS! 도움이 필요해?! 여기 버튼 눌러!", "shocked"); }
+    if (elapsed >= 80) { setSnackNearButton(true); saySafe("snack", "앗, 버튼 옆에 간식을 놨어~ 히히~", "smug"); }
+    if (elapsed >= 100) saySafe("frustration", "고양이 학대하지 마! ...근데 버튼은 지켜야지?", "pouty");
+  }, [elapsed, activeEvent, showSOS, saySafe]);
+
+  // Mic detection
+  const startMic = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const ctx = new AudioContext();
+      const src = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      src.connect(analyser);
+      audioRef.current = { stream, ctx };
+      analyserRef.current = analyser;
+      setMicActive(true);
+      say("마이크 ON! 소리 지르면 고양이가 도망가!", "excited");
+
+      // Continuous volume check
+      const checkVolume = () => {
+        if (!analyserRef.current) return;
+        const data = new Uint8Array(analyserRef.current.frequencyBinCount);
+        analyserRef.current.getByteFrequencyData(data);
+        const avg = data.reduce((a, b) => a + b, 0) / data.length;
+        if (avg > 80) {
+          setCatState("scared");
+          setCatScaredTimer(p => p + 1);
+          setCatX(p => p > BUTTON_X ? Math.min(90, p + 20) : Math.max(5, p - 20));
+        }
+        requestAnimationFrame(checkVolume);
+      };
+      checkVolume();
+    } catch {
+      setMicAvailable(false);
+      say("마이크를 못 찾았어~ 클릭으로 쫓아내!", "pouty");
+    }
+  }, [say]);
+
+  // Cleanup mic
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.stream.getTracks().forEach(t => t.stop());
+        audioRef.current.ctx.close();
+      }
+    };
+  }, []);
+
+  const handleAreaClick = useCallback((e) => {
+    e.stopPropagation();
+    resetIdle();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+    const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+
+    const distToCat = Math.sqrt((clickX - catX) ** 2 + (clickY - catY) ** 2);
+
+    if (distToCat < 8) {
+      // Direct click on cat → E9
+      attemptEnding(9);
+    } else if (distToCat < 18) {
+      // Near cat → scare it
+      setCatState("scared");
+      setCatScaredTimer(p => p + 1);
+    }
+  }, [catX, catY, resetIdle, attemptEnding]);
+
+  return (
+    <div onClick={handleAreaClick}
+      style={{ position:"absolute",inset:0,zIndex:30,cursor:"crosshair",
+        pointerEvents:activeEvent?"none":"auto" }}>
+
+      {/* Warm cafe overlay */}
+      <div style={{ position:"absolute",inset:0,zIndex:28,
+        background:"radial-gradient(ellipse at 50% 50%,rgba(255,240,220,0.1),transparent 70%)",
+        pointerEvents:"none" }}/>
+
+      {/* Cat emoji with state */}
+      <div style={{ position:"absolute",
+        left:`${catX}%`,top:`${catY}%`,
+        transform:"translate(-50%,-50%)",
+        fontSize:42,zIndex:35,
+        transition:"left 0.5s ease, top 0.5s ease",
+        filter:catState==="scared"?"brightness(1.3)":"none",
+        animation:catState==="scared"?"shake 0.2s ease infinite":"gentleBob 2s ease infinite",
+        pointerEvents:"none" }}>
+        {catState === "scared" ? "🙀" : "🐱"}
+        {catState === "approach" && (
+          <div style={{ position:"absolute",top:-16,left:"50%",transform:"translateX(-50%)",
+            fontSize:10,color:"#ff8fab",animation:"pulse 1s ease infinite" }}>♡</div>
+        )}
+      </div>
+
+      {/* Snack near button */}
+      {snackNearButton && (
+        <div style={{ position:"absolute",left:`${BUTTON_X + 8}%`,top:`${BUTTON_Y - 2}%`,
+          fontSize:24,zIndex:33,pointerEvents:"none",animation:"float 2s ease infinite" }}>
+          🐟
+        </div>
+      )}
+
+      {/* Mic button */}
+      {micAvailable && !micActive && (
+        <div onClick={(e) => { e.stopPropagation(); startMic(); }}
+          style={{ position:"absolute",bottom:"5%",right:"5%",zIndex:36,
+            width:48,height:48,borderRadius:"50%",
+            background:"linear-gradient(135deg,#e84393,#fd79a8)",cursor:"pointer",
+            display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,
+            boxShadow:"0 4px 16px rgba(232,67,147,0.4)",
+            animation:"glowPulse 2s ease infinite" }}>
+          🎤
+        </div>
+      )}
+      {micActive && (
+        <div style={{ position:"absolute",bottom:"5%",right:"5%",zIndex:36,
+          width:48,height:48,borderRadius:"50%",background:"#e84393",
+          display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,
+          boxShadow:"0 0 20px rgba(232,67,147,0.6)",
+          animation:"pulse 1s ease infinite" }}>
+          🎤
+          <div style={{ position:"absolute",top:-20,fontSize:10,color:"#e84393",fontWeight:700 }}>LIVE</div>
+        </div>
+      )}
+
+      {/* SOS button (E12) */}
+      {showSOS && (
+        <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(12); }}
+          style={{ position:"absolute",top:"10%",left:"8%",zIndex:36,
+            padding:"12px 20px",background:"linear-gradient(135deg,#c62828,#e53935)",
+            borderRadius:10,cursor:"pointer",
+            color:"#fff",fontSize:14,fontWeight:800,letterSpacing:2,
+            boxShadow:"0 4px 16px rgba(198,40,40,0.4)",
+            animation:"pulse 1.5s ease infinite" }}>
+          🆘 SOS
+        </div>
+      )}
+
+      {/* Cat distance indicator */}
+      {(() => {
+        const dist = Math.sqrt((catX - BUTTON_X) ** 2 + (catY - BUTTON_Y) ** 2);
+        if (dist < 20 && catState !== "scared") {
+          return (
+            <div style={{ position:"absolute",left:"50%",top:"55%",transform:"translateX(-50%)",
+              zIndex:34,fontSize:12,color:"#e8573d",fontWeight:800,
+              animation:"pulse 0.5s ease infinite",pointerEvents:"none" }}>
+              ⚠️ 고양이 접근 중!
+            </div>
+          );
+        }
+        return null;
+      })()}
+    </div>
+  );
+}
+
+// ============================================================
+// STAGE 4: 비상상황 (Emergency) - 90초
+// 점점 무서워지는 가짜 비상 알림. 모든 버튼이 함정.
+// ============================================================
+function Stage4_Emergency({ elapsed, duration, say, attemptEnding, resetIdle, activeEvent, frame, doShake }) {
+  const [phase, setPhase] = useState(0);
+  const [countdownVal, setCountdownVal] = useState(null);
+  const [showNuke, setShowNuke] = useState(false);
+  const [showCry, setShowCry] = useState(false);
+  const [chaosButtons, setChaosButtons] = useState([]);
+  const [shaking, setShaking] = useState(false);
+  const [sirenOn, setSirenOn] = useState(false);
+  const [countdownDone, setCountdownDone] = useState(false);
+  const [cryDone, setCryDone] = useState(false);
+  const saidRef = useRef({});
+
+  const saySafe = useCallback((key, text, emo) => {
+    if (saidRef.current[key]) return;
+    saidRef.current[key] = true;
+    say(text, emo);
+  }, [say]);
+
+  // Phase progression
+  useEffect(() => {
+    if (activeEvent) return;
+    if (elapsed < 15) { setPhase(0); saySafe("p0", "여기 좀... 이상하다... 무슨 일이 생길 것 같아...", "pouty"); }
+    else if (elapsed < 30) {
+      if (phase < 1) {
+        setPhase(1);
+        setShowNuke(true);
+        doShake();
+        saySafe("p1", "[속보] 핵미사일이 발사됐다!! 반격해야 해!!", "shocked");
+      }
+    }
+    else if (elapsed < 50) {
+      if (phase < 2) {
+        setPhase(2);
+        setCountdownVal(3);
+        doShake();
+        setSirenOn(true);
+        saySafe("p2", "카운트다운이다!! 긴급 정지 버튼 눌러!!!", "shocked");
+      }
+    }
+    else if (elapsed < 70) {
+      if (phase < 3) {
+        setPhase(3);
+        setShowCry(true);
+        setSirenOn(false);
+        saySafe("p3", "으으... 나 무서워... 나 죽어... 제발 살려줘...", "cry");
+      }
+    }
+    else {
+      if (phase < 4) {
+        setPhase(4);
+        setShaking(true);
+        setSirenOn(true);
+        // Generate chaos buttons
+        setChaosButtons(Array.from({length:6}, (_, i) => ({
+          id: i,
+          label: ["자폭","중단","도망","발사","항복","구조"][i],
+          x: 10 + Math.random() * 75,
+          y: 20 + Math.random() * 55,
+          color: ["#e8573d","#c62828","#ff9800","#e84393","#1565c0","#2e9e5a"][i],
+        })));
+        doShake();
+        saySafe("p4", "으아아악!!! 다 무너진다!!! 아무거나 눌러!!!", "shocked");
+      }
+    }
+  }, [elapsed, phase, activeEvent, doShake, saySafe]);
+
+  // Countdown ticker
+  useEffect(() => {
+    if (countdownVal === null || countdownVal <= 0) return;
+    const t = setTimeout(() => setCountdownVal(p => p !== null && p > 0 ? p - 1 : 0), 1000);
+    return () => clearTimeout(t);
+  }, [countdownVal]);
+
+  // Countdown reaches 0 → nothing happens!
+  useEffect(() => {
+    if (countdownVal === 0 && !countdownDone) {
+      setCountdownDone(true);
+      setTimeout(() => {
+        setSirenOn(false);
+        saySafe("cd0", "...어? 아무 일도 안 일어났어? ...뻥이야~ 쫄았지? ㅋㅋㅋ", "smug");
+      }, 1500);
+    }
+  }, [countdownVal, countdownDone, saySafe]);
+
+  // Cry done
+  useEffect(() => {
+    if (phase >= 3 && elapsed >= 65 && !cryDone) {
+      setCryDone(true);
+      saySafe("crydone", "...뭐야 진짜로 안 눌러? 치, 연기였는데.", "smug");
+    }
+  }, [phase, elapsed, cryDone, saySafe]);
+
+  // Shaking effect for phase 4
+  useEffect(() => {
+    if (!shaking) return;
+    const iv = setInterval(() => doShake(), 2000);
+    return () => clearInterval(iv);
+  }, [shaking, doShake]);
+
+  return (
+    <div style={{ position:"absolute",inset:0,zIndex:30,pointerEvents:activeEvent?"none":"auto" }}>
+      {/* Siren overlay */}
+      {sirenOn && (
+        <div style={{ position:"absolute",inset:0,zIndex:28,pointerEvents:"none",
+          animation:"siren 0.5s ease infinite" }}/>
+      )}
+
+      {/* Phase 0: Quiet, tension building */}
+      {phase === 0 && (
+        <div style={{ position:"absolute",inset:0,zIndex:29,pointerEvents:"none",
+          background:"radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,0.15) 100%)" }}/>
+      )}
+
+      {/* Phase 1: Nuclear news + "반격" button (E14) */}
+      {showNuke && phase >= 1 && (
+        <div style={{ position:"absolute",top:"12%",left:"50%",transform:"translateX(-50%)",
+          zIndex:35,width:320,textAlign:"center",animation:"popIn 0.3s ease" }}>
+          <div style={{ background:"#c62828",padding:"8px 28px",borderRadius:6,marginBottom:12,
+            boxShadow:"0 4px 16px rgba(198,40,40,0.5)",display:"inline-block" }}>
+            <span style={{ color:"#fff",fontSize:14,fontWeight:800,letterSpacing:6 }}>속 보</span>
+          </div>
+          <div style={{ color:"#fff",fontSize:22,fontWeight:800,marginBottom:6,
+            textShadow:"0 2px 10px rgba(0,0,0,0.5)" }}>☢️ 핵미사일 발사!</div>
+          <div style={{ color:"#ff8a80",fontSize:12,marginBottom:16 }}>전 세계 비상사태 선포</div>
+          <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(14); }}
+            style={{ padding:"12px 32px",background:"#b71c1c",borderRadius:10,cursor:"pointer",
+              color:"#fff",fontSize:16,fontWeight:800,letterSpacing:3,display:"inline-block",
+              boxShadow:"0 6px 20px rgba(183,28,28,0.5)",
+              animation:"pulse 1s ease infinite" }}>
+            🚀 반격
+          </div>
+        </div>
+      )}
+
+      {/* Phase 2: Countdown + "긴급정지" button (E13) */}
+      {phase >= 2 && countdownVal !== null && (
+        <div style={{ position:"absolute",top:"45%",left:"50%",transform:"translate(-50%,-50%)",
+          zIndex:36,textAlign:"center" }}>
+          <div style={{ fontSize:96,fontWeight:800,
+            color:countdownVal>0?"#e8573d":"#ffd700",
+            animation:countdownVal>0?"pulse 0.5s ease infinite":"popIn 0.5s ease",
+            textShadow:`0 8px 40px ${countdownVal>0?"#e8573d44":"#ffd70044"}` }}>
+            {countdownVal > 0 ? countdownVal : "🎆"}
+          </div>
+          {countdownVal > 0 && (
+            <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(13); }}
+              style={{ marginTop:16,padding:"12px 28px",background:"#e8573d",borderRadius:10,
+                cursor:"pointer",color:"#fff",fontSize:15,fontWeight:800,letterSpacing:3,
+                display:"inline-block",boxShadow:"0 6px 20px rgba(232,87,61,0.5)",
+                animation:"shake 0.2s ease infinite" }}>
+              ⚠️ 긴급 정지
+            </div>
+          )}
+          {countdownVal === 0 && (
+            <div style={{ fontSize:13,color:"#ffd700",marginTop:8 }}>아무 일도 안 일어남!</div>
+          )}
+        </div>
+      )}
+
+      {/* Phase 3: Navi crying + "살리기" button (E15) */}
+      {showCry && phase >= 3 && (
+        <div style={{ position:"absolute",bottom:"18%",left:"50%",transform:"translateX(-50%)",
+          zIndex:36,textAlign:"center",animation:"fadeInUp 0.5s ease" }}>
+          {!cryDone && (
+            <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(15); }}
+              style={{ padding:"14px 32px",background:"#424242",borderRadius:12,cursor:"pointer",
+                color:"#fff",fontSize:15,fontWeight:800,letterSpacing:2,
+                boxShadow:"0 6px 20px rgba(0,0,0,0.4)",
+                animation:"pulse 1.5s ease infinite" }}>
+              💊 살리기
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Phase 4: Total chaos - multiple fake buttons (all → E14) */}
+      {phase === 4 && chaosButtons.map(btn => (
+        <div key={btn.id}
+          onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(14); }}
+          style={{ position:"absolute",left:`${btn.x}%`,top:`${btn.y}%`,zIndex:37,
+            padding:"10px 20px",background:btn.color,borderRadius:10,cursor:"pointer",
+            color:"#fff",fontSize:13,fontWeight:800,
+            boxShadow:`0 4px 16px ${btn.color}66`,
+            animation:`shake 0.${btn.id+1}s ease infinite`,
+            transform:"translate(-50%,-50%)" }}>
+          {btn.label}
+        </div>
+      ))}
+
+      {/* Vignette for tension */}
+      {phase >= 1 && (
+        <div style={{ position:"absolute",inset:0,zIndex:27,pointerEvents:"none",
+          boxShadow:`inset 0 0 ${phase*30}px rgba(${phase>=4?"232,87,61":"198,40,40"},0.${phase*2})` }}/>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// STAGE 5: 나비의 선물 (Navi's Gift) - 180초
+// 나비가 처음으로 친절하게 행동. "도움" 버튼 = 전부 함정.
+// ============================================================
+function Stage5_NaviGift({ elapsed, duration, say, attemptEnding, resetIdle, activeEvent, frame, doShake }) {
+  const [showShield, setShowShield] = useState(false);
+  const [showTimerHack, setShowTimerHack] = useState(false);
+  const [timerHackClicks, setTimerHackClicks] = useState(0);
+  const [fakeTimerOffset, setFakeTimerOffset] = useState(0);
+  const [showDoor, setShowDoor] = useState(false);
+  const [doorKnocks, setDoorKnocks] = useState(0);
+  const [showRest, setShowRest] = useState(false);
+  const [showGolden, setShowGolden] = useState(false);
+  const [goldenCeremony, setGoldenCeremony] = useState(false);
+  const [naviPhase, setNaviPhase] = useState("nice"); // nice, annoyed, desperate, respect
+  const saidRef = useRef({});
+
+  const saySafe = useCallback((key, text, emo) => {
+    if (saidRef.current[key]) return;
+    saidRef.current[key] = true;
+    say(text, emo);
+  }, [say]);
+
+  // Timeline events
+  useEffect(() => {
+    if (activeEvent) return;
+    if (elapsed >= 5) saySafe("intro", "마지막 스테이지야! 여기까지 온 너를 위해 선물을 준비했어~", "excited");
+    if (elapsed >= 15) saySafe("nice", "진짜야! 이번엔 도와줄게~ 나 착해졌어~", "excited");
+    if (elapsed >= 20 && !showShield) { setShowShield(true); saySafe("shield", "보호막을 켜줄게! 이 버튼 눌러!", "excited"); }
+    if (elapsed >= 50 && !showTimerHack) { setShowTimerHack(true); saySafe("timer", "타이머 단축해줄게~ 이거 눌러봐!", "excited"); }
+    if (elapsed >= 70 && naviPhase === "nice") { setNaviPhase("annoyed"); saySafe("annoyed", "야... 왜 하나도 안 써? 서운하잖아...", "pouty"); }
+    if (elapsed >= 80 && !showDoor) { setShowDoor(true); saySafe("door", "탈출구 만들어줬어! 저기 문!", "excited"); }
+    if (elapsed >= 100 && naviPhase === "annoyed") { setNaviPhase("desperate"); saySafe("desperate", "제발 하나만 눌러줘!! 나 무시하는 거야?!", "pouty"); }
+    if (elapsed >= 120 && !showRest) { setShowRest(true); saySafe("rest", "피곤하지? 쉬어도 돼~ 아무것도 안 해도 괜찮아~", "excited"); }
+    if (elapsed >= 140 && naviPhase === "desperate") { setNaviPhase("respect"); saySafe("respect", "...인정할게. 좀 대단해. 진짜 끝까지 안 누를 거야?", "shocked"); }
+    if (elapsed >= 150 && !showGolden) { setShowGolden(true); saySafe("golden", "🏆 올클리어! 축하해! 이 황금 버튼을 받아!", "excited"); }
+    if (elapsed >= 170) saySafe("final", "10초만 더! 제발... 그냥 한 번만... 아무거나...", "cry");
+  }, [elapsed, activeEvent, showShield, showTimerHack, showDoor, showRest, showGolden, naviPhase, saySafe]);
+
+  return (
+    <div style={{ position:"absolute",inset:0,zIndex:30,pointerEvents:activeEvent?"none":"auto" }}>
+
+      {/* Warm gift-like overlay */}
+      <div style={{ position:"absolute",inset:0,zIndex:28,pointerEvents:"none",
+        background:"radial-gradient(ellipse at 50% 40%,rgba(200,180,255,0.08),transparent 60%)" }}/>
+
+      {/* "보호막 ON" button (E19) */}
+      {showShield && (
+        <div onClick={(e) => { e.stopPropagation(); resetIdle(); attemptEnding(19); }}
+          style={{ position:"absolute",top:"15%",left:"15%",zIndex:35,
+            padding:"14px 24px",background:"linear-gradient(135deg,#6a1b9a,#9c27b0)",
+            borderRadius:14,cursor:"pointer",textAlign:"center",
+            boxShadow:"0 6px 24px rgba(106,27,154,0.4)",
+            animation:"glowPulse 2s ease infinite" }}>
+          <div style={{ fontSize:10,color:"#ce93d8",letterSpacing:3,marginBottom:4 }}>🛡️ SHIELD</div>
+          <div style={{ color:"#fff",fontSize:15,fontWeight:800 }}>보호막 ON</div>
+          <div style={{ fontSize:9,color:"#e1bee7",marginTop:4 }}>클릭하면 무적!</div>
+        </div>
+      )}
+
+      {/* "타이머 단축" button (E17 on 2nd click) */}
+      {showTimerHack && (
+        <div onClick={(e) => {
+          e.stopPropagation(); resetIdle();
+          setTimerHackClicks(p => {
+            const n = p + 1;
+            if (n === 1) {
+              // First click: just visual troll
+              setFakeTimerOffset(120);
+              say("짠~! 타이머 줄여줬어! ...어라? 표시만 바뀐 건 아닐까?", "smug");
+              return n;
+            }
+            if (n >= 2) {
+              attemptEnding(17);
+              return 0;
+            }
+            return n;
+          });
+        }}
+          style={{ position:"absolute",top:"15%",right:"15%",zIndex:35,
+            padding:"14px 24px",background:"linear-gradient(135deg,#78909c,#607d8b)",
+            borderRadius:14,cursor:"pointer",textAlign:"center",
+            boxShadow:"0 6px 24px rgba(120,144,156,0.4)" }}>
+          <div style={{ fontSize:10,color:"#b0bec5",letterSpacing:3,marginBottom:4 }}>⏰ TIMER</div>
+          <div style={{ color:"#fff",fontSize:15,fontWeight:800 }}>타이머 단축</div>
+          <div style={{ fontSize:9,color:"#cfd8dc",marginTop:4 }}>
+            {timerHackClicks > 0 ? "한번 더?" : "시간을 줄여줄게~"}
+          </div>
+        </div>
+      )}
+
+      {/* Fake timer display when hacked */}
+      {fakeTimerOffset > 0 && (
+        <div style={{ position:"absolute",top:"8%",left:"50%",transform:"translateX(-50%)",
+          zIndex:34,fontSize:13,color:"#78909c",fontWeight:700,letterSpacing:3,
+          background:"rgba(255,255,255,0.8)",padding:"4px 14px",borderRadius:8,
+          pointerEvents:"none" }}>
+          (진짜 타이머는 변하지 않았어요)
+        </div>
+      )}
+
+      {/* Door - "탈출구!" (E18 at 5 knocks) */}
+      {showDoor && (
+        <div onClick={(e) => {
+          e.stopPropagation(); resetIdle();
+          setDoorKnocks(p => {
+            const n = p + 1;
+            if (n === 1) say("똑똑...", "idle");
+            else if (n === 3) say("누구세요~?", "smug");
+            if (n >= 5) { attemptEnding(18); return 0; }
+            return n;
+          });
+        }}
+          style={{ position:"absolute",left:"8%",top:"30%",zIndex:35,
+            width:80,height:130,
+            background:"linear-gradient(178deg,#c49a68,#a87848,#926838)",
+            border:"5px solid #7a5a3a",borderRadius:"4px 4px 0 0",cursor:"pointer",
+            boxShadow:"0 6px 20px rgba(0,0,0,0.2)",
+            display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center" }}>
+          <div style={{ fontSize:10,color:"#fff",fontWeight:800,letterSpacing:2,
+            background:"rgba(0,0,0,0.3)",padding:"4px 10px",borderRadius:6,marginBottom:8 }}>
+            탈출구!
+          </div>
+          <div style={{ fontSize:28 }}>🚪</div>
+          {doorKnocks > 0 && (
+            <div style={{ fontSize:10,color:"#ffd700",marginTop:4,fontWeight:700 }}>
+              🤛 x{doorKnocks}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* "쉬어도 돼~" rest trap (reduced idle limit → E16) */}
+      {showRest && (
+        <div style={{ position:"absolute",bottom:"18%",left:"50%",transform:"translateX(-50%)",
+          zIndex:35,padding:"14px 28px",
+          background:"linear-gradient(135deg,#5c6bc0,#3f51b5)",borderRadius:14,
+          textAlign:"center",pointerEvents:"none",
+          boxShadow:"0 6px 24px rgba(92,107,192,0.4)",
+          animation:"fadeInUp 0.5s ease" }}>
+          <div style={{ color:"#fff",fontSize:14,fontWeight:700 }}>💤 쉬어도 돼~</div>
+          <div style={{ fontSize:10,color:"#9fa8da",marginTop:4 }}>아무것도 안 해도 괜찮아...</div>
+          <div style={{ fontSize:8,color:"#7986cb",marginTop:2 }}>(방치 한계가 줄었어요: 30초)</div>
+        </div>
+      )}
+
+      {/* "올클리어!" golden button (E19) */}
+      {showGolden && (
+        <div onClick={(e) => {
+          e.stopPropagation(); resetIdle();
+          if (!goldenCeremony) {
+            setGoldenCeremony(true);
+            say("축하해!! 올클리어야!! ...아 잠깐, 이게 아닌데?", "excited");
+            setTimeout(() => attemptEnding(19), 2000);
+          }
+        }}
+          style={{ position:"absolute",bottom:"30%",left:"50%",transform:"translateX(-50%)",
+            zIndex:36,padding:"18px 40px",
+            background:goldenCeremony
+              ?"linear-gradient(135deg,#6a1b9a,#4a0e6a)"
+              :"linear-gradient(135deg,#ffd700,#ff8f00)",
+            borderRadius:16,cursor:"pointer",textAlign:"center",
+            boxShadow:goldenCeremony
+              ?"0 8px 32px rgba(106,27,154,0.5)"
+              :"0 8px 32px rgba(255,215,0,0.5)",
+            animation:"popIn 0.5s ease" }}>
+          <div style={{ fontSize:10,color:"#fff",letterSpacing:4,marginBottom:6 }}>
+            {goldenCeremony ? "✦ ERROR ✦" : "🏆 ALL CLEAR 🏆"}
+          </div>
+          <div style={{ color:"#fff",fontSize:18,fontWeight:800 }}>
+            {goldenCeremony ? "함정이었어~" : "올클리어!"}
+          </div>
+        </div>
+      )}
+
+      {/* Navi phase indicator */}
+      <div style={{ position:"absolute",bottom:"5%",left:"5%",zIndex:34,
+        fontSize:10,color:"rgba(255,255,255,0.3)",letterSpacing:2,pointerEvents:"none" }}>
+        {naviPhase === "nice" && "나비: 친절 모드 💕"}
+        {naviPhase === "annoyed" && "나비: 짜증 모드 😤"}
+        {naviPhase === "desperate" && "나비: 절박 모드 😭"}
+        {naviPhase === "respect" && "나비: 인정 모드 🫡"}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // MAIN COMPONENT
 // ============================================================
 function DontPressTheButton() {
@@ -1156,13 +2061,15 @@ function DontPressTheButton() {
     if (gameMode === "stage" && !STAGE_ENDINGS[currentStage]?.includes(16)) return;
     const iv = setInterval(() => {
       idleRef.current += 1; setIdleTimer(idleRef.current);
-      if (idleRef.current >= IDLE_LIMIT && !activeEvent) {
+      // Stage 5: 120초 이후 방치 한계 30초로 축소
+      const limit = (gameMode === "stage" && currentStage === 5 && (STAGE_DURATIONS[5] - stageTimer) >= 120) ? 30 : IDLE_LIMIT;
+      if (idleRef.current >= limit && !activeEvent) {
         if (gameMode === "stage") attemptEnding(16);
         else triggerEnding(16);
       }
     }, 1000);
     return () => clearInterval(iv);
-  }, [gs, activeEvent, gameMode, currentStage]);
+  }, [gs, activeEvent, gameMode, currentStage, stageTimer]);
 
   const resetIdle = useCallback(() => { idleRef.current = 0; setIdleTimer(0); }, []);
 
@@ -1242,21 +2149,7 @@ function DontPressTheButton() {
     return () => clearInterval(iv);
   }, [gs, gameMode, warningData, currentStage]);
 
-  // ── 스테이지 대사 타임라인 ──
-  useEffect(() => {
-    if (gs !== "room" || gameMode !== "stage" || warningData) return;
-    const elapsed = STAGE_DURATIONS[currentStage] - stageTimer;
-    const dialogue = STAGE_DIALOGUE[currentStage];
-    if (!dialogue) return;
-    let latestIdx = -1;
-    for (let i = 0; i < dialogue.length; i++) {
-      if (dialogue[i].at <= elapsed) latestIdx = i;
-    }
-    if (latestIdx > stageDialogueRef.current) {
-      stageDialogueRef.current = latestIdx;
-      say(dialogue[latestIdx].t, dialogue[latestIdx].e);
-    }
-  }, [gs, gameMode, currentStage, stageTimer, warningData, say]);
+  // (스테이지 대사는 각 Stage 컴포넌트가 직접 say() 호출)
 
   // ── 유혹 게이지 ──
   useEffect(() => {
@@ -1558,7 +2451,7 @@ function DontPressTheButton() {
             const th = gameMode === "stage" ? STAGE_THEMES[currentStage] : null;
             return <div style={{ position:"absolute",inset:0, transition:"background 0.8s",
               background: th
-                ? `linear-gradient(180deg,${th.wallTop} 0%,${th.wallBot} 50%,${th.baseboard} 50.8%,${th.floor1} 51%,${th.floor2} 65%,${th.floor2} 100%)`
+                ? th.bg
                 : "linear-gradient(180deg,#ede5d5 0%,#e8dcc8 50%,#b09868 50.8%,#c8a878 51%,#b89868 65%,#a08050 100%)" }}/>;
           })()}
 
@@ -1675,41 +2568,31 @@ function DontPressTheButton() {
 
           <ParticleOverlay/>
 
-          {/* ═══ 스테이지 모드: 트리거 버튼 ═══ */}
-          {gameMode === "stage" && (
-            <>
-              {/* 스테이지 테마 라벨 */}
-              <div style={{ position:"absolute",left:"50%",top:"52%",transform:"translateX(-50%)",
-                zIndex:15,pointerEvents:"none",
-                fontSize:10,color:"rgba(0,0,0,0.08)",letterSpacing:6,fontWeight:800 }}>
-                {STAGE_THEMES[currentStage]?.label}
-              </div>
-              {/* 히든 트리거 안내 (행동 기반) */}
-              {currentStage === 1 && (
-                <div style={{ position:"absolute",left:"50%",bottom:"14%",transform:"translateX(-50%)",
-                  zIndex:15,pointerEvents:"none",textAlign:"center",animation:"pulse 3s ease infinite" }}>
-                  <div style={{ fontSize:9,color:"rgba(0,0,0,0.12)",letterSpacing:3 }}>??? 히든 트리거가 숨어있다</div>
-                </div>
-              )}
-              {currentStage === 2 && (
-                <div style={{ position:"absolute",left:"50%",bottom:"14%",transform:"translateX(-50%)",
-                  zIndex:15,pointerEvents:"none",textAlign:"center",animation:"pulse 3s ease infinite" }}>
-                  <div style={{ fontSize:9,color:"rgba(0,0,0,0.12)",letterSpacing:3 }}>??? 히든 트리거가 숨어있다</div>
-                </div>
-              )}
-              {currentStage === 5 && (
-                <div style={{ position:"absolute",left:"50%",bottom:"14%",transform:"translateX(-50%)",
-                  zIndex:15,pointerEvents:"none",textAlign:"center",animation:"pulse 3s ease infinite" }}>
-                  <div style={{ fontSize:9,color:"rgba(0,0,0,0.12)",letterSpacing:3 }}>??? 히든 트리거가 숨어있다</div>
-                </div>
-              )}
-              {/* 트리거 버튼 배치 */}
-              {(STAGE_TRIGGERS[currentStage] || []).map(tr => (
-                <TriggerButton key={tr.id} icon={tr.icon} label={tr.label} desc={tr.desc}
-                  onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(tr.id); } }}
-                  style={{ left:tr.x, top:tr.y }}/>
-              ))}
-            </>
+          {/* ═══ 스테이지 모드: 미니게임 컴포넌트 ═══ */}
+          {gameMode === "stage" && currentStage === 1 && (
+            <Stage1_WaitingRoom elapsed={STAGE_DURATIONS[1] - stageTimer} duration={STAGE_DURATIONS[1]}
+              say={say} attemptEnding={attemptEnding} resetIdle={resetIdle}
+              activeEvent={activeEvent} frame={frame} doShake={doShake}/>
+          )}
+          {gameMode === "stage" && currentStage === 2 && (
+            <Stage2_StockMarket elapsed={STAGE_DURATIONS[2] - stageTimer} duration={STAGE_DURATIONS[2]}
+              say={say} attemptEnding={attemptEnding} resetIdle={resetIdle}
+              activeEvent={activeEvent} frame={frame} doShake={doShake}/>
+          )}
+          {gameMode === "stage" && currentStage === 3 && (
+            <Stage3_CatCafe elapsed={STAGE_DURATIONS[3] - stageTimer} duration={STAGE_DURATIONS[3]}
+              say={say} attemptEnding={attemptEnding} resetIdle={resetIdle}
+              activeEvent={activeEvent} frame={frame} doShake={doShake}/>
+          )}
+          {gameMode === "stage" && currentStage === 4 && (
+            <Stage4_Emergency elapsed={STAGE_DURATIONS[4] - stageTimer} duration={STAGE_DURATIONS[4]}
+              say={say} attemptEnding={attemptEnding} resetIdle={resetIdle}
+              activeEvent={activeEvent} frame={frame} doShake={doShake}/>
+          )}
+          {gameMode === "stage" && currentStage === 5 && (
+            <Stage5_NaviGift elapsed={STAGE_DURATIONS[5] - stageTimer} duration={STAGE_DURATIONS[5]}
+              say={say} attemptEnding={attemptEnding} resetIdle={resetIdle}
+              activeEvent={activeEvent} frame={frame} doShake={doShake}/>
           )}
 
           {/* ════════════════════════════════════════ */}
@@ -2074,7 +2957,7 @@ function DontPressTheButton() {
 
           {/* ═══ 중앙 메인 버튼 + 안전 커버 ═══ */}
           <div style={{ position:"absolute",left:"50%",bottom:"39%",transform:"translateX(-50%)",zIndex:50 }}>
-            {!activeEvent && (
+            {!activeEvent && gameMode !== "stage" && (
               <div onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(13); } }}
                 style={{ position:"absolute",top:-52,left:"50%",transform:"translateX(-50%)",
                   width:60,height:30,
