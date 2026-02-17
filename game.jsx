@@ -81,6 +81,100 @@ const NAVI_DISCOVER = [
   { t:"헐... 거기 만지면 안 되는... 아, 뭐 상관없지!", e:"shocked" },
 ];
 
+// ── 스테이지 시스템 상수 ──
+const STAGE_COUNT = 5;
+const STAGE_DURATIONS = [0, 60, 90, 120, 90, 180];
+const STAGE_NAMES = ["", "간보기", "장난", "욕망", "위기", "히든"];
+const STAGE_SUBTITLES = ["", "Prelim", "Prank", "Desire", "Crisis", "Hidden"];
+const STAGE_COLORS = ["", "#e88b3d", "#e8573d", "#e84393", "#c62828", "#5c6bc0"];
+
+const STAGE_OBJECT_SCHEDULE = {
+  1: [
+    { at: 5, objects: [2] },
+    { at: 15, objects: [1] },
+    { at: 30, objects: [3] },
+    { at: 45, objects: [4] },
+  ],
+  2: [
+    { at: 5, objects: [5] },
+    { at: 25, objects: [6] },
+    { at: 50, objects: [7] },
+    { at: 70, objects: [8] },
+  ],
+  3: [
+    { at: 10, objects: [9] },
+    { at: 40, objects: [10] },
+    { at: 70, objects: [11] },
+    { at: 95, objects: [12] },
+  ],
+  4: [
+    { at: 10, objects: [13] },
+    { at: 40, objects: [14] },
+    { at: 70, objects: [15] },
+  ],
+  5: [
+    { at: 20, objects: [16] },
+    { at: 60, objects: [17] },
+    { at: 120, objects: [18] },
+    { at: 150, objects: [19] },
+  ],
+};
+
+const WARNING_STEPS = { 15: 3 };
+
+const STAGE_DIALOGUE = {
+  1: [
+    { at: 0, t: "첫 번째 시험이야! 60초 동안 참아봐~", e: "excited" },
+    { at: 10, t: "뭔가 만지고 싶지? 참아야 해!", e: "smug" },
+    { at: 25, t: "오~ 새로운 게 나타났지? 궁금하지?", e: "smug" },
+    { at: 40, t: "반 넘게 왔어! 조금만 더!", e: "excited" },
+    { at: 50, t: "10초 남았다! 버텨!!", e: "shocked" },
+    { at: 55, t: "5초! 4! 3!", e: "shocked" },
+    { at: 58, t: "2! 1!", e: "excited" },
+  ],
+  2: [
+    { at: 0, t: "두 번째! 이번엔 좀 어려울걸~?", e: "smug" },
+    { at: 15, t: "오~ 뭔가 반짝이는 게 보이지?", e: "excited" },
+    { at: 35, t: "돈이 보이면 참기 힘들지~?", e: "smug" },
+    { at: 55, t: "절반 넘었어! 근데 더 어려워질 거야~", e: "smug" },
+    { at: 75, t: "거의 다야! 이것만 참으면 돼!", e: "excited" },
+    { at: 80, t: "10초! 버텨!!", e: "shocked" },
+    { at: 85, t: "5! 4! 3!", e: "shocked" },
+    { at: 88, t: "2! 1!", e: "excited" },
+  ],
+  3: [
+    { at: 0, t: "세 번째~ 욕망의 방이야! 후후~", e: "smug" },
+    { at: 20, t: "맛있는 거, 귀여운 거... 참을 수 있어?", e: "smug" },
+    { at: 50, t: "절반이야! 그런데... 더 올 거야~", e: "pouty" },
+    { at: 80, t: "대단한데? 여기까지 오다니!", e: "excited" },
+    { at: 100, t: "20초 남았어! 참아!!", e: "shocked" },
+    { at: 110, t: "10초! 거의 다야!!", e: "shocked" },
+    { at: 115, t: "5! 4! 3!", e: "excited" },
+    { at: 118, t: "2! 1!", e: "excited" },
+  ],
+  4: [
+    { at: 0, t: "네 번째... 위기의 방이야. 살벌하지?", e: "shocked" },
+    { at: 15, t: "여기선 진짜 조심해야 해...", e: "pouty" },
+    { at: 40, t: "으악, 무서운 것들이 나타나고 있어!", e: "shocked" },
+    { at: 60, t: "30초만 더!! 할 수 있어!", e: "excited" },
+    { at: 75, t: "15초! 제발 참아!!", e: "shocked" },
+    { at: 80, t: "10초!! 버텨!!!", e: "shocked" },
+    { at: 85, t: "5! 4! 3!", e: "excited" },
+    { at: 88, t: "2! 1!", e: "excited" },
+  ],
+  5: [
+    { at: 0, t: "마지막 방... 히든 스테이지야. 3분!", e: "shocked" },
+    { at: 30, t: "여기엔 정말 교묘한 트랩이 있어...", e: "pouty" },
+    { at: 60, t: "1분 지났어! 아직 2분 남았지만...", e: "smug" },
+    { at: 100, t: "와... 진짜 대단해. 여기까지 오다니!", e: "excited" },
+    { at: 130, t: "50초 남았어! 거의 다 왔어!", e: "excited" },
+    { at: 150, t: "30초!! 마지막 힘을 내!", e: "shocked" },
+    { at: 170, t: "10초! 이것만 넘기면 올 클리어!!!", e: "shocked" },
+    { at: 175, t: "5! 4! 3!", e: "excited" },
+    { at: 178, t: "2! 1!", e: "excited" },
+  ],
+};
+
 function pickRandom(arr, lastRef) {
   if (!arr || arr.length === 0) return null;
   if (arr.length <= 1) return arr[0];
@@ -620,6 +714,269 @@ function ContextMenu({ x, y, onDelete, onClose }) {
 }
 
 // ============================================================
+// 스테이지 UI 컴포넌트
+// ============================================================
+function ModeSelectScreen({ onSelectStage, onSelectFree, freeUnlocked, collected, frame }) {
+  return (
+    <div style={{ width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",
+      justifyContent:"center",
+      background:"radial-gradient(ellipse at 50% 40%,#faf5f0,#f0e8f5 60%,#e8e0f0)",
+      position:"relative",overflow:"hidden" }}>
+      <div style={{ position:"absolute",top:"10%",left:"8%",width:280,height:280,borderRadius:"50%",
+        background:"radial-gradient(circle,#e8573d06,transparent 70%)" }}/>
+      <div style={{ position:"absolute",bottom:"15%",right:"10%",width:200,height:200,borderRadius:"50%",
+        background:"radial-gradient(circle,#a33de806,transparent 70%)" }}/>
+      <div style={{ fontSize:14,color:"#e8573d88",letterSpacing:8,marginBottom:12,
+        animation:"fadeInUp 0.5s ease" }}>SELECT MODE</div>
+      <div style={{ fontSize:36,fontWeight:800,color:"#e8573d",letterSpacing:6,marginBottom:48,
+        animation:"fadeInUp 0.6s ease" }}>모드 선택</div>
+      <div onClick={onSelectStage} style={{ width:320,padding:"24px 32px",marginBottom:16,
+        background:"linear-gradient(135deg,#fff,#fef8f4)",borderRadius:20,cursor:"pointer",
+        border:"2px solid #e8573d33",
+        boxShadow:"0 8px 32px rgba(232,87,61,0.08)",
+        transition:"all 0.3s",animation:"fadeInUp 0.7s ease" }}
+        onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.borderColor="#e8573d88";}}
+        onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.borderColor="#e8573d33";}}>
+        <div style={{ fontSize:20,fontWeight:800,color:"#e8573d",marginBottom:8,letterSpacing:4 }}>🎮 스테이지 모드</div>
+        <div style={{ fontSize:13,color:"#999",lineHeight:1.6 }}>5단계 유혹 서바이벌<br/>제한 시간 동안 유혹을 참아라!</div>
+      </div>
+      <div onClick={freeUnlocked ? onSelectFree : undefined}
+        style={{ width:320,padding:"24px 32px",
+          background:freeUnlocked?"linear-gradient(135deg,#fff,#f4f0fe)":"linear-gradient(135deg,#f8f8f8,#f0f0f0)",
+          borderRadius:20,cursor:freeUnlocked?"pointer":"not-allowed",
+          border:`2px solid ${freeUnlocked?"#a33de833":"#ddd"}`,
+          opacity:freeUnlocked?1:0.5,
+          boxShadow:freeUnlocked?"0 8px 32px rgba(163,61,232,0.08)":"none",
+          transition:"all 0.3s",animation:"fadeInUp 0.8s ease" }}
+        onMouseEnter={e=>{if(freeUnlocked){e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.borderColor="#a33de888";}}}
+        onMouseLeave={e=>{if(freeUnlocked){e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.borderColor="#a33de833";}}}>
+        <div style={{ fontSize:20,fontWeight:800,color:freeUnlocked?"#a33de8":"#ccc",marginBottom:8,letterSpacing:4 }}>
+          {freeUnlocked ? "🔓" : "🔒"} 자유 모드
+        </div>
+        <div style={{ fontSize:13,color:freeUnlocked?"#999":"#ccc",lineHeight:1.6 }}>
+          {freeUnlocked ? "자유롭게 탐험 · 엔딩 수집" : "스테이지 1 클리어 시 해금"}
+        </div>
+      </div>
+      {collected.length > 0 && (
+        <div style={{ fontSize:12,color:"#a33de8",marginTop:24,animation:"fadeIn 0.8s ease",letterSpacing:2 }}>
+          ✦ {collected.length}/21 엔딩 수집됨
+        </div>
+      )}
+      <div style={{ position:"absolute",bottom:"6%",right:"10%",opacity:0.12,animation:"fadeIn 2s ease" }}>
+        <NaviCharacter emotion="smug" frame={frame} size={120}/>
+      </div>
+    </div>
+  );
+}
+
+function StageIntroScreen({ stage, onStart, frame }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    setStep(0);
+    const ts = [setTimeout(()=>setStep(1),400), setTimeout(()=>setStep(2),1200), setTimeout(()=>setStep(3),2000)];
+    return () => ts.forEach(clearTimeout);
+  }, [stage]);
+  return (
+    <div style={{ width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",
+      justifyContent:"center",
+      background:"radial-gradient(ellipse at 50% 40%,#faf5f0,#f0e8f5 60%,#e8e0f0)",
+      position:"relative",overflow:"hidden" }}>
+      <div style={{ position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",
+        width:400,height:400,borderRadius:"50%",
+        background:`radial-gradient(circle,${STAGE_COLORS[stage]}12,transparent 60%)` }}/>
+      {step >= 1 && <div style={{ fontSize:14,color:"#b0a09088",letterSpacing:8,marginBottom:12,
+        animation:"fadeInUp 0.6s ease" }}>STAGE</div>}
+      {step >= 1 && <div style={{ fontSize:80,fontWeight:800,color:STAGE_COLORS[stage],marginBottom:8,
+        animation:"popIn 0.7s cubic-bezier(0.34,1.56,0.64,1)",
+        textShadow:`0 6px 40px ${STAGE_COLORS[stage]}22` }}>{stage}</div>}
+      {step >= 2 && <div style={{ fontSize:28,fontWeight:800,color:"#4a3a2a",letterSpacing:6,marginBottom:8,
+        animation:"fadeInUp 0.6s ease" }}>{STAGE_NAMES[stage]}</div>}
+      {step >= 2 && <div style={{ fontSize:14,color:"#b0a09088",letterSpacing:4,marginBottom:32,
+        animation:"fadeInUp 0.7s ease" }}>{STAGE_SUBTITLES[stage]} · {STAGE_DURATIONS[stage]}s</div>}
+      {step >= 3 && (
+        <div onClick={onStart} style={{ padding:"14px 40px",background:STAGE_COLORS[stage],borderRadius:14,
+          cursor:"pointer",animation:"fadeInUp 0.6s ease",
+          boxShadow:`0 8px 32px ${STAGE_COLORS[stage]}33`,transition:"transform 0.2s" }}
+          onMouseEnter={e=>e.target.style.transform="scale(1.06)"}
+          onMouseLeave={e=>e.target.style.transform="scale(1)"}>
+          <span style={{ color:"#fff",fontSize:16,fontWeight:800,letterSpacing:4 }}>START</span>
+        </div>
+      )}
+      <div style={{ position:"absolute",bottom:"8%",opacity:0.2 }}>
+        <NaviCharacter emotion="excited" frame={frame} size={100}/>
+      </div>
+    </div>
+  );
+}
+
+function StageHUD({ stage, timer, duration, temptation }) {
+  const urgent = timer <= 10;
+  const progress = (duration - timer) / duration;
+  return (
+    <div style={{ position:"absolute",top:14,left:"50%",transform:"translateX(-50%)",zIndex:200,
+      display:"flex",flexDirection:"column",alignItems:"center",gap:6,
+      animation:"fadeInUp 0.5s ease",pointerEvents:"none" }}>
+      <div style={{ display:"flex",alignItems:"center",gap:12,
+        background:"rgba(255,255,255,0.92)",backdropFilter:"blur(10px)",
+        padding:"8px 24px",borderRadius:16,
+        border:`1.5px solid ${urgent?"#e8573d33":"rgba(0,0,0,0.06)"}`,
+        boxShadow:urgent?"0 4px 20px rgba(232,87,61,0.15)":"0 4px 16px rgba(0,0,0,0.06)",
+        transition:"all 0.3s" }}>
+        <div style={{ fontSize:11,color:STAGE_COLORS[stage],letterSpacing:3,fontWeight:700 }}>
+          STAGE {stage}
+        </div>
+        <div style={{ width:1,height:16,background:"#e0d8d0" }}/>
+        <div style={{ fontSize:11,color:"#b0a090",letterSpacing:2 }}>
+          {STAGE_NAMES[stage]}
+        </div>
+        <div style={{ width:1,height:16,background:"#e0d8d0" }}/>
+        <div style={{ fontSize:urgent?20:16,fontWeight:800,
+          color:urgent?"#e8573d":"#4a3a2a",
+          animation:urgent?"pulse 0.5s ease infinite":"none",
+          transition:"all 0.3s",letterSpacing:2,minWidth:52,textAlign:"center" }}>
+          {String(Math.floor(timer/60)).padStart(2,"0")}:{String(timer%60).padStart(2,"0")}
+        </div>
+      </div>
+      <div style={{ width:220,height:4,background:"rgba(0,0,0,0.06)",borderRadius:2,overflow:"hidden" }}>
+        <div style={{ width:`${progress*100}%`,height:"100%",
+          background:urgent?"linear-gradient(90deg,#e8573d,#ff8a65)":"linear-gradient(90deg,#a33de8,#536dfe)",
+          borderRadius:2,transition:"width 1s linear" }}/>
+      </div>
+      <div style={{ width:160,height:3,background:"rgba(0,0,0,0.04)",borderRadius:2,overflow:"hidden" }}>
+        <div style={{ width:`${Math.min(temptation,100)}%`,height:"100%",
+          background:"linear-gradient(90deg,#ffa726,#e8573d)",borderRadius:2,
+          transition:"width 0.5s ease" }}/>
+      </div>
+    </div>
+  );
+}
+
+function WarningOverlay({ data, onConfirm, onResist }) {
+  if (!data) return null;
+  const { endingId, step, maxSteps } = data;
+  const ed = ENDINGS[endingId];
+  return (
+    <div style={{ position:"absolute",inset:0,zIndex:800,display:"flex",alignItems:"center",justifyContent:"center" }}>
+      <div style={{ position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(6px)" }}/>
+      <div style={{ position:"relative",zIndex:1,background:"#fff",borderRadius:24,padding:"32px 40px",
+        minWidth:320,maxWidth:400,boxShadow:"0 24px 80px rgba(0,0,0,0.3)",animation:"popIn 0.3s ease",
+        textAlign:"center" }}>
+        <div style={{ fontSize:48,marginBottom:16 }}>⚠️</div>
+        <div style={{ fontSize:18,fontWeight:800,color:"#e8573d",marginBottom:8,letterSpacing:3 }}>
+          {step === 1 ? "정말로?" : step === 2 ? "진짜로??" : "마지막 경고!!!"}
+        </div>
+        <div style={{ fontSize:14,color:"#666",marginBottom:8,lineHeight:1.7 }}>
+          "{ed.eventText}"
+        </div>
+        {maxSteps > 1 && (
+          <div style={{ fontSize:11,color:"#b0a090",marginBottom:16 }}>
+            경고 {step}/{maxSteps}
+          </div>
+        )}
+        <div style={{ fontSize:13,color:"#999",marginBottom:24 }}>
+          이 유혹에 넘어갈 거야?
+        </div>
+        <div style={{ display:"flex",gap:12,justifyContent:"center" }}>
+          <div onClick={onResist} style={{ flex:1,padding:"14px 20px",background:"#f0f0f0",borderRadius:14,
+            cursor:"pointer",fontSize:15,fontWeight:700,color:"#666",transition:"background 0.2s" }}
+            onMouseEnter={e=>e.target.style.background="#e8e8e8"}
+            onMouseLeave={e=>e.target.style.background="#f0f0f0"}>
+            😤 참기
+          </div>
+          <div onClick={onConfirm} style={{ flex:1,padding:"14px 20px",
+            background:ed.btnColor||"#e8573d",borderRadius:14,
+            cursor:"pointer",fontSize:15,fontWeight:700,color:"#fff",
+            boxShadow:`0 4px 16px ${ed.btnColor||"#e8573d"}44`,
+            transition:"transform 0.2s" }}
+            onMouseEnter={e=>e.target.style.transform="scale(1.04)"}
+            onMouseLeave={e=>e.target.style.transform="scale(1)"}>
+            {ed.btn}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StageClearScreen({ stage, onNext, frame }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    setStep(0);
+    const ts = [setTimeout(()=>setStep(1),400), setTimeout(()=>setStep(2),1200), setTimeout(()=>setStep(3),2000)];
+    return () => ts.forEach(clearTimeout);
+  }, [stage]);
+  return (
+    <div style={{ width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",
+      justifyContent:"center",
+      background:"radial-gradient(ellipse at 50% 40%,#f0faf5,#e8f0f5 60%,#e0f0e8)",
+      position:"relative",overflow:"hidden" }}>
+      {step >= 1 && <div style={{ fontSize:60,marginBottom:16,animation:"popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)" }}>🎉</div>}
+      {step >= 1 && <div style={{ fontSize:14,color:"#2e9e5a88",letterSpacing:8,marginBottom:8,
+        animation:"fadeInUp 0.5s ease" }}>STAGE CLEAR</div>}
+      {step >= 2 && <div style={{ fontSize:36,fontWeight:800,color:"#2e9e5a",marginBottom:8,letterSpacing:6,
+        animation:"fadeInUp 0.6s ease" }}>Stage {stage} 클리어!</div>}
+      {step >= 2 && <div style={{ fontSize:16,color:"#666",marginBottom:32,
+        animation:"fadeInUp 0.7s ease" }}>{STAGE_NAMES[stage]}의 유혹을 이겨냈다!</div>}
+      {step >= 3 && (
+        <div onClick={onNext} style={{ padding:"14px 40px",background:"#2e9e5a",borderRadius:14,
+          cursor:"pointer",animation:"fadeInUp 0.6s ease",
+          boxShadow:"0 8px 32px #2e9e5a33",transition:"transform 0.2s" }}
+          onMouseEnter={e=>e.target.style.transform="scale(1.06)"}
+          onMouseLeave={e=>e.target.style.transform="scale(1)"}>
+          <span style={{ color:"#fff",fontSize:16,fontWeight:800,letterSpacing:4 }}>
+            {stage < STAGE_COUNT ? "NEXT STAGE" : "결과 보기"}
+          </span>
+        </div>
+      )}
+      <div style={{ position:"absolute",bottom:"8%",opacity:0.25 }}>
+        <NaviCharacter emotion="excited" frame={frame} size={100}/>
+      </div>
+    </div>
+  );
+}
+
+function AllClearScreen({ onBack, frame }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    setStep(0);
+    const ts = [setTimeout(()=>setStep(1),400), setTimeout(()=>setStep(2),1500), setTimeout(()=>setStep(3),2500), setTimeout(()=>setStep(4),3500)];
+    return () => ts.forEach(clearTimeout);
+  }, []);
+  return (
+    <div style={{ width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",
+      justifyContent:"center",
+      background:"radial-gradient(ellipse at 50% 40%,#fffaf0,#fff0e5 60%,#ffe8d8)",
+      position:"relative",overflow:"hidden" }}>
+      {step >= 1 && <div style={{ fontSize:80,marginBottom:16,animation:"popIn 0.7s cubic-bezier(0.34,1.56,0.64,1)" }}>🏆</div>}
+      {step >= 2 && <div style={{ fontSize:14,color:"#ffa72688",letterSpacing:8,marginBottom:8,
+        animation:"fadeInUp 0.6s ease" }}>ALL STAGES CLEAR</div>}
+      {step >= 2 && <div style={{ fontSize:36,fontWeight:800,color:"#e8573d",marginBottom:8,letterSpacing:6,
+        animation:"fadeInUp 0.7s ease",textShadow:"0 4px 20px #e8573d22" }}>올 클리어!</div>}
+      {step >= 3 && <div style={{ maxWidth:360,textAlign:"center",animation:"fadeInUp 0.8s ease" }}>
+        <div style={{ fontSize:16,color:"#4a3a2a",lineHeight:1.8,marginBottom:8 }}>
+          "대... 대단해!! 5단계를 전부 클리어하다니!"
+        </div>
+        <div style={{ fontSize:14,color:"#b0a090" }}>
+          "너 정말 유혹에 강한 인간이야... 인정!"
+        </div>
+      </div>}
+      {step >= 4 && <>
+        <div style={{ marginTop:24,marginBottom:16 }}>
+          <NaviCharacter emotion="excited" frame={frame} size={140}/>
+        </div>
+        <div onClick={onBack} style={{ padding:"14px 40px",background:"#e8573d",borderRadius:14,
+          cursor:"pointer",animation:"fadeInUp 0.6s ease",
+          boxShadow:"0 8px 32px #e8573d33",transition:"transform 0.2s" }}
+          onMouseEnter={e=>e.target.style.transform="scale(1.06)"}
+          onMouseLeave={e=>e.target.style.transform="scale(1)"}>
+          <span style={{ color:"#fff",fontSize:16,fontWeight:800,letterSpacing:4 }}>타이틀로</span>
+        </div>
+      </>}
+    </div>
+  );
+}
+
+// ============================================================
 // MAIN COMPONENT
 // ============================================================
 function DontPressTheButton() {
@@ -665,11 +1022,24 @@ function DontPressTheButton() {
     try { return parseInt(localStorage.getItem("dpb_plays") || "0"); } catch { return 0; }
   });
 
+  // ── 스테이지 시스템 상태 ──
+  const [gameMode, setGameMode] = useState(null);
+  const [currentStage, setCurrentStage] = useState(1);
+  const [stageTimer, setStageTimer] = useState(0);
+  const [activeObjects, setActiveObjects] = useState([]);
+  const [warningData, setWarningData] = useState(null);
+  const [stageCleared, setStageCleared] = useState(() => {
+    try { return parseInt(localStorage.getItem("dpb_stage_cleared") || "0"); } catch { return 0; }
+  });
+  const [temptationLevel, setTemptationLevel] = useState(0);
+  const [objectGlows, setObjectGlows] = useState([]);
+
   const lastLine = useRef(null);
   const idleRef = useRef(0);
   const bannerTimerRef = useRef(null);
   const marshmallowRef = useRef(null);
   const naviIntervalRef = useRef(null);
+  const stageDialogueRef = useRef(-1);
 
   const say = useCallback((text, emotion) => { setNEmo(emotion || "idle"); setNText(text); setNKey(p => p + 1); }, []);
   const doShake = useCallback(() => { setScreenShake(true); setTimeout(() => setScreenShake(false), 400); }, []);
@@ -710,35 +1080,47 @@ function DontPressTheButton() {
     setCatEars(false); setDoorOpen(false); setKillMode(false); setNaviSleeping(false);
     setCakeSelected(false); setCakeOnButton(false); setDarkMode(false); setNaviGone(false);
     setWasHidden(false); setNaviYawn(false); setContextMenu(null); idleRef.current = 0;
-    say("어서와~ 이 방에 비밀이 많거든! 근데 버튼은 누르면 안 돼~", "excited");
-    bannerTimerRef.current = setTimeout(() => setBannerVisible(true), BANNER_DELAY);
+    setWarningData(null); setObjectGlows([]);
+    if (gameMode === "stage") {
+      setStageTimer(STAGE_DURATIONS[currentStage]);
+      setActiveObjects([]);
+      setTemptationLevel(0);
+      stageDialogueRef.current = -1;
+    } else {
+      say("어서와~ 이 방에 비밀이 많거든! 근데 버튼은 누르면 안 돼~", "excited");
+      bannerTimerRef.current = setTimeout(() => setBannerVisible(true), BANNER_DELAY);
+    }
     return () => {
       if (bannerTimerRef.current) clearTimeout(bannerTimerRef.current);
       if (marshmallowRef.current) clearInterval(marshmallowRef.current);
       if (naviIntervalRef.current) clearInterval(naviIntervalRef.current);
     };
-  }, [gs, say]);
+  }, [gs, say, gameMode, currentStage]);
 
-  // ── 나비 랜덤 대사 ──
+  // ── 나비 랜덤 대사 (자유 모드만) ──
   useEffect(() => {
-    if (gs !== "room" || activeEvent) return;
+    if (gs !== "room" || activeEvent || gameMode === "stage") return;
     naviIntervalRef.current = setInterval(() => {
       if (activeEvent || naviSleeping) return;
       const line = pickRandom(NAVI_IDLE, lastLine);
       if (line) say(line.t, line.e);
     }, 6000);
     return () => { if (naviIntervalRef.current) clearInterval(naviIntervalRef.current); };
-  }, [gs, activeEvent, naviSleeping, say]);
+  }, [gs, activeEvent, naviSleeping, say, gameMode]);
 
   // ── 방치 감지 (엔딩16) ──
   useEffect(() => {
     if (gs !== "room" || activeEvent) return;
+    if (gameMode === "stage" && !activeObjects.includes(16)) return;
     const iv = setInterval(() => {
       idleRef.current += 1; setIdleTimer(idleRef.current);
-      if (idleRef.current >= IDLE_LIMIT && !activeEvent) triggerEnding(16);
+      if (idleRef.current >= IDLE_LIMIT && !activeEvent) {
+        if (gameMode === "stage") attemptEnding(16);
+        else triggerEnding(16);
+      }
     }, 1000);
     return () => clearInterval(iv);
-  }, [gs, activeEvent]);
+  }, [gs, activeEvent, gameMode, activeObjects]);
 
   const resetIdle = useCallback(() => { idleRef.current = 0; setIdleTimer(0); }, []);
 
@@ -747,11 +1129,16 @@ function DontPressTheButton() {
     if (gs !== "room") return;
     const handler = () => {
       if (document.hidden) { setWasHidden(true); setNaviYawn(true); }
-      else if (wasHidden && !activeEvent) { setNaviYawn(false); triggerEnding(4); }
+      else if (wasHidden && !activeEvent) {
+        setNaviYawn(false);
+        if (gameMode === "stage" && !activeObjects.includes(4)) return;
+        if (gameMode === "stage") attemptEnding(4);
+        else triggerEnding(4);
+      }
     };
     document.addEventListener("visibilitychange", handler);
     return () => document.removeEventListener("visibilitychange", handler);
-  }, [gs, wasHidden, activeEvent]);
+  }, [gs, wasHidden, activeEvent, gameMode, activeObjects]);
 
   // ── 마시멜로 타이머 ──
   useEffect(() => {
@@ -773,9 +1160,9 @@ function DontPressTheButton() {
     return () => clearTimeout(t);
   }, [countdownVal]);
 
-  // ── 엔딩20 체크 ──
+  // ── 엔딩20 체크 (자유 모드만) ──
   useEffect(() => {
-    if (gs !== "room" || activeEvent) return;
+    if (gs !== "room" || activeEvent || gameMode === "stage") return;
     const first19 = Array.from({length:19},(_,i)=>i+1);
     if (first19.every(id => collected.includes(id)) && !collected.includes(20)) {
       const t = setTimeout(() => {
@@ -788,7 +1175,85 @@ function DontPressTheButton() {
       }, 30000);
       return () => clearTimeout(t);
     }
-  }, [gs, collected, activeEvent, say]);
+  }, [gs, collected, activeEvent, say, gameMode]);
+
+  // ── 스테이지 타이머 ──
+  useEffect(() => {
+    if (gs !== "room" || gameMode !== "stage" || warningData) return;
+    const iv = setInterval(() => {
+      setStageTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(iv);
+          const clearedStage = currentStage;
+          setStageCleared(old => {
+            const next = Math.max(old, clearedStage);
+            localStorage.setItem("dpb_stage_cleared", String(next));
+            return next;
+          });
+          if (clearedStage >= STAGE_COUNT) setGs("all_clear");
+          else setGs("stage_clear");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [gs, gameMode, warningData, currentStage]);
+
+  // ── 오브젝트 활성화 스케줄 ──
+  useEffect(() => {
+    if (gs !== "room" || gameMode !== "stage") return;
+    const elapsed = STAGE_DURATIONS[currentStage] - stageTimer;
+    const newActive = [];
+    const newGlows = [];
+    for (let s = 1; s < currentStage; s++) {
+      const schedule = STAGE_OBJECT_SCHEDULE[s];
+      if (schedule) schedule.forEach(item => newActive.push(...item.objects));
+    }
+    const schedule = STAGE_OBJECT_SCHEDULE[currentStage];
+    if (schedule) {
+      schedule.forEach(item => {
+        if (elapsed >= item.at) {
+          newActive.push(...item.objects);
+          if (elapsed - item.at < 5) newGlows.push(...item.objects);
+        }
+      });
+    }
+    setActiveObjects(newActive);
+    setObjectGlows(newGlows);
+  }, [gs, gameMode, currentStage, stageTimer]);
+
+  // ── 스테이지 대사 타임라인 ──
+  useEffect(() => {
+    if (gs !== "room" || gameMode !== "stage" || warningData) return;
+    const elapsed = STAGE_DURATIONS[currentStage] - stageTimer;
+    const dialogue = STAGE_DIALOGUE[currentStage];
+    if (!dialogue) return;
+    let latestIdx = -1;
+    for (let i = 0; i < dialogue.length; i++) {
+      if (dialogue[i].at <= elapsed) latestIdx = i;
+    }
+    if (latestIdx > stageDialogueRef.current) {
+      stageDialogueRef.current = latestIdx;
+      say(dialogue[latestIdx].t, dialogue[latestIdx].e);
+    }
+  }, [gs, gameMode, currentStage, stageTimer, warningData, say]);
+
+  // ── 유혹 게이지 ──
+  useEffect(() => {
+    if (gs !== "room" || gameMode !== "stage") { setTemptationLevel(0); return; }
+    const duration = STAGE_DURATIONS[currentStage];
+    const elapsed = duration - stageTimer;
+    const base = (elapsed / duration) * 50;
+    const objectBonus = activeObjects.length * 3;
+    setTemptationLevel(Math.min(base + objectBonus, 100));
+  }, [gs, gameMode, currentStage, stageTimer, activeObjects]);
+
+  // ── 스테이지 모드 배너 활성화 ──
+  useEffect(() => {
+    if (gs !== "room" || gameMode !== "stage") return;
+    if (activeObjects.includes(5) && !bannerVisible) setBannerVisible(true);
+  }, [gs, gameMode, activeObjects, bannerVisible]);
 
   const recordEnding = useCallback((id) => {
     setCollected(prev => {
@@ -798,6 +1263,25 @@ function DontPressTheButton() {
       return next;
     });
   }, []);
+
+  // ── 오브젝트 활성 체크 헬퍼 ──
+  const isObjectActive = useCallback((endingId) => {
+    if (gameMode !== "stage") return true;
+    return activeObjects.includes(endingId);
+  }, [gameMode, activeObjects]);
+
+  // ── 오브젝트 글로우 스타일 헬퍼 ──
+  const getObjectStyle = useCallback((endingId) => {
+    if (gameMode !== "stage") return {};
+    const active = activeObjects.includes(endingId);
+    const glowing = objectGlows.includes(endingId);
+    return {
+      opacity: active ? 1 : 0.3,
+      pointerEvents: active ? "auto" : "none",
+      filter: glowing ? "drop-shadow(0 0 12px #ffd700) drop-shadow(0 0 24px #ffa50066)" : undefined,
+      animation: glowing ? "objectGlow 1.5s ease infinite" : undefined,
+    };
+  }, [gameMode, activeObjects, objectGlows]);
 
   const triggerEnding = useCallback((id) => {
     if (activeEvent) return;
@@ -821,6 +1305,40 @@ function DontPressTheButton() {
       case 18: setDoorOpen(true); break;
     }
   }, [activeEvent, say, resetIdle, doShake]);
+
+  // ── 스테이지 모드 경고 시스템 ──
+  const attemptEnding = useCallback((id) => {
+    if (activeEvent || warningData) return;
+    if (!isObjectActive(id)) return;
+    if (gameMode === "stage") {
+      const maxSteps = WARNING_STEPS[id] || 1;
+      setWarningData({ endingId: id, step: 1, maxSteps });
+    } else {
+      triggerEnding(id);
+    }
+  }, [activeEvent, warningData, gameMode, isObjectActive, triggerEnding]);
+
+  const handleWarningConfirm = useCallback(() => {
+    if (!warningData) return;
+    const { endingId, step, maxSteps } = warningData;
+    if (step < maxSteps) {
+      setWarningData({ ...warningData, step: step + 1 });
+    } else {
+      const ed = ENDINGS[endingId];
+      setWarningData(null);
+      recordEnding(endingId);
+      if (endingId === 17) {
+        setEndingData({ ...ed, over1: playCount > 0 ? "또 왔어? 학습 능력이 없어?" : "처음으로 돌아갈래?", over2: "(타이틀 복귀)" });
+      } else { setEndingData(ed); }
+      doShake();
+      setGs("ending");
+    }
+  }, [warningData, recordEnding, playCount, doShake]);
+
+  const handleWarningResist = useCallback(() => {
+    setWarningData(null);
+    say("오! 참았어?! 대단한데~!", "shocked");
+  }, [say]);
 
   const pressEventButton = useCallback(() => {
     if (!activeEvent) return;
@@ -847,41 +1365,79 @@ function DontPressTheButton() {
     const now = Date.now();
     setBgClicks(prev => {
       const recent = [...prev.filter(t => now - t < RAPID_CLICK_WINDOW), now];
-      if (recent.length >= RAPID_CLICK_THRESHOLD) { triggerEnding(7); return []; }
+      if (recent.length >= RAPID_CLICK_THRESHOLD) {
+        if (gameMode === "stage" && !activeObjects.includes(7)) return recent;
+        if (gameMode === "stage") { attemptEnding(7); return []; }
+        triggerEnding(7); return [];
+      }
       return recent;
     });
-  }, [activeEvent, resetIdle, triggerEnding]);
+  }, [activeEvent, resetIdle, triggerEnding, attemptEnding, gameMode, activeObjects]);
 
   const handleButtonHover = useCallback((isEnter) => {
     if (activeEvent) return; resetIdle();
-    if (isEnter) setHoverCount(prev => { const n = prev+1; if (n >= HOVER_THRESHOLD) { triggerEnding(3); return 0; } return n; });
-  }, [activeEvent, resetIdle, triggerEnding]);
+    if (isEnter) setHoverCount(prev => {
+      const n = prev+1;
+      if (n >= HOVER_THRESHOLD) {
+        if (gameMode === "stage" && !activeObjects.includes(3)) return n;
+        if (gameMode === "stage") { attemptEnding(3); return 0; }
+        triggerEnding(3); return 0;
+      }
+      return n;
+    });
+  }, [activeEvent, resetIdle, triggerEnding, attemptEnding, gameMode, activeObjects]);
 
   const handleDoorKnock = useCallback(() => {
     if (activeEvent) return; resetIdle();
+    if (gameMode === "stage" && !activeObjects.includes(18)) return;
     setDoorKnocks(prev => {
       const n = prev+1;
       if (n === 1) say("똑똑...", "idle");
       else if (n === 3) say("누구세요~?", "idle");
-      if (n >= DOOR_KNOCK_THRESHOLD) { triggerEnding(18); return 0; }
+      if (n >= DOOR_KNOCK_THRESHOLD) {
+        if (gameMode === "stage") { attemptEnding(18); return 0; }
+        triggerEnding(18); return 0;
+      }
       return n;
     });
-  }, [activeEvent, resetIdle, say, triggerEnding]);
+  }, [activeEvent, resetIdle, say, triggerEnding, attemptEnding, gameMode, activeObjects]);
 
   const handleNaviContextMenu = useCallback((e) => {
     e.preventDefault(); if (activeEvent) return; resetIdle();
+    if (gameMode === "stage" && !activeObjects.includes(1)) return;
     setContextMenu({ x: e.clientX, y: e.clientY });
-  }, [activeEvent, resetIdle]);
+  }, [activeEvent, resetIdle, gameMode, activeObjects]);
 
   const currentEnding = activeEvent ? ENDINGS[activeEvent] : null;
   const buttonLabel = currentEnding ? currentEnding.btn : "누르지 마";
   const buttonColor = currentEnding ? currentEnding.btnColor : "#e8573d";
+  const freeUnlocked = stageCleared >= 1 || collected.length >= 1;
 
   const restart = useCallback(() => {
     const pc = playCount + 1; setPlayCount(pc);
     localStorage.setItem("dpb_plays", String(pc));
-    setEndingData(null); setActiveEvent(null); setGs("title");
+    setEndingData(null); setActiveEvent(null); setGameMode(null);
+    setCurrentStage(1); setStageTimer(0); setActiveObjects([]);
+    setWarningData(null); setTemptationLevel(0); setObjectGlows([]);
+    stageDialogueRef.current = -1;
+    setGs("title");
   }, [playCount]);
+
+  const startStageMode = useCallback(() => {
+    setGameMode("stage"); setCurrentStage(1); setGs("stage_intro");
+  }, []);
+
+  const startFreeMode = useCallback(() => {
+    setGameMode("free"); setGs("room");
+  }, []);
+
+  const startNextStage = useCallback(() => {
+    setCurrentStage(prev => prev + 1); setGs("stage_intro");
+  }, []);
+
+  const startStageRoom = useCallback(() => {
+    setGs("room");
+  }, []);
 
   // ════════════════════════════════════════════════════════════
   // RENDER
@@ -919,6 +1475,7 @@ function DontPressTheButton() {
         @keyframes crtScan{0%{top:-20%}100%{top:120%}}
         @keyframes crtFlicker{0%,100%{opacity:0.02}50%{opacity:0.05}}
         @keyframes crtStatic{0%{background-position:0 0}100%{background-position:100% 100%}}
+        @keyframes objectGlow{0%,100%{filter:drop-shadow(0 0 8px #ffd700) drop-shadow(0 0 16px #ffa50044)}50%{filter:drop-shadow(0 0 16px #ffd700) drop-shadow(0 0 32px #ffa50066)}}
         .cursor-blink{animation:pulse 0.6s step-end infinite;opacity:0.5}
         *{box-sizing:border-box;margin:0;padding:0;user-select:none;}
       `}</style>
@@ -929,7 +1486,7 @@ function DontPressTheButton() {
           justifyContent:"center",
           background:"radial-gradient(ellipse at 50% 40%,#faf5f0,#f0e8f5 60%,#e8e0f0)",
           cursor:"pointer",position:"relative",overflow:"hidden" }}
-          onClick={() => { resetIdle(); setGs("room"); }}>
+          onClick={() => { resetIdle(); setGs("mode_select"); }}>
 
           {/* 배경 장식 원 */}
           <div style={{ position:"absolute",top:"10%",left:"8%",width:280,height:280,borderRadius:"50%",
@@ -976,6 +1533,22 @@ function DontPressTheButton() {
             </div>
           </>}
         </div>
+      )}
+
+      {/* ═══════════ MODE SELECT ═══════════ */}
+      {gs === "mode_select" && (
+        <ModeSelectScreen
+          onSelectStage={startStageMode}
+          onSelectFree={startFreeMode}
+          freeUnlocked={freeUnlocked}
+          collected={collected}
+          frame={frame}
+        />
+      )}
+
+      {/* ═══════════ STAGE INTRO ═══════════ */}
+      {gs === "stage_intro" && (
+        <StageIntroScreen stage={currentStage} onStart={startStageRoom} frame={frame}/>
       )}
 
       {/* ═══════════ ROOM ═══════════ */}
@@ -1103,7 +1676,7 @@ function DontPressTheButton() {
 
           {/* ── 문 (엔딩18) - FULL HEIGHT from ceiling to floor ── */}
           <RoomObj onClick={(e) => { e.stopPropagation(); handleDoorKnock(); }}
-            style={{ position:"absolute",left:24,top:"1%",width:100,height:"49%",zIndex:10,
+            style={{ position:"absolute",left:24,top:"1%",width:100,height:"49%",zIndex:10,...getObjectStyle(18),
               background:doorOpen?"linear-gradient(180deg,#1a1008,#0a0804)":"linear-gradient(178deg,#c49a68,#a87848,#926838)",
               border:"6px solid #7a5a3a",borderRadius:"4px 4px 0 0",
               boxShadow:doorOpen
@@ -1211,8 +1784,8 @@ function DontPressTheButton() {
           </div>
 
           {/* ── 시계 (엔딩2, middle of wall) ── */}
-          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(2); } }}
-            style={{ position:"absolute",left:"54%",top:"22%",transform:"translateX(-50%)",zIndex:10,
+          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(2); } }}
+            style={{ position:"absolute",left:"54%",top:"22%",transform:"translateX(-50%)",zIndex:10,...getObjectStyle(2),
               width:76,height:76,borderRadius:"50%",
               background:"linear-gradient(145deg,#fff,#f8f4ef)",
               border:"5px solid #c4b49a",
@@ -1236,8 +1809,8 @@ function DontPressTheButton() {
           </RoomObj>
 
           {/* ── 비상연락 (엔딩12, wall-mounted intercom panel) ── */}
-          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(12); } }}
-            style={{ position:"absolute",left:"64%",top:"5%",zIndex:10,
+          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(12); } }}
+            style={{ position:"absolute",left:"64%",top:"5%",zIndex:10,...getObjectStyle(12),
               width:52,height:62,borderRadius:6,
               background:"linear-gradient(180deg,#e8e4e0,#d8d4d0,#ccc8c4)",
               border:"2px solid #b0aaa4",
@@ -1287,8 +1860,8 @@ function DontPressTheButton() {
           </div>
 
           {/* ── TV (엔딩14, high on wall, mounted) ── */}
-          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(14); } }}
-            style={{ position:"absolute",left:"35%",top:"18%",zIndex:10,
+          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(14); } }}
+            style={{ position:"absolute",left:"35%",top:"18%",zIndex:10,...getObjectStyle(14),
               width:160,height:105,borderRadius:10,
               background:"linear-gradient(180deg,#3a3a3a,#2a2a2a,#222)",
               border:"5px solid #444",
@@ -1328,9 +1901,10 @@ function DontPressTheButton() {
                 {/* Character */}
                 <div style={{ position:"absolute",bottom:0,left:"50%",transform:"translateX(-50%)",zIndex:1 }}>
                   {!catEars && !activeEvent && (
-                    <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(11); } }}
+                    <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(11); } }}
                       style={{ position:"absolute",top:-6,left:"50%",transform:"translateX(-50%)",
-                        fontSize:12,opacity:0.25,zIndex:2 }} hoverGlow="#ff8fab">
+                        fontSize:12,opacity:gameMode==="stage"&&!activeObjects.includes(11)?0:0.25,zIndex:2,
+                        pointerEvents:gameMode==="stage"&&!activeObjects.includes(11)?"none":"auto" }} hoverGlow="#ff8fab">
                       {"\uD83D\uDC31"}
                     </RoomObj>
                   )}
@@ -1386,7 +1960,7 @@ function DontPressTheButton() {
             </div>
           )}
 
-          <PrizeBanner visible={bannerVisible} onClick={(e) => { e.stopPropagation(); setBannerVisible(false); if (!activeEvent) triggerEnding(5); }}/>
+          <PrizeBanner visible={bannerVisible} onClick={(e) => { e.stopPropagation(); setBannerVisible(false); if (!activeEvent) attemptEnding(5); }}/>
 
           {/* ════════════════════════════════════════ */}
           {/* ══ 책상 위 오브젝트 (sitting ON desk surface at 60%) ══ */}
@@ -1410,8 +1984,8 @@ function DontPressTheButton() {
           </div>
 
           {/* ── 지갑 (엔딩6, on desk) ── */}
-          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(6); } }}
-            style={{ position:"absolute",left:"22%",bottom:"40%",zIndex:20,
+          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(6); } }}
+            style={{ position:"absolute",left:"22%",bottom:"40%",zIndex:20,...getObjectStyle(6),
               width:80,height:50,borderRadius:8,
               background:"linear-gradient(150deg,#8d6e63,#6d4c41,#5d4037)",
               border:"2.5px solid #4e342e",
@@ -1425,8 +1999,8 @@ function DontPressTheButton() {
           </RoomObj>
 
           {/* ── 케이크 (엔딩9, redesigned as cake on plate) ── */}
-          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); setCakeSelected(true); say("케이크를 집었어! 이제 버튼에 올려봐~","excited"); } }}
-            style={{ position:"absolute",left:"34%",bottom:"40%",zIndex:20,
+          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent && isObjectActive(9)) { resetIdle(); if (gameMode==="stage") { attemptEnding(9); } else { setCakeSelected(true); say("케이크를 집었어! 이제 버튼에 올려봐~","excited"); } } }}
+            style={{ position:"absolute",left:"34%",bottom:"40%",zIndex:20,...getObjectStyle(9),
               width:72,height:72,borderRadius:"50%",
               background:cakeSelected
                 ?"linear-gradient(180deg,#fff3e0,#ffe0b2)"
@@ -1446,22 +2020,23 @@ function DontPressTheButton() {
           {/* ═══ 중앙 메인 버튼 + 안전 커버 ═══ */}
           <div style={{ position:"absolute",left:"50%",bottom:"39%",transform:"translateX(-50%)",zIndex:50 }}>
             {!activeEvent && (
-              <div onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(13); } }}
+              <div onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(13); } }}
                 style={{ position:"absolute",top:-52,left:"50%",transform:"translateX(-50%)",
                   width:60,height:30,
                   background:"linear-gradient(180deg,#ffd54f,#ffca28,#ffb300)",
                   border:"3px solid #ff8f00",borderRadius:"8px 8px 0 0",cursor:"pointer",
                   display:"flex",alignItems:"center",justifyContent:"center",
                   fontSize:9,color:"#e65100",fontWeight:800,letterSpacing:1,zIndex:2,
-                  boxShadow:"0 4px 14px rgba(255,152,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4)" }}>
+                  boxShadow:"0 4px 14px rgba(255,152,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4)",
+                  ...getObjectStyle(13) }}>
                 {"\u26A0"} COVER
               </div>
             )}
             <NuclearButton
               label={buttonLabel} accent={buttonColor}
-              onPress={cakeSelected ? () => { setCakeSelected(false); setCakeOnButton(true); triggerEnding(9); } : pressMainButton}
+              onPress={cakeSelected ? () => { setCakeSelected(false); setCakeOnButton(true); attemptEnding(9); } : pressMainButton}
               onHover={handleButtonHover}
-              onDrag={!activeEvent && !cakeSelected ? () => { if (!activeEvent) { resetIdle(); triggerEnding(8); } } : undefined}
+              onDrag={!activeEvent && !cakeSelected ? () => { if (!activeEvent) { resetIdle(); attemptEnding(8); } } : undefined}
               disabled={activeEvent === 20}
               cakeMode={cakeOnButton}
               cakeSelect={cakeSelected}
@@ -1482,8 +2057,8 @@ function DontPressTheButton() {
           </div>
 
           {/* ── 스마트폰 (엔딩10, on desk, with CSS chart instead of emoji) ── */}
-          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); triggerEnding(10); } }}
-            style={{ position:"absolute",right:"24%",bottom:"40%",zIndex:20,
+          <RoomObj onClick={(e) => { e.stopPropagation(); if (!activeEvent) { resetIdle(); attemptEnding(10); } }}
+            style={{ position:"absolute",right:"24%",bottom:"40%",zIndex:20,...getObjectStyle(10),
               width:46,height:78,borderRadius:12,
               background:"linear-gradient(180deg,#333,#222,#1a1a1a)",
               border:"3px solid #444",
@@ -1621,23 +2196,42 @@ function DontPressTheButton() {
           )}
 
           <SettingsPanel open={settingsOpen} onClose={()=>setSettingsOpen(false)}
-            onKillMode={() => { if (!activeEvent) { setKillMode(true); setSettingsOpen(false); triggerEnding(15); } }}
-            onReset={() => { if (!activeEvent) { setSettingsOpen(false); triggerEnding(17); } }} killModeOn={killMode}/>
+            onKillMode={() => { if (!activeEvent && isObjectActive(15)) { setKillMode(true); setSettingsOpen(false); attemptEnding(15); } }}
+            onReset={() => { if (!activeEvent && isObjectActive(17)) { setSettingsOpen(false); attemptEnding(17); } }} killModeOn={killMode}/>
           <ProfileMenu open={profileOpen} onClose={()=>setProfileOpen(false)}
-            onTransfer={() => { if (!activeEvent) { setProfileOpen(false); triggerEnding(19); } }}/>
+            onTransfer={() => { if (!activeEvent && isObjectActive(19)) { setProfileOpen(false); attemptEnding(19); } }}/>
           <CollectionPanel open={collectionOpen} onClose={()=>setCollectionOpen(false)} collected={collected}/>
 
           {contextMenu && <>
             <div onClick={()=>setContextMenu(null)} style={{ position:"fixed",inset:0,zIndex:850 }}/>
             <ContextMenu x={contextMenu.x} y={contextMenu.y}
-              onDelete={() => { setContextMenu(null); triggerEnding(1); }} onClose={()=>setContextMenu(null)}/>
+              onDelete={() => { setContextMenu(null); attemptEnding(1); }} onClose={()=>setContextMenu(null)}/>
           </>}
+
+          {/* ═══ 스테이지 HUD ═══ */}
+          {gameMode === "stage" && !warningData && (
+            <StageHUD stage={currentStage} timer={stageTimer}
+              duration={STAGE_DURATIONS[currentStage]} temptation={temptationLevel}/>
+          )}
+
+          {/* ═══ 경고 오버레이 ═══ */}
+          <WarningOverlay data={warningData} onConfirm={handleWarningConfirm} onResist={handleWarningResist}/>
 
           <div style={{ position:"absolute",inset:0,pointerEvents:"none",zIndex:3,overflow:"hidden" }}>
             <div style={{ position:"absolute",left:0,width:"100%",height:"1px",
               background:"rgba(0,0,0,0.012)",animation:"scanline 8s linear infinite" }}/>
           </div>
         </div>
+      )}
+
+      {/* ═══════════ STAGE CLEAR ═══════════ */}
+      {gs === "stage_clear" && (
+        <StageClearScreen stage={currentStage} onNext={startNextStage} frame={frame}/>
+      )}
+
+      {/* ═══════════ ALL CLEAR ═══════════ */}
+      {gs === "all_clear" && (
+        <AllClearScreen onBack={restart} frame={frame}/>
       )}
 
       {/* ═══════════ ENDING ═══════════ */}
