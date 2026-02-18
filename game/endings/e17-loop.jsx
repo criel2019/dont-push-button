@@ -229,6 +229,9 @@ function E17Loop({ active, onComplete, say, playCount }) {
           </div>
         </div>
       )}
+
+      {/* Skip button */}
+      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
     </div>
   );
 }

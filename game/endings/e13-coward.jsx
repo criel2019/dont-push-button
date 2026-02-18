@@ -282,6 +282,9 @@ function E13Coward({ active, onComplete, say, doShake }) {
       )}
 
       {/* Inline keyframe styles */}
+      {/* Skip button */}
+      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+
       <style>{`
         @keyframes sirenPulse {
           0%, 100% { opacity: 1; }

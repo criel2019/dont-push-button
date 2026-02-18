@@ -213,6 +213,9 @@ function E09Food({ active, onComplete, say }) {
           </div>
         </div>
       )}
+
+      {/* Skip button */}
+      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
     </div>
   );
 }

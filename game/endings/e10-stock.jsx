@@ -343,6 +343,9 @@ function E10Stock({ active, onComplete, say, frame }) {
         }}>
           투자는 본인 책임입니다
         </div>
+
+        {/* Skip button */}
+        <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
       </div>
     </div>
   );

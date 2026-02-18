@@ -230,6 +230,9 @@ function E02Marshmallow({ active, onComplete, say, doShake, frame }) {
           ⚠ TIMER ERROR ⚠
         </div>
       )}
+
+      {/* Skip button */}
+      <SkipButton active={active} delay={12} onSkip={onComplete} autoDismiss={25} />
     </div>
   );
 }

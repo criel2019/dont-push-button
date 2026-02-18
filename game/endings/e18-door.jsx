@@ -235,6 +235,9 @@ function E18Door({ active, onComplete, say, doorOpen }) {
         }} />
       )}
 
+      {/* Skip button */}
+      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+
       <style>{`
         @keyframes doorWhiteout {
           0% { opacity: 0; }

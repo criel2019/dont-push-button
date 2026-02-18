@@ -133,6 +133,9 @@ function E01Rude({ active, onComplete, say, doShake }) {
             확인
           </div>
         )}
+
+        {/* Skip button */}
+        <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
       </div>
     </div>
   );

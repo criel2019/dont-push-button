@@ -297,6 +297,9 @@ function E06Shopping({ active, onComplete, say }) {
         <div style={{ fontSize: 8, color: "#ccc", textAlign: "center", paddingBottom: 12 }}>
           결제 시 환불 불가 · 가상 상품 · 부가세 포함
         </div>
+
+        {/* Skip button */}
+        <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
       </div>
     </div>
   );

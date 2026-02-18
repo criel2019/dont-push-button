@@ -39,13 +39,14 @@ function NaviCharacter({ emotion = "idle", frame = 0, sleeping = false, catEars 
 
 // CRT 이동 위치 맵 (오브젝트 소개 시 나비가 이동)
 const CRT_TARGETS = {
-  showBanner:      { left:"56%", top:"2%", right:"auto" },
-  showWallet:      { left:"4%",  top:"16%", right:"auto" },
-  showCake:        { left:"18%", top:"16%", right:"auto" },
-  showPhone:       { left:"56%", top:"16%", right:"auto" },
-  showSOS:         { left:"50%", top:"1%", right:"auto" },
-  showTV:          { left:"18%", top:"6%", right:"auto" },
-  showSafetyCover: { left:"52%", top:"14%", right:"auto" },
+  home:            { left:"83%", top:"3%" },
+  showBanner:      { left:"56%", top:"2%" },
+  showWallet:      { left:"4%",  top:"16%" },
+  showCake:        { left:"18%", top:"16%" },
+  showPhone:       { left:"56%", top:"16%" },
+  showSOS:         { left:"50%", top:"1%" },
+  showTV:          { left:"18%", top:"6%" },
+  showSafetyCover: { left:"52%", top:"14%" },
 };
 
 function CRTMonitor({ nEmo, frame, naviSleeping, catEars, naviGone, nText, nKey, onContextMenu, onCatEarClick, crtOff, crtTarget, children }) {
@@ -67,10 +68,11 @@ function CRTMonitor({ nEmo, frame, naviSleeping, catEars, naviGone, nText, nKey,
   // 위치: 타겟이 있으면 해당 오브젝트 옆, 없으면 기본 위치 (우상단)
   const posStyle = crtTarget && CRT_TARGETS[crtTarget]
     ? CRT_TARGETS[crtTarget]
-    : { right:16, top:"4%" };
+    : CRT_TARGETS.home;
 
   return (
-    <div style={{ position:"absolute", ...posStyle, zIndex:60 }}>
+    <div style={{ position:"absolute", ...posStyle, zIndex:60,
+      transition: "left 0.5s ease, top 0.5s ease" }}>
       <div onContextMenu={onContextMenu}
         style={{ width:150,padding:5,
           background:"linear-gradient(180deg,#4a4a4a,#333,#2a2a2a)",

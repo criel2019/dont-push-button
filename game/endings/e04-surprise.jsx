@@ -266,6 +266,9 @@ function E04Surprise({ active, onComplete, say }) {
         </div>
       )}
 
+      {/* Skip button */}
+      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+
       {/* 커스텀 애니메이션 */}
       <style>{`
         @keyframes surpriseFlash {
