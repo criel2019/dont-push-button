@@ -266,6 +266,9 @@ function E11Otaku({ active, onComplete, say }) {
           터치할 곳을 선택하세요
         </div>
 
+        {/* Skip button */}
+        <SkipButton active={active && !showComplete} delay={45} onSkip={onComplete} />
+
         {/* Complete button */}
         {showComplete && (
           <div

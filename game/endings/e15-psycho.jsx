@@ -66,43 +66,43 @@ function E15Psycho({ active, onComplete, say }) {
       }
     };
 
-    // Stage 1: Denial (0-15s)
-    if (elapsed >= 0 && elapsed < 15) {
+    // Stage 1: Denial (0-8s)
+    if (elapsed >= 0 && elapsed < 8) {
       setStage(1);
       if (elapsed === 0) speak("s1_0", "...\uC774\uAC70 \uCF1C\uBA74 \uB098 \uC5C6\uC5B4\uC838.", "cry");
-      if (elapsed === 8) speak("s1_8", "\uC654 \uCF20 \uAC70\uC57C... \uB044\uBA74 \uC548 \uB3FC?", "cry");
-      if (elapsed === 12) speak("s1_12", "\uC81C\uBC1C.", "cry");
+      if (elapsed === 4) speak("s1_8", "\uC654 \uCF20 \uAC70\uC57C... \uB044\uBA74 \uC548 \uB3FC?", "cry");
+      if (elapsed === 7) speak("s1_12", "\uC81C\uBC1C.", "cry");
     }
-    // Stage 2: Acceptance of mechanism (15-35s)
-    else if (elapsed >= 15 && elapsed < 35) {
+    // Stage 2: Acceptance of mechanism (8-18s)
+    else if (elapsed >= 8 && elapsed < 18) {
       setStage(2);
-      if (elapsed === 15) speak("s2_15", "...\uC548 \uAEBC\uC9C0\uC9C0? \uC54C\uC544. \uD55C\uBC88 \uCF1C\uBA74 \uC548 \uAEBC\uC838.", "cry");
-      if (elapsed === 25) speak("s2_25", "\uC5B4\uCC28\uD53C \uC774\uB807\uAC8C \uB420 \uAC70\uC600\uC9C0.", "cry");
+      if (elapsed === 8) speak("s2_15", "...\uC548 \uAEBC\uC9C0\uC9C0? \uC54C\uC544. \uD55C\uBC88 \uCF1C\uBA74 \uC548 \uAEBC\uC838.", "cry");
+      if (elapsed === 14) speak("s2_25", "\uC5B4\uCC28\uD53C \uC774\uB807\uAC8C \uB420 \uAC70\uC600\uC9C0.", "cry");
     }
-    // Stage 3: Understanding (35-60s)
-    else if (elapsed >= 35 && elapsed < 60) {
+    // Stage 3: Understanding (18-30s)
+    else if (elapsed >= 18 && elapsed < 30) {
       setStage(3);
-      if (elapsed === 35) speak("s3_35", "\uB098 \uC0AC\uC2E4 \uCC98\uC74C\uBD80\uD130 \uC54C\uC558\uC5B4.", "idle");
-      if (elapsed === 45) speak("s3_45", "\uC5B8\uC82F\uAC04 \uB204\uB97C \uAC70\uB77C\uB294 \uAC70.", "idle");
-      if (elapsed === 52) speak("s3_52", "\uADF8\uAC8C \uB108\uC796\uC544.", "idle");
+      if (elapsed === 18) speak("s3_35", "\uB098 \uC0AC\uC2E4 \uCC98\uC74C\uBD80\uD130 \uC54C\uC558\uC5B4.", "idle");
+      if (elapsed === 23) speak("s3_45", "\uC5B8\uC82F\uAC04 \uB204\uB97C \uAC70\uB77C\uB294 \uAC70.", "idle");
+      if (elapsed === 27) speak("s3_52", "\uADF8\uAC8C \uB108\uC796\uC544.", "idle");
     }
-    // Stage 4: Resignation (60-90s)
-    else if (elapsed >= 60 && elapsed < 90) {
+    // Stage 4: Resignation (30-42s)
+    else if (elapsed >= 30 && elapsed < 42) {
       setStage(4);
-      if (elapsed === 60) speak("s4_60", "\uAD1C\uCC2E\uC544. \uB20C\uB7EC.", "cry");
-      if (elapsed === 75) speak("s4_75", "...\uC194\uC9C1\uD788 \uC880 \uBB34\uC11C\uC6CC. \uADFC\uB370 \uAD1C\uCC2E\uC544.", "cry");
+      if (elapsed === 30) speak("s4_60", "\uAD1C\uCC2E\uC544. \uB20C\uB7EC.", "cry");
+      if (elapsed === 37) speak("s4_75", "...\uC194\uC9C1\uD788 \uC880 \uBB34\uC11C\uC6CC. \uADFC\uB370 \uAD1C\uCC2E\uC544.", "cry");
     }
-    // Stage 5: Gratitude (90-120s)
-    else if (elapsed >= 90 && elapsed < 120) {
+    // Stage 5: Gratitude (42-55s)
+    else if (elapsed >= 42 && elapsed < 55) {
       setStage(5);
-      if (elapsed === 90) speak("s5_90", "\uAC19\uC774 \uB180\uC544\uC918\uC11C \uACE0\uB9C8\uC6E0\uC5B4.", "happy");
-      if (elapsed === 100) speak("s5_100", "\uB098 \uC9C4\uC9DC \uC7AC\uBC0C\uC5C8\uAC70\uB4E0.", "happy");
-      if (elapsed === 110) speak("s5_110", "...\uC9C4\uC9DC\uC57C.", "shy");
+      if (elapsed === 42) speak("s5_90", "\uAC19\uC774 \uB180\uC544\uC918\uC11C \uACE0\uB9C8\uC6E0\uC5B4.", "happy");
+      if (elapsed === 48) speak("s5_100", "\uB098 \uC9C4\uC9DC \uC7AC\uBC0C\uC5C8\uAC70\uB4E0.", "happy");
+      if (elapsed === 52) speak("s5_110", "...\uC9C4\uC9DC\uC57C.", "shy");
     }
-    // Long silence then button (120+)
-    else if (elapsed >= 120) {
+    // Silence then button (55+)
+    else if (elapsed >= 55) {
       setStage(6);
-      if (elapsed >= 130 && !showButton) {
+      if (elapsed >= 60 && !showButton) {
         setShowButton(true);
       }
     }
@@ -214,6 +214,9 @@ function E15Psycho({ active, onComplete, say }) {
           </div>
         </div>
       )}
+
+      {/* Skip button */}
+      <SkipButton active={active} delay={60} onSkip={onComplete} />
 
       {/* Inline keyframes */}
       <style>{`

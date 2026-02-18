@@ -6,7 +6,8 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
   onCakeClick, onPhoneClick, onBannerClick, onSafetyCoverClick,
   doorKnocks, doorOpen, bannerVisible,
   walletVisible, cakeVisible, phoneVisible, sosVisible, tvVisible, safetyCoverVisible,
-  cakeSelected, activeEvent, isEndingActive, frame, children }) {
+  cakeSelected, activeEvent, isEndingActive, frame, children,
+  doorInteractive, clockInteractive }) {
 
   // 기본 방 오브젝트 (항상 표시)
   const showDoor = true;
@@ -123,7 +124,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* ══ 문 (항상 표시) ══ */}
         {showDoor && (
-          <RoomObj onClick={(e) => { e.stopPropagation(); onDoorKnock?.(); }}
+          <RoomObj disabled={!doorInteractive} onClick={(e) => { e.stopPropagation(); onDoorKnock?.(); }}
             style={{ position:"absolute",left:24,top:"1%",width:100,height:"49%",zIndex:10,
               background:doorOpen?"linear-gradient(180deg,#1a1008,#0a0804)":"linear-gradient(178deg,#c49a68,#a87848,#926838)",
               border:"6px solid #7a5a3a",borderRadius:"4px 4px 0 0",
@@ -227,7 +228,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* 시계 (S1+) */}
         {showClock && (
-          <RoomObj onClick={(e) => { e.stopPropagation(); onClockClick?.(); }}
+          <RoomObj disabled={!clockInteractive} onClick={(e) => { e.stopPropagation(); onClockClick?.(); }}
             style={{ position:"absolute",left:"54%",top:"22%",transform:"translateX(-50%)",zIndex:10,
               width:76,height:76,borderRadius:"50%",
               background:"linear-gradient(145deg,#fff,#f8f4ef)",

@@ -86,6 +86,14 @@ function E19Transfer({ active, onComplete, say }) {
   const handleDeny = () => {
     setPhase(2);
     say("...\uADF8\uB798.", "idle");
+    // Auto-complete 8s after deny
+    setTimeout(() => {
+      if (!completedRef.current) {
+        completedRef.current = true;
+        if (timerRef.current) clearInterval(timerRef.current);
+        onComplete();
+      }
+    }, 8000);
   };
 
   const handleAccept = () => {
@@ -292,6 +300,15 @@ function E19Transfer({ active, onComplete, say }) {
           animation: "pulse 0.3s ease infinite"
         }} />
       )}
+
+      {/* Skip button */}
+      <SkipButton active={active && phase < 3} delay={35} onSkip={() => {
+        if (!completedRef.current) {
+          completedRef.current = true;
+          if (timerRef.current) clearInterval(timerRef.current);
+          onComplete();
+        }
+      }} />
 
       <style>{`
         @keyframes matrixFall {

@@ -35,6 +35,19 @@ function E14News({ active, onComplete, say, doShake }) {
     return () => clearInterval(iv);
   }, [active]);
 
+  // Auto-escalation at 30s if still not escalated
+  useEffect(() => {
+    if (!active || escalated) return;
+    const t = setTimeout(() => {
+      if (!escalated) {
+        setChannel(4);
+        setCh5Viewed(true);
+        setCh5Time(3);
+      }
+    }, 30000);
+    return () => clearTimeout(t);
+  }, [active, escalated]);
+
   // Track CH5 viewing time
   useEffect(() => {
     if (!active || channel !== 4 || escalated) return;
@@ -390,6 +403,9 @@ function E14News({ active, onComplete, say, doShake }) {
           {"\u25B6"}
         </div>
       </div>
+
+      {/* Skip button */}
+      <SkipButton active={active} delay={40} onSkip={onComplete} />
 
       {/* Launch button */}
       {showLaunch && (

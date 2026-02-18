@@ -145,6 +145,9 @@ function E05Scam({ active, onComplete, say, doShake }) {
         </div>
       ))}
 
+      {/* Skip button */}
+      <SkipButton active={active} delay={35} onSkip={onComplete} />
+
       {/* Collect button - appears after 5 X clicks */}
       {showCollect && (
         <div style={{

@@ -524,6 +524,8 @@ function DontPressTheButton() {
           activeEvent={activeEvent}
           isEndingActive={isEndingActive}
           frame={frame}
+          doorInteractive={isEndingActive(18)}
+          clockInteractive={isEndingActive(2)}
         >
           {/* CRT 모니터 + 나비 */}
           <CRTMonitor
@@ -643,13 +645,16 @@ function DontPressTheButton() {
               if (!activeEvent && isEndingActive(17)) {
                 setSettingsOpen(false); triggerEnding(17);
               }
-            }} killModeOn={killMode}/>
+            }} killModeOn={killMode}
+            killModeEnabled={isEndingActive(15)}
+            resetEnabled={isEndingActive(17)}/>
           <ProfileMenu open={profileOpen} onClose={()=>setProfileOpen(false)}
             onTransfer={() => {
               if (!activeEvent && isEndingActive(19)) {
                 setProfileOpen(false); triggerEnding(19);
               }
-            }}/>
+            }}
+            transferEnabled={isEndingActive(19)}/>
           <CollectionPanel open={collectionOpen} onClose={()=>setCollectionOpen(false)} collected={collected}/>
 
           {/* 우클릭 메뉴 */}

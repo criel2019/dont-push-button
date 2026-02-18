@@ -2,7 +2,7 @@
 // panels.jsx — 설정/프로필/컬렉션 패널
 // ============================================================
 
-function SettingsPanel({ open, onClose, onKillMode, onReset, killModeOn }) {
+function SettingsPanel({ open, onClose, onKillMode, onReset, killModeOn, killModeEnabled, resetEnabled }) {
   if (!open) return null;
   return (
     <div style={{ position:"absolute",inset:0,zIndex:600,display:"flex",alignItems:"center",justifyContent:"center" }}>
@@ -11,20 +11,22 @@ function SettingsPanel({ open, onClose, onKillMode, onReset, killModeOn }) {
         minWidth:300,boxShadow:"0 24px 80px rgba(0,0,0,0.25)",animation:"popIn 0.3s ease" }}>
         <div style={{ fontSize:17,fontWeight:800,color:"#333",marginBottom:24,letterSpacing:3 }}>⚙️ 설정</div>
         <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18,
-          padding:"12px 16px",background:"#fafafa",borderRadius:14,border:"1px solid #f0f0f0" }}>
-          <span style={{ fontSize:14,color:"#333" }}>Kill Mode</span>
-          <div onClick={onKillMode} style={{ width:52,height:28,borderRadius:14,
-            background:killModeOn?"#e8573d":"#ddd",cursor:"pointer",position:"relative",transition:"background 0.3s",
+          padding:"12px 16px",background:"#fafafa",borderRadius:14,border:"1px solid #f0f0f0",
+          opacity:killModeEnabled?1:0.4,transition:"opacity 0.3s" }}>
+          <span style={{ fontSize:14,color:killModeEnabled?"#333":"#999" }}>Kill Mode</span>
+          <div onClick={killModeEnabled?onKillMode:undefined} style={{ width:52,height:28,borderRadius:14,
+            background:killModeOn?"#e8573d":"#ddd",cursor:killModeEnabled?"pointer":"default",position:"relative",transition:"background 0.3s",
             boxShadow:killModeOn?"0 2px 10px #e8573d44":"none" }}>
             <div style={{ position:"absolute",top:4,left:killModeOn?27:4,width:20,height:20,borderRadius:10,
               background:"#fff",boxShadow:"0 1px 4px rgba(0,0,0,0.2)",transition:"left 0.25s cubic-bezier(0.34,1.56,0.64,1)" }}/>
           </div>
         </div>
-        <div onClick={onReset} style={{ padding:"12px 16px",background:"#fafafa",borderRadius:14,cursor:"pointer",
-          fontSize:14,color:"#78909c",textAlign:"center",marginBottom:14,border:"1px solid #f0f0f0",
-          transition:"background 0.2s" }}
-          onMouseEnter={e=>e.target.style.background="#f0f0f0"}
-          onMouseLeave={e=>e.target.style.background="#fafafa"}>
+        <div onClick={resetEnabled?onReset:undefined} style={{ padding:"12px 16px",background:"#fafafa",borderRadius:14,
+          cursor:resetEnabled?"pointer":"default",
+          fontSize:14,color:resetEnabled?"#78909c":"#ccc",textAlign:"center",marginBottom:14,border:"1px solid #f0f0f0",
+          transition:"background 0.2s, opacity 0.3s",opacity:resetEnabled?1:0.5 }}
+          onMouseEnter={e=>{if(resetEnabled)e.target.style.background="#f0f0f0";}}
+          onMouseLeave={e=>{e.target.style.background="#fafafa";}}>
           🔄 초기화
         </div>
         <div onClick={onClose} style={{ padding:"10px",textAlign:"center",fontSize:13,color:"#bbb",cursor:"pointer" }}>닫기</div>
@@ -33,18 +35,23 @@ function SettingsPanel({ open, onClose, onKillMode, onReset, killModeOn }) {
   );
 }
 
-function ProfileMenu({ open, onClose, onTransfer }) {
+function ProfileMenu({ open, onClose, onTransfer, transferEnabled }) {
   if (!open) return null;
   return (
     <div style={{ position:"absolute",top:56,right:16,zIndex:600,background:"#fff",borderRadius:18,
       padding:"18px 24px",boxShadow:"0 16px 56px rgba(0,0,0,0.18)",animation:"fadeInUp 0.2s ease",minWidth:200 }}>
       <div style={{ fontSize:12,color:"#bbb",marginBottom:8 }}>플레이어 프로필</div>
       <div style={{ fontSize:14,fontWeight:600,color:"#333",marginBottom:16 }}>👤 Guest</div>
-      <div onClick={onTransfer} style={{ fontSize:13,color:"#6a1b9a",cursor:"pointer",
-        padding:"10px 14px",background:"#f3e5f5",borderRadius:12,textAlign:"center",fontWeight:600,
-        transition:"background 0.2s" }}
-        onMouseEnter={e=>e.target.style.background="#e1bee7"}
-        onMouseLeave={e=>e.target.style.background="#f3e5f5"}>
+      <div onClick={transferEnabled?onTransfer:undefined} style={{ fontSize:13,
+        color:transferEnabled?"#6a1b9a":"#bbb",
+        cursor:transferEnabled?"pointer":"default",
+        padding:"10px 14px",
+        background:transferEnabled?"#f3e5f5":"#f5f5f5",
+        borderRadius:12,textAlign:"center",fontWeight:600,
+        transition:"background 0.2s, opacity 0.3s",
+        opacity:transferEnabled?1:0.5 }}
+        onMouseEnter={e=>{if(transferEnabled)e.target.style.background="#e1bee7";}}
+        onMouseLeave={e=>{e.target.style.background=transferEnabled?"#f3e5f5":"#f5f5f5";}}>
         🔀 권한 양도
       </div>
       <div onClick={onClose} style={{ fontSize:12,color:"#ccc",cursor:"pointer",textAlign:"center",marginTop:12 }}>닫기</div>

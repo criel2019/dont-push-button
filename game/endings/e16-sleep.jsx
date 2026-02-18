@@ -302,6 +302,11 @@ function E16Sleep({ active, onComplete, say, doShake }) {
         </div>
       )}
 
+      {/* Skip button */}
+      <SkipButton active={active && !waking} delay={55} onSkip={() => {
+        if (!completedRef.current) { completedRef.current = true; onComplete(); }
+      }} />
+
       {/* Inline keyframes */}
       <style>{`
         @keyframes twinkle {

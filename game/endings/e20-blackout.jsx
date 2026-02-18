@@ -105,39 +105,52 @@ function E20Blackout({ active, onComplete, say, naviGone }) {
         }} />
       )}
 
-      {/* The barely visible "..." button */}
+      {/* The "..." button — improved visibility */}
       {showButton && (
         <div style={{
           position: "relative", zIndex: 10,
-          animation: "fadeIn 3s ease"
+          animation: "fadeIn 2s ease"
         }}>
           <div
             onClick={(e) => { e.stopPropagation(); handleClick(); }}
             style={{
               padding: "12px 24px",
-              background: "transparent",
-              border: "1px solid rgba(34,34,34,0.15)",
+              background: "rgba(100,100,100,0.15)",
+              border: "1px solid rgba(100,100,100,0.5)",
               borderRadius: 10,
               fontSize: 13,
-              color: "rgba(34,34,34,0.2)",
+              color: "rgba(100,100,100,0.5)",
               cursor: "pointer",
               letterSpacing: 4,
               transition: "all 0.5s",
-              userSelect: "none"
+              userSelect: "none",
+              animation: "skipPulse 2.5s ease infinite"
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = "rgba(34,34,34,0.35)";
-              e.currentTarget.style.borderColor = "rgba(34,34,34,0.25)";
+              e.currentTarget.style.color = "rgba(150,150,150,0.8)";
+              e.currentTarget.style.borderColor = "rgba(150,150,150,0.6)";
+              e.currentTarget.style.background = "rgba(100,100,100,0.25)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = "rgba(34,34,34,0.2)";
-              e.currentTarget.style.borderColor = "rgba(34,34,34,0.15)";
+              e.currentTarget.style.color = "rgba(100,100,100,0.5)";
+              e.currentTarget.style.borderColor = "rgba(100,100,100,0.5)";
+              e.currentTarget.style.background = "rgba(100,100,100,0.15)";
             }}
           >
             ...
           </div>
         </div>
       )}
+
+      {/* Skip button */}
+      <SkipButton active={active} delay={45} onSkip={handleClick} />
+
+      <style>{`
+        @keyframes skipPulse {
+          0%, 100% { opacity: 0.7; }
+          50% { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }

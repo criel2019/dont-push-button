@@ -23,6 +23,12 @@ function E12Police({ active, onComplete, say }) {
     }
     setShowDialer(true);
     say("번호 아는 데 있어? 없지? 알려줄까~", "teasing");
+    // Auto-hint after 25s
+    const hintTimer = setTimeout(() => {
+      setHintGiven(true);
+      say("힌트 줄게~ 010-1234야~", "teasing");
+    }, 25000);
+    return () => clearTimeout(hintTimer);
   }, [active]);
 
   // Check for special numbers and correct sequence
@@ -276,6 +282,9 @@ function E12Police({ active, onComplete, say }) {
             </div>
           )}
         </div>
+
+        {/* Skip button */}
+        <SkipButton active={active && !callConnected} delay={40} onSkip={onComplete} />
 
         {/* Bottom decoration */}
         <div style={{

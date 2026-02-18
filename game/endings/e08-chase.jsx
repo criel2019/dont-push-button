@@ -276,6 +276,11 @@ function E08Chase({ active, onComplete, say }) {
         </div>
       )}
 
+      {/* Skip button */}
+      <SkipButton active={active && !caught} delay={30} onSkip={() => {
+        if (!caught) { setCaught(true); if (animRef.current) cancelAnimationFrame(animRef.current); onComplete(); }
+      }} />
+
       {/* Tired indicator */}
       {isTired && !caught && (
         <div style={{

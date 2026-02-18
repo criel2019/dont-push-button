@@ -20,14 +20,15 @@ function TypeWriter({ text, speed = 28 }) {
 }
 
 // ── 호버 래퍼 ──
-function RoomObj({ children, onClick, style, hoverGlow, title }) {
+function RoomObj({ children, onClick, style, hoverGlow, title, disabled }) {
   const [hv, setHv] = useState(false);
   return (
-    <div title={title} onClick={onClick}
-      onMouseEnter={() => setHv(true)} onMouseLeave={() => setHv(false)}
-      style={{ cursor: "pointer", transition: "all 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-        transform: hv ? "scale(1.08) translateY(-4px)" : "scale(1)",
-        filter: hv && hoverGlow ? `drop-shadow(0 4px 16px ${hoverGlow})` : "none",
+    <div title={title} onClick={disabled ? undefined : onClick}
+      onMouseEnter={() => { if (!disabled) setHv(true); }} onMouseLeave={() => setHv(false)}
+      style={{ cursor: disabled ? "default" : "pointer", transition: "all 0.3s cubic-bezier(0.34,1.56,0.64,1)",
+        transform: !disabled && hv ? "scale(1.08) translateY(-4px)" : "scale(1)",
+        filter: !disabled && hv && hoverGlow ? `drop-shadow(0 4px 16px ${hoverGlow})` : "none",
+        opacity: disabled ? 0.5 : 1,
         ...style }}>
       {children}
     </div>
@@ -142,6 +143,31 @@ function ModalOverlay({ children, onClose }) {
     <div style={{ position:"absolute",inset:0,zIndex:600,display:"flex",alignItems:"center",justifyContent:"center" }}>
       <div onClick={onClose} style={{ position:"absolute",inset:0,background:"rgba(0,0,0,0.4)",backdropFilter:"blur(6px)" }}/>
       <div style={{ position:"relative",zIndex:1 }}>{children}</div>
+    </div>
+  );
+}
+
+// ── 건너뛰기 버튼 (엔딩 오버레이용) ──
+function SkipButton({ active, delay, onSkip }) {
+  const [show, setShow] = useState(false);
+  const [hv, setHv] = useState(false);
+  useEffect(() => {
+    if (!active) { setShow(false); return; }
+    const t = setTimeout(() => setShow(true), delay * 1000);
+    return () => clearTimeout(t);
+  }, [active, delay]);
+  if (!show) return null;
+  return (
+    <div style={{ position:"absolute",bottom:16,right:20,zIndex:9999,animation:"fadeIn 1s ease",pointerEvents:"auto" }}>
+      <div onClick={(e) => { e.stopPropagation(); onSkip(); }}
+        onMouseEnter={() => setHv(true)} onMouseLeave={() => setHv(false)}
+        style={{ padding:"6px 18px",borderRadius:8,fontSize:11,fontWeight:600,letterSpacing:2,
+          cursor:"pointer",userSelect:"none",transition:"all 0.3s",
+          background:hv?"rgba(255,255,255,0.18)":"rgba(255,255,255,0.08)",
+          color:hv?"rgba(255,255,255,0.8)":"rgba(255,255,255,0.35)",
+          border:`1px solid ${hv?"rgba(255,255,255,0.25)":"rgba(255,255,255,0.1)"}` }}>
+        건너뛰기 &raquo;
+      </div>
     </div>
   );
 }
