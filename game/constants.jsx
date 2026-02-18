@@ -50,7 +50,7 @@ const ENDINGS = {
   19: { name:"교대",         phase:"히든",   emoji:"🔀", eventText:"그걸 찾았어? ...흥, 눈치는 있네.", eventEmo:"yandere",
         btn:"수락", btnColor:"#6a1b9a", over1:"잘 왔어.", over2:"이제 네 차례야." },
   20: { name:"암전",         phase:"진 엔딩", emoji:"🌑", eventText:"...재미없어.", eventEmo:"pouty",
-        btn:"...", btnColor:"#424242", over1:"", over2:"(영원한 고립)" },
+        btn:"확인", btnColor:"#424242", over1:"궁금하지? 버튼 뒤에 뭐가 있는지.", over2:"안 알려줘~ ㅋ" },
   21: { name:"크레딧",       phase:"특전",   emoji:"🎬", eventText:"전부 봤구나.", eventEmo:"excited",
         btn:"Credit", btnColor:"#ffd700", over1:"근데 재밌었지?", over2:"고마워." },
   22: { name:"시끄러워",     phase:"랜덤",   emoji:"🔊", eventText:"쉿!! ...뭔가 들려. 조용히 해봐.", eventEmo:"worried",

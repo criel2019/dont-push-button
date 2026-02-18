@@ -117,14 +117,14 @@ function DontPressTheButton() {
   // 나비 주도 비가시적 스테이지 엔진
   // ════════════════════════════════════════════════
 
-  // ── 스테이지 경과 시간 타이머 ──
+  // ── 스테이지 경과 시간 타이머 (엔딩 오버레이 중 일시정지) ──
   useEffect(() => {
-    if (gs !== "room" || stageTransitioning) return;
+    if (gs !== "room" || stageTransitioning || activeEvent) return;
     const iv = setInterval(() => {
       setStageElapsed(p => p + 1);
     }, 1000);
     return () => clearInterval(iv);
-  }, [gs, stageTransitioning]);
+  }, [gs, stageTransitioning, activeEvent]);
 
   // ── 오브젝트 등장 액션 실행 ──
   const executeAction = useCallback((action) => {
@@ -333,6 +333,8 @@ function DontPressTheButton() {
     setNaviSleeping(false); setNaviGone(false); setDoorOpen(false);
     setCatEars(false); setCakeOnButton(false); setCakeSelected(false);
     setKillMode(false); setCrtOff(false); setWasHidden(false);
+    // E03 재트리거를 위한 hoverCount 리셋
+    setHoverCount(0);
     // 대사 초기화 + idle 리셋
     setNText(""); setNEmo("idle");
     idleRef.current = 0; setIdleTimer(0);
