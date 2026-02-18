@@ -118,7 +118,7 @@ function ContextMenu({ x, y, onDelete, onClose, say }) {
     switch(n) {
       case 1: say("어— 잠깐잠깐잠깐", "shocked"); break;
       case 2: say("하, 진짜? 나를? 삭제를?", "smug"); break;
-      case 3: say("아 좀!! 갔다 왔다 하지 마!!", "angry"); break;
+      case 3: say("야, 진짜 누르면 나 없어져. 알지?", "angry"); break;
       case 4: say("너 지금 되게 재밌지? 아, 재밌구나?", "pouty"); break;
     }
   }, [say]);
