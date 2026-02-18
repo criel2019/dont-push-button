@@ -502,17 +502,22 @@ function DontPressTheButton() {
     setContextMenu({ x: e.clientX, y: e.clientY });
   }, [activeEvent, resetIdle]);
 
-  // 네이티브 우클릭 이벤트 — React onContextMenu가 안 먹힐 경우 대비
+  // 네이티브 우클릭 이벤트 — capture phase + ref로 stale closure 방지
+  const gsRef = useRef(gs);
+  const activeEventRef = useRef(activeEvent);
+  useEffect(() => { gsRef.current = gs; }, [gs]);
+  useEffect(() => { activeEventRef.current = activeEvent; }, [activeEvent]);
+
   useEffect(() => {
     const handler = (e) => {
-      if (gs !== "room" || activeEvent) return;
+      if (gsRef.current !== "room" || activeEventRef.current) return;
       e.preventDefault();
-      resetIdle();
+      e.stopPropagation();
       setContextMenu({ x: e.clientX, y: e.clientY });
     };
-    document.addEventListener("contextmenu", handler);
-    return () => document.removeEventListener("contextmenu", handler);
-  }, [gs, activeEvent, resetIdle]);
+    window.addEventListener("contextmenu", handler, true);
+    return () => window.removeEventListener("contextmenu", handler, true);
+  }, []);
 
   const handleClockClick = useCallback(() => {
     if (activeEvent) return; resetIdle();
@@ -583,7 +588,6 @@ function DontPressTheButton() {
   // ════════════════════════════════════════════════
   return (
     <div onClick={gs === "room" && !activeEvent ? handleBgClick : undefined}
-      onContextMenu={gs === "room" ? handleNaviContextMenu : undefined}
       onMouseDown={gs === "room" ? resetIdle : undefined}
       style={{ width:"100vw",height:"100vh",overflow:"hidden",position:"relative",
         fontFamily:"'Noto Sans KR',sans-serif",
