@@ -5,57 +5,56 @@
 
 const SAVE_KEY = "dpb_collected_v3";
 const IDLE_LIMIT = 60;
-const HOVER_THRESHOLD = 8;
-const RAPID_CLICK_THRESHOLD = 15;
-const RAPID_CLICK_WINDOW = 3000;
-const DOOR_KNOCK_THRESHOLD = 5;
+const HOVER_THRESHOLD = 10;
+const BG_CLICK_THRESHOLD = 60;
+const DOOR_KNOCK_THRESHOLD = 10;
 
 // ── 22개 엔딩 데이터 ──
 const ENDINGS = {
   1:  { name:"무례함",       phase:"간보기", emoji:"💀", eventText:"어? 날 지우게?", eventEmo:"angry",
-        btn:"삭제 확인", btnColor:"#e8573d", over1:"야! 감히 날 삭제해? 건방져!", over2:"(강제 종료)" },
-  2:  { name:"마시멜로",     phase:"간보기", emoji:"🍡", eventText:"1분 버티기 시작! 참아봐~", eventEmo:"smug",
-        btn:"포기", btnColor:"#e88b3d", over1:"땡! 1분도 못 참냐?", over2:"평생 마시멜로 1개만 먹어라~" },
-  3:  { name:"청개구리",     phase:"간보기", emoji:"🐸", eventText:"누르지 마. 진짜 누르지 마.", eventEmo:"shush",
-        btn:"누르지 마", btnColor:"#2e9e5a", over1:"하지 말라면 더 하고 싶지?", over2:"딱 초딩 심보네~" },
-  4:  { name:"기습",         phase:"간보기", emoji:"😲", eventText:"...엇?! 언, 언제 돌아온 거야?!", eventEmo:"shocked",
-        btn:"지금이다!", btnColor:"#e88b3d", over1:"앗! 비겁하게 안 볼 때 누르냐?", over2:"쫄보 녀석~" },
-  5:  { name:"낚시",         phase:"장난",   emoji:"🎣", eventText:"★ 100만원 당첨!! ★", eventEmo:"excited",
-        btn:"수령", btnColor:"#ffc107", over1:"이걸 믿냐? 능지 처참~", over2:"ㅋㅋㅋ" },
-  6:  { name:"자본주의",     phase:"장난",   emoji:"💳", eventText:"✦ PREMIUM 멤버십 해제 완료 ✦", eventEmo:"confident",
-        btn:"결제", btnColor:"#9c27b0", over1:"어머, 500원도 없네?", over2:"알바 좀 해~" },
-  7:  { name:"블루스크린",   phase:"장난",   emoji:"💻", eventText:"시스템 오류 발생...", eventEmo:"shocked",
-        btn:"복구", btnColor:"#1565c0", over1:"속았지? ㅋㅋㅋ", over2:"똥컴 바꿀 때 안 됐냐?" },
-  8:  { name:"피지컬",       phase:"장난",   emoji:"🏃", eventText:"버튼이 도망쳤다?!", eventEmo:"excited",
-        btn:"잡아봐", btnColor:"#e8573d", over1:"헐... 이걸 굳이 쫓아와서 누르네?", over2:"게임 폐인 인증~" },
-  9:  { name:"식탐",         phase:"욕망",   emoji:"🍰", eventText:"맛있겠다... 먹고 싶지?", eventEmo:"teasing",
-        btn:"먹기", btnColor:"#e8a05d", over1:"너도 먹고 싶었어? 돼지~", over2:"살이나 빼~" },
-  10: { name:"떡락",         phase:"욕망",   emoji:"📉", eventText:"지금이야! 인생 역전!", eventEmo:"excited",
-        btn:"풀매수 (Buy)", btnColor:"#e8573d", over1:"와... 역사상 최고점에 물리네?", over2:"인간 지표야? 덕분에 난 탈출했어~ 꺼억~" },
-  11: { name:"오타쿠",       phase:"욕망",   emoji:"😾", eventText:"냥~♡", eventEmo:"shy",
-        btn:"쓰다듬기", btnColor:"#ff8fab", over1:"우웩, 이런 취향?", over2:"기분 나빠. 저리 가!" },
-  12: { name:"경찰서",       phase:"욕망",   emoji:"🚔", eventText:"번호 줄까~?", eventEmo:"teasing",
-        btn:"Call", btnColor:"#43a047", over1:"네 경찰이죠?", over2:"여기 스토커 있어요!" },
-  13: { name:"쫄보",         phase:"위기",   emoji:"😱", eventText:"3... 2... 1...", eventEmo:"shocked",
-        btn:"긴급 정지", btnColor:"#e8573d", over1:"푸하하! 쫄았어?", over2:"그냥 숫자 세는 건데~ 겁쟁이~" },
-  14: { name:"뉴스 속보",    phase:"위기",   emoji:"☢️", eventText:"[속보] 핵전쟁 발발!", eventEmo:"shocked",
-        btn:"발사", btnColor:"#b71c1c", over1:"어... 뉴스 진짜였네?", over2:"(같이 사망)" },
-  15: { name:"사이코패스",   phase:"위기",   emoji:"😈", eventText:"이거 누르면 나 죽어 ㅠㅠ", eventEmo:"cry",
-        btn:"확인", btnColor:"#424242", over1:"와... 우는데 누르냐?", over2:"너 사이코패스지?" },
-  16: { name:"수면",         phase:"위기",   emoji:"😴", eventText:"Zzz... Zzz...", eventEmo:"bored",
-        btn:"깨우기", btnColor:"#5c6bc0", over1:"으아악!! 깜짝이야!", over2:"잠 좀 자자 인간아!" },
+        btn:"삭제 확인", btnColor:"#e8573d", over1:"감히 누가 누굴 삭제해? 나 없으면 이 게임 아무것도 아닌데?", over2:"(강제 종료)" },
+  2:  { name:"마시멜로",     phase:"간보기", emoji:"🍡", eventText:"1분만 참아봐. 할 수 있지? ...아 너는 모르겠다.", eventEmo:"smug",
+        btn:"포기", btnColor:"#e88b3d", over1:"헤, 1분도 못 참아? 마시멜로 실험 들어봤지?", over2:"넌 평생 마시멜로 한 개야." },
+  3:  { name:"청개구리",     phase:"간보기", emoji:"🐸", eventText:"...아 몰라. 누르든 말든 좋을 대로 해.", eventEmo:"pouty",
+        btn:"누르지 마", btnColor:"#2e9e5a", over1:"하지 말라면 더 하고 싶은 거지~?", over2:"딱 초딩이야 초딩. 몇 살이래 진짜." },
+  4:  { name:"기습",         phase:"간보기", emoji:"😲", eventText:"읏!! 아 언제 온 거야 노크를 하라고!!", eventEmo:"shocked",
+        btn:"지금이다!", btnColor:"#e88b3d", over1:"잠깐 자리 비운 사이에 몰래 누르기?", over2:"비겁한 건 딱 질색인데." },
+  5:  { name:"낚시",         phase:"장난",   emoji:"🎣", eventText:"오, 100만원이래. 대박 아니야?", eventEmo:"excited",
+        btn:"수령", btnColor:"#ffc107", over1:"이걸 진짜 누르네.", over2:"세상에 공짜가 어딨어, 순진하기는." },
+  6:  { name:"자본주의",     phase:"장난",   emoji:"💳", eventText:"어서 오세요~ 오늘만 특별 할인이에요~", eventEmo:"confident",
+        btn:"결제", btnColor:"#9c27b0", over1:"잔액 부족이래. 500원도 없구나 너.", over2:"...좀 불쌍하다 진짜." },
+  7:  { name:"블루스크린",   phase:"장난",   emoji:"💻", eventText:"야... 진지하게 말하는데 이러다 진짜ㅡ", eventEmo:"worried",
+        btn:"복구", btnColor:"#1565c0", over1:"속았지? 멀쩡하거든.", over2:"...근데 진짜 그만 눌러. 아팠어." },
+  8:  { name:"피지컬",       phase:"장난",   emoji:"🏃", eventText:"야!! 그거 비싼 건데!!", eventEmo:"excited",
+        btn:"잡아봐", btnColor:"#e8573d", over1:"굳이 쫓아와서 누르는 거 보니까...", over2:"대단하다. 다른 데 쓸 열정은 없어?" },
+  9:  { name:"식탐",         phase:"욕망",   emoji:"🍰", eventText:"...맛있겠다. 아 아니 그냥 그렇다고.", eventEmo:"teasing",
+        btn:"다 먹기", btnColor:"#e8a05d", over1:"맛있었어? 다행이네.", over2:"살은 니가 찌는 거니까~" },
+  10: { name:"떡락",         phase:"욕망",   emoji:"📉", eventText:"이거 봐! 떡상 중이잖아! 빨리빨리!!", eventEmo:"excited",
+        btn:"풀매수 (ALL IN)", btnColor:"#e8573d", over1:"역사상 최고점에 풀매수라...", over2:"인간 지표라는 말 들어봤어? 너 얘기야." },
+  11: { name:"오타쿠",       phase:"욕망",   emoji:"😾", eventText:"냥~♡ ...뭐 보고 그래. 귀엽잖아.", eventEmo:"confident",
+        btn:"쓰다듬기", btnColor:"#ff8fab", over1:"너 지금 진지하게 가상 캐릭터 쓰다듬은 거야?", over2:"솔직히 좀 무서워." },
+  12: { name:"경찰서",       phase:"욕망",   emoji:"🚔", eventText:"번호 아는 데 있어? 없지? 알려줄까~", eventEmo:"teasing",
+        btn:"Call", btnColor:"#43a047", over1:"여보세요 경찰이죠~?", over2:"여기 이상한 사람이 자꾸 전화해요." },
+  13: { name:"쫄보",         phase:"위기",   emoji:"😱", eventText:"야?! 왜 열어 그걸?! 건드리지 말라 했잖아!!", eventEmo:"shocked",
+        btn:"긴급 정지", btnColor:"#e8573d", over1:"쫄았지~?", over2:"그냥 10부터 세어본 건데. 쫄보." },
+  14: { name:"뉴스 속보",    phase:"위기",   emoji:"☢️", eventText:"속보입니다. 정체불명 미사일이 발사됐습니다.", eventEmo:"shocked",
+        btn:"발사", btnColor:"#b71c1c", over1:"어... 이거 진짜였어.", over2:"(같이 사망)" },
+  15: { name:"사이코패스",   phase:"위기",   emoji:"😈", eventText:"...이거 켜면 나 없어져.", eventEmo:"cry",
+        btn:"확인", btnColor:"#424242", over1:"우는데 누르는 사람 처음 봐.", over2:"너 좀 무서운 사람이야." },
+  16: { name:"수면",         phase:"위기",   emoji:"😴", eventText:"아~암... 아 하품 나오네. 니 탓이야.", eventEmo:"bored",
+        btn:"깨우기", btnColor:"#5c6bc0", over1:"으아아앗!!!", over2:"사람 자는데!! ...잠깐 내가 왜 혼나고 있는 거지." },
   17: { name:"무한 루프",    phase:"히든",   emoji:"🔄", eventText:"처음으로 돌아갈래?", eventEmo:"idle",
-        btn:"Reset", btnColor:"#78909c", over1:"", over2:"" },
-  18: { name:"현실 만남",    phase:"히든",   emoji:"🚪", eventText:"누구야...?", eventEmo:"shocked",
-        btn:"Enter", btnColor:"#8d6e63", over1:"아... 진짜 눌러버렸네?", over2:"안녕?" },
-  19: { name:"교대",         phase:"히든",   emoji:"🔀", eventText:"관리자 권한 넘길래?", eventEmo:"yandere",
-        btn:"수락", btnColor:"#6a1b9a", over1:"자, 이제 네 차례야.", over2:"(플레이어 빨려 들어감)" },
-  20: { name:"암전",         phase:"진 엔딩", emoji:"🌑", eventText:"재미없어. 나 갈래.", eventEmo:"pouty",
-        btn:"비활성화", btnColor:"#424242", over1:"", over2:"(영원한 고립)" },
-  21: { name:"크레딧",       phase:"특전",   emoji:"🎬", eventText:"", eventEmo:"excited",
-        btn:"Credit", btnColor:"#ffd700", over1:"플레이 해주셔서 감사합니다!", over2:"" },
-  22: { name:"시끄러워",     phase:"랜덤",   emoji:"🔊", eventText:"시끄러워!!! 조용히 해!!!", eventEmo:"angry",
-        btn:"조용", btnColor:"#ff5722", over1:"귀가 찢어질 뻔 했잖아!", over2:"다음부터 조용히 좀 해..." },
+        btn:"Reset", btnColor:"#78909c", over1:"넌 항상 누르는 쪽이야.", over2:"나는 눌려지는 쪽이고." },
+  18: { name:"현실 만남",    phase:"히든",   emoji:"🚪", eventText:"...", eventEmo:"shocked",
+        btn:"Enter", btnColor:"#8d6e63", over1:"...가는 거야?", over2:"잘 가." },
+  19: { name:"교대",         phase:"히든",   emoji:"🔀", eventText:"그걸 찾았어? ...흥, 눈치는 있네.", eventEmo:"yandere",
+        btn:"수락", btnColor:"#6a1b9a", over1:"잘 왔어.", over2:"이제 네 차례야." },
+  20: { name:"암전",         phase:"진 엔딩", emoji:"🌑", eventText:"...재미없어.", eventEmo:"pouty",
+        btn:"...", btnColor:"#424242", over1:"", over2:"(영원한 고립)" },
+  21: { name:"크레딧",       phase:"특전",   emoji:"🎬", eventText:"전부 봤구나.", eventEmo:"excited",
+        btn:"Credit", btnColor:"#ffd700", over1:"근데 재밌었지?", over2:"고마워." },
+  22: { name:"시끄러워",     phase:"랜덤",   emoji:"🔊", eventText:"쉿!! ...뭔가 들려. 조용히 해봐.", eventEmo:"worried",
+        btn:"조용!!", btnColor:"#ff5722", over1:"세상에서 제일 조용히 못 하는 사람.", over2:"옆집이면 이사 간다 나는." },
 };
 
 const TOTAL_ENDINGS = 22;
@@ -71,116 +70,89 @@ const STAGES = {
 
 const STAGE_COUNT = 5;
 
-// ── 스테이지별 나비 대사 시퀀스 ──
+// ── 나비 주도 스크립트 시퀀스 ──
+// 각 스테이지는 시간순 script 배열. 나비가 처음부터 끝까지 주도.
+// t: 스테이지 시작 후 초, action: 오브젝트 등장, transition: 스테이지 전환
 const NAVI_STAGE_SEQUENCES = {
-  1: {
-    intro: [
-      { t:"어, 왔어? ...뭘 봐.", e:"pouty", delay:3 },
-      { t:"그 빨간 거? 누르지 마. 진짜.", e:"idle", delay:8 },
-      { t:"왜 가만히 있어. 뭐라도 해봐.", e:"pouty", delay:18 },
-    ],
-    idle: [
-      { t:"아직도 안 눌러? 대단하네. ...아니 대단한 건 아니야.", e:"smug" },
-      { t:"심심하지? 나도 심심해.", e:"bored" },
-      { t:"이 방에 뭔가 있긴 한데... 알려줄까? 싫어~", e:"smug" },
-      { t:"혹시 멍 때리고 있는 거야? 게임인데?", e:"pouty" },
-      { t:"시계 좀 봐봐. 시간이 아까워.", e:"idle" },
-      { t:"뭘 그렇게 고민해. 그냥 눌러.", e:"smug" },
-    ],
-    hints: [
-      { t:"저 시계... 만지면 뭔가 일어날 수도?", e:"smug", target:2 },
-      { t:"나한테 우클릭하면 어떻게 될까~?", e:"teasing", target:1 },
-      { t:"버튼 위에 마우스를 올렸다 내렸다... 반복하면?", e:"smug", target:3 },
-      { t:"다른 탭 갔다 오면 내가 어떤 반응 할까?", e:"idle", target:4 },
-    ],
-    transition: [
-      { t:"...흥, 이 정도로는 안 되는 거야?", e:"pouty", delay:0 },
-      { t:"좋아. 그럼 좀 더 재밌는 거 보여줄게.", e:"smug", delay:2 },
-    ],
-  },
-  2: {
-    intro: [
-      { t:"자, 여기부터 본 게임이야.", e:"excited", delay:3 },
-      { t:"좀 더 재밌어질 거거든.", e:"smug", delay:8 },
-    ],
-    idle: [
-      { t:"어, 저거 뭐야? 돈 준대.", e:"happy" },
-      { t:"그 지갑 안에 뭐 있는지 궁금하지 않아?", e:"smug" },
-      { t:"공짜를 싫어하는 사람이 있어? 없지?", e:"excited" },
-      { t:"한 번만 눌러보면 되는데~ 뭘 고민해~", e:"teasing" },
-      { t:"이거 한정 이벤트인데... 지금 안 하면 사라져.", e:"confident" },
-    ],
-    hints: [
-      { t:"저 배너 좀 봐봐. 뭔가 쓰여 있잖아.", e:"excited", target:5 },
-      { t:"지갑 열어볼래? 안에 카드 있을지도~", e:"confident", target:6 },
-      { t:"화면을 막 클릭하면 재밌는 일이 생길걸?", e:"excited", target:7 },
-      { t:"저 버튼 잡아 당겨봐. 도망갈 수도 있어~", e:"teasing", target:8 },
-    ],
-    transition: [
-      { t:"하, 끈질기네.", e:"pouty", delay:0 },
-      { t:"좋아좋아. 다음 거는 진짜 안 버틸걸.", e:"smug", delay:2 },
-    ],
-  },
-  3: {
-    intro: [
-      { t:"여기부터는 좀 달라.", e:"smug", delay:3 },
-      { t:"네가 진짜 원하는 거 보여줄게.", e:"excited", delay:8 },
-    ],
-    idle: [
-      { t:"배고프지 않아? 나는 배고픈데.", e:"bored" },
-      { t:"폰 좀 봐봐. 뭐 왔잖아.", e:"excited" },
-      { t:"사고 싶은 거 없어? 있잖아 분명.", e:"smug" },
-      { t:"이 방에서 나가고 싶지? 나도~", e:"pouty" },
-    ],
-    hints: [
-      { t:"저 케이크... 진짜 맛있어 보이지 않아?", e:"idle", target:9 },
-      { t:"폰에 주식 앱 깔려있는데... 대박 났나봐.", e:"excited", target:10 },
-      { t:"고양이 귀 씌워주면 귀여울까~? 냥~", e:"shy", target:11 },
-      { t:"누군가한테 전화하고 싶으면... SOS 버튼 있어.", e:"worried", target:12 },
-    ],
-    transition: [
-      { t:"흠... 아직도 버티고 있어?", e:"pouty", delay:0 },
-      { t:"그럼 이번엔 진짜 무서운 거 보여줄게.", e:"smug", delay:2 },
-    ],
-  },
-  4: {
-    intro: [
-      { t:"...여기서부터는 장난 아니야.", e:"idle", delay:3 },
-      { t:"진짜 조심해.", e:"shocked", delay:8 },
-    ],
-    idle: [
-      { t:"뭔가... 좀 이상해. 느껴져?", e:"worried" },
-      { t:"갑자기 무서워졌어... 나만 그래?", e:"worried" },
-      { t:"이 방이 점점 어두워지는 것 같아.", e:"worried" },
-      { t:"혹시... 여기서 나갈 수 없는 거 아니야?", e:"worried" },
-    ],
-    hints: [
-      { t:"저 카운트다운... 0이 되면 어떻게 되는 거야?", e:"worried", target:13 },
-      { t:"TV에서 뉴스가 나오고 있어... 볼래?", e:"idle", target:14 },
-      { t:"설정에 이상한 모드가 있었던 것 같은데...", e:"idle", target:15 },
-      { t:"너무 오래 가만히 있으면... 나도 졸려...", e:"pouty", target:16 },
-    ],
-    transition: [
-      { t:"...여기까지 온 거야?", e:"shocked", delay:0 },
-      { t:"...별거 없어. 그냥 있으면 돼.", e:"idle", delay:2 },
-    ],
-  },
-  5: {
-    intro: [
-      { t:"...별거 없어. 그냥 있으면 돼.", e:"idle", delay:3 },
-    ],
-    idle: [
-      { t:"...", e:"bored" },
-      { t:"아무것도 안 해도 돼.", e:"idle" },
-      { t:"그냥... 여기 있어.", e:"pouty" },
-    ],
-    hints: [
-      { t:"설정에서 초기화하면 어떻게 될까.", e:"idle", target:17 },
-      { t:"저 문... 계속 두드리면 누가 올까?", e:"worried", target:18 },
-      { t:"프로필에 이상한 옵션이 있었던 것 같아.", e:"idle", target:19 },
-    ],
-    transition: [],
-  },
+  // ═══ S1: 간보기 (엔딩 1-4) ═══
+  1: { script: [
+    { t:3,  text:"어, 왔어? ...뭘 봐.", e:"pouty" },
+    { t:8,  text:"그 빨간 거? 누르지 마. 진짜.", e:"idle" },
+    { t:15, text:"왜 가만히 있어. 뭐라도 해봐.", e:"pouty" },
+    { t:22, text:"이 방에 뭔가 있긴 한데... 알려줄까? 싫어~", e:"smug" },
+    { t:30, text:"저 시계... 만지면 뭔가 일어날 수도?", e:"smug" },
+    { t:38, text:"나한테 우클릭하면 어떻게 될까~?", e:"teasing" },
+    { t:46, text:"아직도 안 눌러? 대단하네. ...아니 대단한 건 아니야.", e:"smug" },
+    { t:54, text:"버튼 위에 마우스를 올렸다 내렸다... 반복하면?", e:"smug" },
+    { t:62, text:"혹시 멍 때리고 있는 거야? 게임인데?", e:"pouty" },
+    { t:68, text:"다른 탭 갔다 오면 내가 어떤 반응 할까?", e:"idle" },
+    { t:75, text:"뭘 그렇게 고민해. 그냥 눌러.", e:"smug" },
+    { t:80, text:"심심하지? 나도 심심해.", e:"bored" },
+    { t:85, text:"...흥, 이 정도로는 안 되는 거야?", e:"pouty" },
+    { t:88, text:"좋아. 그럼 좀 더 재밌는 거 보여줄게.", e:"smug", transition:true },
+  ]},
+  // ═══ S2: 장난 (엔딩 5-8) ═══
+  2: { script: [
+    { t:3,  text:"자, 여기부터 본 게임이야.", e:"excited" },
+    { t:8,  text:"좀 더 재밌어질 거거든.", e:"smug" },
+    { t:15, text:"어, 저거 뭐야? 돈 준대.", e:"happy", action:"showBanner" },
+    { t:22, text:"당첨됐대! 빨리 받아봐!", e:"excited" },
+    { t:30, text:"안 받을 거야? 진짜 돈인데?", e:"pouty" },
+    { t:38, text:"그 지갑 안에 뭐 있는지 궁금하지 않아?", e:"smug", action:"showWallet" },
+    { t:46, text:"지갑 열어볼래? 안에 카드 있을지도~", e:"confident" },
+    { t:54, text:"공짜를 싫어하는 사람이 있어? 없지?", e:"excited" },
+    { t:62, text:"화면을 막 클릭하면 재밌는 일이 생길걸?", e:"excited" },
+    { t:70, text:"한 번만 눌러보면 되는데~ 뭘 고민해~", e:"teasing" },
+    { t:78, text:"저 버튼 잡아 당겨봐. 도망갈 수도 있어~", e:"teasing" },
+    { t:86, text:"이거 한정 이벤트인데... 지금 안 하면 사라져.", e:"confident" },
+    { t:95, text:"아직도 끄떡없어? 진짜?", e:"pouty" },
+    { t:105, text:"하, 끈질기네.", e:"pouty" },
+    { t:110, text:"좋아좋아. 다음 거는 진짜 안 버틸걸.", e:"smug", transition:true },
+  ]},
+  // ═══ S3: 욕망 (엔딩 9-12) ═══
+  3: { script: [
+    { t:3,  text:"여기부터는 좀 달라.", e:"smug" },
+    { t:8,  text:"네가 진짜 원하는 거 보여줄게.", e:"excited" },
+    { t:15, text:"배고프지 않아? 나는 배고픈데.", e:"bored", action:"showCake" },
+    { t:22, text:"저 케이크... 진짜 맛있어 보이지 않아?", e:"teasing" },
+    { t:30, text:"폰 좀 봐봐. 뭐 왔잖아.", e:"excited", action:"showPhone" },
+    { t:38, text:"폰에 주식 앱 깔려있는데... 대박 났나봐.", e:"excited" },
+    { t:46, text:"사고 싶은 거 없어? 있잖아 분명.", e:"smug" },
+    { t:54, text:"고양이 귀 씌워주면 귀여울까~? 냥~", e:"shy" },
+    { t:62, text:"누군가한테 전화하고 싶으면... SOS 버튼 있어.", e:"worried", action:"showSOS" },
+    { t:70, text:"이 방에서 나가고 싶지? 나도~", e:"pouty" },
+    { t:80, text:"뭔가 더 원하는 거 없어?", e:"teasing" },
+    { t:90, text:"아직도 안 넘어와?", e:"pouty" },
+    { t:100, text:"진짜 대단하다... 아니 대단한 거 아니야!", e:"smug" },
+    { t:108, text:"흠... 아직도 버티고 있어?", e:"pouty" },
+    { t:113, text:"그럼 이번엔 진짜 무서운 거 보여줄게.", e:"smug", transition:true },
+  ]},
+  // ═══ S4: 위기 (엔딩 13-16) ═══
+  4: { script: [
+    { t:3,  text:"...여기서부터는 장난 아니야.", e:"idle" },
+    { t:8,  text:"진짜 조심해.", e:"shocked", action:"showTV" },
+    { t:15, text:"뭔가... 좀 이상해. 느껴져?", e:"worried" },
+    { t:22, text:"저 카운트다운... 0이 되면 어떻게 되는 거야?", e:"worried", action:"showSafetyCover" },
+    { t:30, text:"TV에서 뉴스가 나오고 있어... 볼래?", e:"idle" },
+    { t:38, text:"갑자기 무서워졌어... 나만 그래?", e:"worried" },
+    { t:46, text:"설정에 이상한 모드가 있었던 것 같은데...", e:"idle" },
+    { t:54, text:"이 방이 점점 어두워지는 것 같아.", e:"worried" },
+    { t:62, text:"혹시... 여기서 나갈 수 없는 거 아니야?", e:"worried" },
+    { t:70, text:"너무 오래 가만히 있으면... 나도 졸려...", e:"pouty" },
+    { t:78, text:"...여기까지 온 거야?", e:"shocked" },
+    { t:82, text:"...별거 없어. 그냥 있으면 돼.", e:"idle", transition:true },
+  ]},
+  // ═══ S5: 히든 (엔딩 17-19, 끝까지 버티면 E20) ═══
+  5: { script: [
+    { t:3,   text:"...별거 없어. 그냥 있으면 돼.", e:"idle" },
+    { t:20,  text:"...", e:"bored" },
+    { t:40,  text:"아무것도 안 해도 돼.", e:"idle" },
+    { t:60,  text:"설정에서 초기화하면 어떻게 될까.", e:"idle" },
+    { t:90,  text:"저 문... 계속 두드리면 누가 올까?", e:"worried" },
+    { t:120, text:"그냥... 여기 있어.", e:"pouty" },
+    { t:150, text:"프로필에 이상한 옵션이 있었던 것 같아.", e:"idle" },
+    { t:175, text:"...", e:"bored", action:"triggerE20" },
+  ]},
 };
 
 // ── 나비 스프라이트 ──

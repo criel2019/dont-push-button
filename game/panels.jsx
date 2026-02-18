@@ -94,21 +94,84 @@ function CollectionPanel({ open, onClose, collected }) {
   );
 }
 
-function ContextMenu({ x, y, onDelete, onClose }) {
+function ContextMenu({ x, y, onDelete, onClose, say }) {
+  const [deleteHovers, setDeleteHovers] = useState(0);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const hoverCountRef = useRef(0);
+
+  useEffect(() => {
+    // 메뉴 뜨자마자
+    say("...그거 뭔데.", "idle");
+  }, []);
+
+  const handleDeleteEnter = useCallback(() => {
+    hoverCountRef.current += 1;
+    const n = hoverCountRef.current;
+    setDeleteHovers(n);
+    switch(n) {
+      case 1: say("어— 잠깐잠깐잠깐", "shocked"); break;
+      case 2: say("하, 진짜? 나를? 삭제를?", "smug"); break;
+      case 3: say("아 좀!! 갔다 왔다 하지 마!!", "angry"); break;
+      case 4: say("너 지금 되게 재밌지? 아, 재밌구나?", "pouty"); break;
+    }
+  }, [say]);
+
+  const handleDeleteLeave = useCallback(() => {
+    const n = hoverCountRef.current;
+    if (n === 1) say("...흥, 그럴 줄 알았어.", "smug");
+    else if (n === 2) say("장난이지? ...장난이라고 해.", "worried");
+  }, [say]);
+
+  const handleDeleteClick = useCallback(() => {
+    setShowConfirm(true);
+    say("너 진짜 누른 거야?", "shocked");
+  }, [say]);
+
+  if (showConfirm) {
+    return (
+      <div style={{ position:"fixed",inset:0,zIndex:950,display:"flex",alignItems:"center",justifyContent:"center",
+        background:"rgba(0,0,0,0.3)",backdropFilter:"blur(4px)",animation:"fadeIn 0.2s ease" }}>
+        <div style={{ background:"#fff",borderRadius:16,padding:"24px 32px",boxShadow:"0 16px 48px rgba(0,0,0,0.25)",
+          textAlign:"center",animation:"popIn 0.2s ease",minWidth:260 }}>
+          <div style={{ fontSize:14,fontWeight:700,color:"#333",marginBottom:6 }}>삭제 확인</div>
+          <div style={{ fontSize:12,color:"#999",marginBottom:20 }}>"나비"를 영구적으로 삭제합니다.</div>
+          <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+            <div onClick={onClose} style={{ padding:"10px 20px",borderRadius:10,fontSize:13,color:"#999",
+              cursor:"pointer",background:"#f5f5f5",fontWeight:600 }}>취소</div>
+            <div onClick={onDelete} style={{ padding:"10px 20px",borderRadius:10,fontSize:13,color:"#fff",
+              cursor:"pointer",background:"#e8573d",fontWeight:600,boxShadow:"0 4px 12px #e8573d44" }}>삭제 확인</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const greyItem = (label) => (
+    <div style={{ padding:"8px 16px",fontSize:13,color:"#ccc",cursor:"default" }}>{label}</div>
+  );
+
   return (
-    <div style={{ position:"fixed",left:x,top:y,zIndex:900,background:"#fff",borderRadius:14,
-      boxShadow:"0 10px 40px rgba(0,0,0,0.2)",padding:8,minWidth:160,animation:"popIn 0.15s ease" }}>
-      <div style={{ padding:"10px 16px",fontSize:12,color:"#bbb",cursor:"default" }}>나비</div>
-      <div style={{ height:1,background:"#f0f0f0",margin:"2px 10px" }}/>
-      <div onClick={onDelete} style={{ padding:"12px 16px",fontSize:14,color:"#e8573d",cursor:"pointer",
-        borderRadius:10,transition:"background 0.15s" }}
-        onMouseEnter={e=>e.target.style.background="#fef0f0"}
-        onMouseLeave={e=>e.target.style.background="transparent"}>
+    <div style={{ position:"fixed",left:x,top:y,zIndex:900,background:"#fff",borderRadius:8,
+      boxShadow:"0 2px 16px rgba(0,0,0,0.22)",padding:"4px 0",minWidth:200,animation:"fadeIn 0.1s ease",
+      border:"1px solid #e0e0e0",fontFamily:"'Segoe UI','Noto Sans KR',sans-serif" }}>
+      {greyItem("← 뒤로")}
+      {greyItem("↻ 새로고침")}
+      <div style={{ height:1,background:"#e8e8e8",margin:"4px 0" }}/>
+      {greyItem("다른 이름으로 저장...")}
+      {greyItem("인쇄...")}
+      {greyItem("페이지 소스 보기")}
+      <div style={{ height:1,background:"#e8e8e8",margin:"4px 0" }}/>
+      <div onClick={handleDeleteClick}
+        onMouseEnter={handleDeleteEnter}
+        onMouseLeave={handleDeleteLeave}
+        style={{ padding:"8px 16px",fontSize:13,color:"#e8573d",cursor:"pointer",fontWeight:600,
+          background:deleteHovers>0?"#fef0f0":"transparent",transition:"background 0.15s" }}>
         🗑️ 삭제
       </div>
-      <div onClick={onClose} style={{ padding:"12px 16px",fontSize:14,color:"#999",cursor:"pointer",
-        borderRadius:10,transition:"background 0.15s" }}
-        onMouseEnter={e=>e.target.style.background="#f8f8f8"}
+      <div style={{ height:1,background:"#e8e8e8",margin:"4px 0" }}/>
+      <div onClick={onClose} style={{ padding:"8px 16px",fontSize:13,color:"#666",cursor:"pointer",
+        transition:"background 0.15s" }}
+        onMouseEnter={e=>e.target.style.background="#f5f5f5"}
         onMouseLeave={e=>e.target.style.background="transparent"}>
         취소
       </div>

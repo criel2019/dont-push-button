@@ -24,15 +24,12 @@ function DontPressTheButton() {
   const [crtOff, setCrtOff] = useState(false);
   const [stageTransitioning, setStageTransitioning] = useState(false);
 
-  // ── 나비 대사 시퀀스 엔진 ──
-  const [naviSeqIndex, setNaviSeqIndex] = useState(0); // intro sequence index
-  const [naviIntroComplete, setNaviIntroComplete] = useState(false);
-  const lastHintRef = useRef(null);
-  const lastIdleRef = useRef(null);
+  // ── 나비 스크립트 엔진 ──
+  const [naviScriptIdx, setNaviScriptIdx] = useState(0);
 
   // ── 인터렉션 상태 ──
   const [hoverCount, setHoverCount] = useState(0);
-  const [bgClicks, setBgClicks] = useState([]);
+  const [totalBgClicks, setTotalBgClicks] = useState(0);
   const [doorKnocks, setDoorKnocks] = useState(0);
   const [doorOpen, setDoorOpen] = useState(false);
   const [bannerVisible, setBannerVisible] = useState(false);
@@ -49,6 +46,14 @@ function DontPressTheButton() {
   const [collectionOpen, setCollectionOpen] = useState(false);
   const [killMode, setKillMode] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
+
+  // ── 나비 스크립트 액션: 오브젝트 개별 가시성 ──
+  const [walletVisible, setWalletVisible] = useState(false);
+  const [cakeVisible, setCakeVisible] = useState(false);
+  const [phoneVisible, setPhoneVisible] = useState(false);
+  const [sosVisible, setSOSVisible] = useState(false);
+  const [tvVisible, setTVVisible] = useState(false);
+  const [safetyCoverVisible, setSafetyCoverVisible] = useState(false);
 
   // ── 엔딩 컴포넌트 활성 상태 ──
   const [showE05, setShowE05] = useState(false);
@@ -67,8 +72,6 @@ function DontPressTheButton() {
   const [showE22, setShowE22] = useState(false);
 
   const idleRef = useRef(0);
-  const bannerTimerRef = useRef(null);
-  const lastLine = useRef(null);
 
   // ── 기본 함수 ──
   const say = useCallback((text, emotion) => {
@@ -99,6 +102,7 @@ function DontPressTheButton() {
   // ── 엔딩 활성화 체크 (스테이지 기반) ──
   const isEndingActive = useCallback((id) => {
     if (id === 22) return true; // E22는 항상 활성
+    if (id === 20) return currentStage >= STAGE_COUNT; // E20은 S5 스크립트 끝에서 활성
     const stage = STAGES[currentStage];
     return stage?.endings?.includes(id) ?? false;
   }, [currentStage]);
@@ -116,94 +120,61 @@ function DontPressTheButton() {
     return () => clearInterval(iv);
   }, [gs, stageTransitioning]);
 
-  // ── 나비 인트로 대사 시퀀스 (elapsed 기반 자동 재생) ──
-  useEffect(() => {
-    if (gs !== "room" || activeEvent || stageTransitioning || naviIntroComplete) return;
-    const seq = NAVI_STAGE_SEQUENCES[currentStage];
-    if (!seq || !seq.intro) return;
-
-    const currentIntro = seq.intro[naviSeqIndex];
-    if (!currentIntro) {
-      setNaviIntroComplete(true);
-      return;
-    }
-
-    if (stageElapsed >= currentIntro.delay) {
-      say(currentIntro.t, currentIntro.e);
-      setNaviSeqIndex(p => p + 1);
-    }
-  }, [gs, stageElapsed, activeEvent, stageTransitioning, naviIntroComplete, currentStage, naviSeqIndex]);
-
-  // ── 나비 idle/hints 대사 (인트로 후, 주기적) ──
-  useEffect(() => {
-    if (gs !== "room" || activeEvent || stageTransitioning || !naviIntroComplete) return;
-    const seq = NAVI_STAGE_SEQUENCES[currentStage];
-    if (!seq) return;
-
-    const iv = setInterval(() => {
-      if (activeEvent || naviSleeping) return;
-      // 30% 확률로 힌트, 70% idle
-      if (seq.hints && seq.hints.length > 0 && Math.random() < 0.3) {
-        const hint = pickRandom(seq.hints, lastHintRef);
-        if (hint) say(hint.t, hint.e);
-      } else if (seq.idle && seq.idle.length > 0) {
-        const idle = pickRandom(seq.idle, lastIdleRef);
-        if (idle) say(idle.t, idle.e);
-      }
-    }, 8000);
-    return () => clearInterval(iv);
-  }, [gs, activeEvent, stageTransitioning, naviIntroComplete, currentStage, naviSleeping]);
-
-  // ── 스테이지 전환 체크 ──
+  // ── 나비 스크립트 시퀀스 엔진 (대사 주도 + 오브젝트 등장 + 전환) ──
+  // stageElapsed가 현재 script entry의 t에 도달하면 실행
   useEffect(() => {
     if (gs !== "room" || activeEvent || stageTransitioning) return;
-    const stage = STAGES[currentStage];
-    if (!stage) return;
+    const seq = NAVI_STAGE_SEQUENCES[currentStage];
+    if (!seq?.script) return;
 
-    if (stageElapsed >= stage.duration) {
-      if (currentStage >= STAGE_COUNT) {
-        // S5 끝 → E20 (암전) 트리거
-        triggerEnding(20);
+    const entry = seq.script[naviScriptIdx];
+    if (!entry) return; // 스크립트 소진 — 대기
+
+    if (stageElapsed >= entry.t) {
+      // 대사 출력
+      say(entry.text, entry.e);
+
+      // 오브젝트 등장 액션 (나비가 언급할 때 등장)
+      if (entry.action) {
+        switch (entry.action) {
+          case "showBanner": setBannerVisible(true); break;
+          case "showWallet": setWalletVisible(true); break;
+          case "showCake": setCakeVisible(true); break;
+          case "showPhone": setPhoneVisible(true); break;
+          case "showSOS": setSOSVisible(true); break;
+          case "showTV": setTVVisible(true); break;
+          case "showSafetyCover": setSafetyCoverVisible(true); break;
+          case "triggerE20": triggerEnding(20); return;
+        }
+      }
+
+      // 스테이지 전환 (스크립트가 전환을 지시할 때)
+      if (entry.transition) {
+        setNaviScriptIdx(p => p + 1);
+        initiateStageTransition();
         return;
       }
-      // 전환 시퀀스 시작
-      initiateStageTransition();
+
+      setNaviScriptIdx(p => p + 1);
     }
-  }, [gs, stageElapsed, activeEvent, stageTransitioning, currentStage]);
+  }, [gs, stageElapsed, activeEvent, stageTransitioning, currentStage, naviScriptIdx]);
 
   const initiateStageTransition = useCallback(() => {
+    if (currentStage >= STAGE_COUNT) return; // 마지막 스테이지면 전환 없음
     setStageTransitioning(true);
-    const seq = NAVI_STAGE_SEQUENCES[currentStage];
 
-    // 전환 대사 1
-    if (seq?.transition?.[0]) {
-      say(seq.transition[0].t, seq.transition[0].e);
-    }
-
-    // CRT 꺼짐
-    setTimeout(() => {
-      setCrtOff(true);
-      // 전환 대사 2
-      if (seq?.transition?.[1]) {
-        setTimeout(() => say(seq.transition[1].t, seq.transition[1].e), 1000);
-      }
-    }, 2000);
+    // CRT 꺼짐 연출
+    setTimeout(() => setCrtOff(true), 2000);
 
     // 스테이지 변경 + CRT 켜짐
     setTimeout(() => {
       setCurrentStage(p => p + 1);
       setStageElapsed(0);
-      setNaviSeqIndex(0);
-      setNaviIntroComplete(false);
-      // 스테이지별 새 요소 셋업
-      if (currentStage + 1 === 2) {
-        // S2: 배너 자동 표시
-        setTimeout(() => setBannerVisible(true), 5000);
-      }
+      setNaviScriptIdx(0);
       setCrtOff(false);
       setStageTransitioning(false);
     }, 4000);
-  }, [currentStage, say]);
+  }, [currentStage]);
 
   // ════════════════════════════════════════════════
   // 엔딩 시스템
@@ -249,7 +220,7 @@ function DontPressTheButton() {
 
     // 오버레이 컴포넌트가 자체 say()를 호출하는 엔딩은 여기서 say 생략
     // (중복 호출 방지 — 해당 컴포넌트의 useEffect에서 처리)
-    const overlayHandled = [2,5,6,7,8,10,11,12,13,14,15,16,19,22];
+    const overlayHandled = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22];
     if (!overlayHandled.includes(id)) {
       say(ed.eventText, ed.eventEmo);
     }
@@ -334,13 +305,15 @@ function DontPressTheButton() {
   // ── 방 진입 초기화 ──
   useEffect(() => {
     if (gs !== "room") return;
-    setActiveEvent(null); setHoverCount(0); setBgClicks([]); setDoorKnocks(0);
+    setActiveEvent(null); setHoverCount(0); setTotalBgClicks(0); setDoorKnocks(0);
     setBannerVisible(false); setCatEars(false); setDoorOpen(false);
     setKillMode(false); setNaviSleeping(false); setCakeSelected(false);
     setCakeOnButton(false); setDarkMode(false); setNaviGone(false);
     setWasHidden(false); setContextMenu(null); idleRef.current = 0;
-    setStageElapsed(0); setNaviSeqIndex(0); setNaviIntroComplete(false);
+    setStageElapsed(0); setNaviScriptIdx(0);
     setCrtOff(false); setStageTransitioning(false);
+    setWalletVisible(false); setCakeVisible(false); setPhoneVisible(false);
+    setSOSVisible(false); setTVVisible(false); setSafetyCoverVisible(false);
 
     // 초기화 오버레이들
     setShowE05(false); setShowE06(false); setShowE07(false); setShowE08(false);
@@ -352,34 +325,55 @@ function DontPressTheButton() {
   // ── 이벤트 핸들러 ──
   const handleBgClick = useCallback(() => {
     if (activeEvent) return; resetIdle();
-    const now = Date.now();
-    setBgClicks(prev => {
-      const recent = [...prev.filter(t => now - t < RAPID_CLICK_WINDOW), now];
-      if (recent.length >= RAPID_CLICK_THRESHOLD && isEndingActive(7)) {
-        triggerEnding(7); return [];
-      }
-      return recent;
-    });
-  }, [activeEvent, resetIdle, isEndingActive, triggerEnding]);
-
-  const handleButtonHover = useCallback((isEnter) => {
-    if (activeEvent) return; resetIdle();
-    if (isEnter) setHoverCount(prev => {
+    setTotalBgClicks(prev => {
       const n = prev + 1;
-      if (n >= HOVER_THRESHOLD && isEndingActive(3)) {
-        triggerEnding(3); return 0;
+      if (isEndingActive(7)) {
+        if (n === 20) say("야, 그만 눌러. 귀찮아.", "pouty");
+        if (n === 30) { say("아 진짜!! 나까지 깨지잖아!! 책임져!!", "angry"); doShake(); }
+        if (n === 40) say("그ㅡ만ㅡ하ㅡ", "shocked");
+        if (n === 50) { say("아잇!! 이 미ㅡ친ㅡ", "shocked"); doShake(); }
+        if (n === 58) say("야... 진지하게 말하는데 이러다 진짜ㅡ", "worried");
+        if (n >= BG_CLICK_THRESHOLD) { triggerEnding(7); return 0; }
       }
       return n;
     });
-  }, [activeEvent, resetIdle, isEndingActive, triggerEnding]);
+  }, [activeEvent, resetIdle, isEndingActive, triggerEnding, say, doShake]);
+
+  const handleButtonHover = useCallback((isEnter) => {
+    if (activeEvent) return; resetIdle();
+    if (!isEnter || !isEndingActive(3)) return;
+    setHoverCount(prev => {
+      const n = prev + 1;
+      switch(n) {
+        case 1: case 2: break;
+        case 3: say("뭐야, 누르게?", "pouty"); break;
+        case 4: say("누르지 말라니까.", "pouty"); break;
+        case 5: say("누ㅡ르ㅡ지ㅡ마.", "pouty"); break;
+        case 6: say("됐지? 이제 관뒀지?", "smug"); break;
+        case 7: say("안 돼. 볼 수도 없어. 끝.", "smug"); break;
+        case 8: say("이 위에 올라탔으니까 이제 절대 못 눌러.", "smug"); break;
+        case 9: say("됐지? 없어. 사라졌어. 집에 가.", "smug"); break;
+        case 10:
+          say("...앗.", "shocked");
+          setTimeout(() => triggerEnding(3), 1500);
+          break;
+      }
+      return n;
+    });
+  }, [activeEvent, resetIdle, isEndingActive, triggerEnding, say]);
 
   const handleDoorKnock = useCallback(() => {
     if (activeEvent) return; resetIdle();
     if (!isEndingActive(18)) return;
     setDoorKnocks(prev => {
       const n = prev + 1;
-      if (n === 1) say("똑똑...", "idle");
-      else if (n === 3) say("누구세요~?", "idle");
+      switch(n) {
+        case 3: say("...뭐야.", "idle"); break;
+        case 5: say("거기 누구 있어?", "worried"); break;
+        case 7: say("야... 저거 뭔데.", "worried"); break;
+        case 8: say("...", "shocked"); break;
+        case 9: say("...", "worried"); break;
+      }
       if (n >= DOOR_KNOCK_THRESHOLD) {
         triggerEnding(18); return 0;
       }
@@ -508,7 +502,6 @@ function DontPressTheButton() {
       {/* ═══════════ ROOM ═══════════ */}
       {gs === "room" && (
         <GameRoom
-          currentStage={currentStage}
           onDoorKnock={handleDoorKnock}
           onClockClick={handleClockClick}
           onSOSClick={handleSOSClick}
@@ -521,6 +514,12 @@ function DontPressTheButton() {
           doorKnocks={doorKnocks}
           doorOpen={doorOpen}
           bannerVisible={bannerVisible}
+          walletVisible={walletVisible}
+          cakeVisible={cakeVisible}
+          phoneVisible={phoneVisible}
+          sosVisible={sosVisible}
+          tvVisible={tvVisible}
+          safetyCoverVisible={safetyCoverVisible}
           cakeSelected={cakeSelected}
           activeEvent={activeEvent}
           isEndingActive={isEndingActive}
@@ -536,22 +535,31 @@ function DontPressTheButton() {
             crtOff={crtOff}
           />
 
-          {/* 메인 버튼 */}
-          <div style={{ position:"absolute",left:"50%",bottom:"39%",transform:"translateX(-50%)",zIndex:50 }}>
-            <NuclearButton
-              label={buttonLabel} accent={buttonColor}
-              onPress={cakeSelected
-                ? () => { setCakeSelected(false); setCakeOnButton(true); triggerEnding(9); }
-                : pressMainButton}
-              onHover={handleButtonHover}
-              onDrag={!activeEvent && !cakeSelected ? () => {
-                if (!activeEvent && isEndingActive(8)) triggerEnding(8);
-              } : undefined}
-              disabled={activeEvent === 20}
-              cakeMode={cakeOnButton}
-              cakeSelect={cakeSelected}
-            />
-          </div>
+          {/* 메인 버튼 — E03 호버 시각 변화 반영 */}
+          {(() => {
+            const frogPre = isEndingActive(3) && hoverCount >= 7 && hoverCount < 10 && !activeEvent;
+            const frogHuge = activeEvent === 3;
+            const frogLabel = (isEndingActive(3) && hoverCount >= 6 && !activeEvent) ? "누르지 마" : buttonLabel;
+            return (
+              <div style={{ position:"absolute",left:"50%",bottom:"39%",transform:`translateX(-50%) scale(${frogHuge?2.5:1})`,
+                zIndex:50,transition:"transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
+                opacity:frogPre?0:1,pointerEvents:frogPre?"none":"auto" }}>
+                <NuclearButton
+                  label={frogLabel} accent={buttonColor}
+                  onPress={cakeSelected
+                    ? () => { setCakeSelected(false); setCakeOnButton(true); triggerEnding(9); }
+                    : pressMainButton}
+                  onHover={handleButtonHover}
+                  onDrag={!activeEvent && !cakeSelected ? () => {
+                    if (!activeEvent && isEndingActive(8)) triggerEnding(8);
+                  } : undefined}
+                  disabled={activeEvent === 20}
+                  cakeMode={cakeOnButton}
+                  cakeSelect={cakeSelected}
+                />
+              </div>
+            );
+          })()}
 
           {/* UI 컨트롤 */}
           <RoomObj onClick={(e) => { e.stopPropagation(); resetIdle(); setSettingsOpen(true); }}
@@ -583,7 +591,7 @@ function DontPressTheButton() {
           </RoomObj>
 
           {/* 방치 경고 */}
-          {idleTimer > 120 && idleTimer < IDLE_LIMIT && !activeEvent && (
+          {idleTimer > 40 && idleTimer < IDLE_LIMIT && !activeEvent && (
             <div style={{ position:"absolute",bottom:48,left:"50%",transform:"translateX(-50%)",
               fontSize:12,color:"#b0a09055",animation:"pulse 2.5s ease infinite",letterSpacing:3 }}>
               (조용하다...)
@@ -602,33 +610,27 @@ function DontPressTheButton() {
           </div>
 
           {/* ═══ 엔딩 오버레이 컴포넌트 ═══ */}
-          <E02Marshmallow active={activeEvent===2} onComplete={pressEventButton} say={say} frame={frame}/>
+          <E01Rude active={activeEvent===1} onComplete={pressEventButton} say={say} doShake={doShake}/>
+          <E02Marshmallow active={activeEvent===2} onComplete={pressEventButton} say={say} doShake={doShake} frame={frame}/>
+          <E03Frog active={activeEvent===3} hoverCount={hoverCount} onComplete={pressEventButton} say={say}/>
+          <E04Surprise active={activeEvent===4} onComplete={pressEventButton} say={say}/>
           <E05Scam active={showE05} onComplete={pressEventButton} say={say} doShake={doShake}/>
           <E06Shopping active={showE06} onComplete={pressEventButton} say={say}/>
-          <E07Bluescreen active={showE07} onComplete={pressEventButton} say={say} doShake={doShake}/>
+          <E07Bluescreen active={showE07} onComplete={pressEventButton} say={say} doShake={doShake} totalBgClicks={totalBgClicks}/>
           <E08Chase active={showE08} onComplete={() => { setShowE08(false); pressEventButton(); }} say={say}/>
+          <E09Food active={activeEvent===9} onComplete={pressEventButton} say={say}/>
           <E10Stock active={showE10} onComplete={pressEventButton} say={say} frame={frame}/>
           <E11Otaku active={showE11} onComplete={pressEventButton} say={say}/>
           <E12Police active={showE12} onComplete={pressEventButton} say={say}/>
           <E13Coward active={showE13} onComplete={pressEventButton} say={say} doShake={doShake}/>
           <E14News active={showE14} onComplete={pressEventButton} say={say} doShake={doShake}/>
           <E15Psycho active={showE15} onComplete={pressEventButton} say={say}/>
-          <E16Sleep active={showE16} onComplete={pressEventButton} say={say}/>
+          <E16Sleep active={showE16} onComplete={pressEventButton} say={say} doShake={doShake}/>
+          <E17Loop active={activeEvent===17} onComplete={pressEventButton} say={say} playCount={playCount}/>
+          <E18Door active={activeEvent===18} onComplete={pressEventButton} say={say} doorOpen={doorOpen}/>
           <E19Transfer active={showE19} onComplete={pressEventButton} say={say}/>
           <E20Blackout active={showE20} onComplete={pressEventButton} say={say} naviGone={naviGone}/>
           <E22Noise active={showE22} onComplete={pressEventButton} say={say} doShake={doShake}/>
-
-          {/* 이벤트 버튼 */}
-          {activeEvent && ![2, 8, 12, 20].includes(activeEvent) && (
-            <div style={{ position:"absolute",bottom:"12%",left:"50%",transform:"translateX(-50%)",zIndex:450 }}>
-              <button onClick={(e) => { e.stopPropagation(); pressEventButton(); }}
-                style={{ padding:"14px 36px",background:buttonColor,border:"none",borderRadius:14,
-                  color:"#fff",fontSize:16,fontWeight:800,cursor:"pointer",letterSpacing:4,
-                  boxShadow:`0 8px 32px ${buttonColor}44`,animation:"popIn 0.4s ease" }}>
-                {buttonLabel}
-              </button>
-            </div>
-          )}
 
           {/* 패널 */}
           <SettingsPanel open={settingsOpen} onClose={()=>setSettingsOpen(false)}
@@ -654,6 +656,7 @@ function DontPressTheButton() {
           {contextMenu && <>
             <div onClick={()=>setContextMenu(null)} style={{ position:"fixed",inset:0,zIndex:850 }}/>
             <ContextMenu x={contextMenu.x} y={contextMenu.y}
+              say={say}
               onDelete={() => { setContextMenu(null); triggerEnding(1); }}
               onClose={()=>setContextMenu(null)}/>
           </>}

@@ -2,33 +2,30 @@
 // room.jsx — 방 환경 + 스테이지별 오브젝트
 // ============================================================
 
-function GameRoom({ currentStage, onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletClick,
+function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletClick,
   onCakeClick, onPhoneClick, onBannerClick, onSafetyCoverClick,
-  doorKnocks, doorOpen, bannerVisible, cakeSelected,
-  activeEvent, isEndingActive, frame, children }) {
+  doorKnocks, doorOpen, bannerVisible,
+  walletVisible, cakeVisible, phoneVisible, sosVisible, tvVisible, safetyCoverVisible,
+  cakeSelected, activeEvent, isEndingActive, frame, children }) {
 
-  // 스테이지에 따라 어떤 오브젝트를 보여줄지 결정
-  const showDoor = true; // 항상 보임
-  const showClock = currentStage >= 1;
+  // 기본 방 오브젝트 (항상 표시)
+  const showDoor = true;
+  const showWallLight = true;
   const showWindow = true;
+  const showFrame = true;
+  const showClock = true;
   const showBookshelf = true;
   const showLamp = true;
-  const showWallLight = true;
-  const showFrame = true;
 
-  // S2+: 배너, 지갑, 노트북
-  const showBanner = currentStage >= 2 && bannerVisible;
-  const showWallet = currentStage >= 2;
-  const showNotebook = currentStage >= 2;
-
-  // S3+: 케이크, 스마트폰, 고양이귀(CRT에서 처리), SOS
-  const showCake = currentStage >= 3;
-  const showPhone = currentStage >= 3;
-  const showSOS = currentStage >= 3;
-
-  // S4+: TV, 안전커버
-  const showTV = currentStage >= 4;
-  const showSafetyCover = currentStage >= 4;
+  // 나비가 언급할 때 개별적으로 등장하는 오브젝트
+  const showBanner = bannerVisible;
+  const showWallet = walletVisible;
+  const showCake = cakeVisible;
+  const showPhone = phoneVisible;
+  const showSOS = sosVisible;
+  const showTV = tvVisible;
+  const showSafetyCover = safetyCoverVisible;
+  const showNotebook = walletVisible; // 지갑과 함께 등장
 
   return (
     <div style={{ width:"100%",height:"100%",position:"relative",overflow:"hidden" }}>
