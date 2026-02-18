@@ -581,6 +581,7 @@ function DontPressTheButton() {
     localStorage.setItem("dpb_plays", String(pc));
     setEndingData(null); setActiveEvent(null);
     setCurrentStage(1); setStageElapsed(0);
+    setNText(""); setNEmo("idle");
     setGs("title");
   }, [playCount]);
 
