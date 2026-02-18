@@ -1,5 +1,5 @@
 // E13: 쫄보 — 안전커버 열림 → 사이렌 + 카운트다운 10초
-function E13Coward({ active, onComplete, say, doShake }) {
+function E13Coward({ active, onComplete, onDismiss, say, doShake }) {
   const [count, setCount] = useState(10);
   const [started, setStarted] = useState(false);
   const [flash, setFlash] = useState(false);
@@ -283,7 +283,7 @@ function E13Coward({ active, onComplete, say, doShake }) {
 
       {/* Inline keyframe styles */}
       {/* Skip button */}
-      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+      <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
 
       <style>{`
         @keyframes sirenPulse {

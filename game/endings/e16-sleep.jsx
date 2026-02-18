@@ -1,5 +1,5 @@
 // E16: 수면 — 방치 → 나비 점진적 잠들기 → ASMR/릴랙싱
-function E16Sleep({ active, onComplete, say, doShake }) {
+function E16Sleep({ active, onComplete, onDismiss, say, doShake }) {
   const [elapsed, setElapsed] = useState(0);
   const [darkness, setDarkness] = useState(0);
   const [showPillow, setShowPillow] = useState(false);
@@ -303,9 +303,7 @@ function E16Sleep({ active, onComplete, say, doShake }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active && !waking} delay={15} autoDismiss={35} onSkip={() => {
-        if (!completedRef.current) { completedRef.current = true; onComplete(); }
-      }} />
+      <SkipButton active={active && !waking} delay={15} onSkip={onDismiss} />
 
       {/* Inline keyframes */}
       <style>{`

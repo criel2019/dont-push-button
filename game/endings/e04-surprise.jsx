@@ -2,7 +2,7 @@
 // 트리거: document.visibilitychange (main.jsx)
 // active=true 시 인테리어 씬 + 클릭 가능한 아이템 + 최종 버튼
 
-function E04Surprise({ active, onComplete, say }) {
+function E04Surprise({ active, onComplete, onDismiss, say }) {
   const [clickedItems, setClickedItems] = useState({ snack: false, drink: false, laundry: false });
   const [allClicked, setAllClicked] = useState(false);
   const [showButton, setShowButton] = useState(false);
@@ -241,33 +241,12 @@ function E04Surprise({ active, onComplete, say }) {
           transform: "translateX(-50%)", zIndex: 420,
           animation: "popIn 0.3s cubic-bezier(0.34,1.56,0.64,1)"
         }}>
-          <div
-            onClick={onComplete}
-            onMouseEnter={() => setBtnHover(true)}
-            onMouseLeave={() => setBtnHover(false)}
-            style={{
-              padding: "14px 40px",
-              background: btnHover
-                ? "linear-gradient(135deg, #ff8f00, #e88b3d)"
-                : "linear-gradient(135deg, #e88b3d, #ff6f00)",
-              color: "#fff", borderRadius: 14,
-              fontSize: 16, fontWeight: 800, letterSpacing: 3,
-              cursor: "pointer",
-              boxShadow: btnHover
-                ? "0 8px 32px #e88b3d66, 0 0 20px #e88b3d44"
-                : "0 6px 24px #e88b3d44",
-              transform: btnHover ? "scale(1.06)" : "scale(1)",
-              transition: "transform 0.15s, box-shadow 0.15s",
-              animation: "surpriseFlash 1.5s ease infinite"
-            }}
-          >
-            지금이다!
-          </div>
+          <MiniNuclearButton label="지금이다!" onPress={onComplete} />
         </div>
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+      <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
 
       {/* 커스텀 애니메이션 */}
       <style>{`

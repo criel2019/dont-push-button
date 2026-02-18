@@ -1,5 +1,5 @@
 // E17: 무한 루프 — 설정 → 초기화 → 메타 대화
-function E17Loop({ active, onComplete, say, playCount }) {
+function E17Loop({ active, onComplete, onDismiss, say, playCount }) {
   const [showDialog, setShowDialog] = useState(true);
   const [cancelled, setCancelled] = useState(false);
   const [dialogFade, setDialogFade] = useState(false);
@@ -231,7 +231,7 @@ function E17Loop({ active, onComplete, say, playCount }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+      <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
     </div>
   );
 }

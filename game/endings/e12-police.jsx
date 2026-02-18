@@ -1,5 +1,5 @@
 // E12: 경찰서 — 다이얼 패드 전화번호 퍼즐
-function E12Police({ active, onComplete, say }) {
+function E12Police({ active, onComplete, onDismiss, say }) {
   const [dialed, setDialed] = useState("");
   const [showDialer, setShowDialer] = useState(false);
   const [hintGiven, setHintGiven] = useState(false);
@@ -284,7 +284,7 @@ function E12Police({ active, onComplete, say }) {
         </div>
 
         {/* Skip button */}
-        <SkipButton active={active && !callConnected} delay={12} onSkip={onComplete} autoDismiss={35} />
+        <SkipButton active={active && !callConnected} delay={12} onSkip={onDismiss} autoDismiss={35} />
 
         {/* Bottom decoration */}
         <div style={{

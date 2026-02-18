@@ -1,5 +1,5 @@
 // E06: 자본주의 — 지갑 클릭 → 프리미엄 쇼핑몰 UI
-function E06Shopping({ active, onComplete, say }) {
+function E06Shopping({ active, onComplete, onDismiss, say }) {
   const [galleryIdx, setGalleryIdx] = useState(0);
   const [reviewIdx, setReviewIdx] = useState(0);
   const [couponCode, setCouponCode] = useState("");
@@ -273,33 +273,14 @@ function E06Shopping({ active, onComplete, say }) {
         </div>
 
         {/* Purchase button */}
-        <div
-          onClick={(e) => { e.stopPropagation(); onComplete(); }}
-          style={{
-            background: "linear-gradient(135deg, #9c27b0, #7b1fa2)",
-            color: "#fff",
-            fontSize: 16, fontWeight: 800,
-            padding: "16px 0",
-            borderRadius: 14,
-            cursor: "pointer",
-            textAlign: "center",
-            letterSpacing: 4,
-            boxShadow: "0 8px 32px rgba(156,39,176,0.35)",
-            transition: "transform 0.15s",
-            marginBottom: 8
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.03)"}
-          onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-        >
-          결제 ({finalPrice})
-        </div>
+        <MiniNuclearButton label="결제" onPress={onComplete} />
 
         <div style={{ fontSize: 8, color: "#ccc", textAlign: "center", paddingBottom: 12 }}>
           결제 시 환불 불가 · 가상 상품 · 부가세 포함
         </div>
 
         {/* Skip button */}
-        <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+        <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
       </div>
     </div>
   );

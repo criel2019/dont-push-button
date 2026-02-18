@@ -2,7 +2,7 @@
 // 트리거: CRT 모니터의 나비를 우클릭 → "삭제" 선택 → "삭제 확인" 클릭
 // panels.jsx의 ContextMenu가 초기 인터렉션 처리 → active=true 시점은 삭제 확정 후
 
-function E01Rude({ active, onComplete, say, doShake }) {
+function E01Rude({ active, onComplete, onDismiss, say, doShake }) {
   const [phase, setPhase] = useState(0); // 0=init, 1=angry, 2=progress, 3=done
   const [progress, setProgress] = useState(0);
 
@@ -120,22 +120,11 @@ function E01Rude({ active, onComplete, say, doShake }) {
 
         {/* 완료 후 확인 버튼 */}
         {phase === 3 && (
-          <div onClick={onComplete} style={{
-            display: "inline-block", padding: "12px 36px",
-            background: "#e8573d", color: "#fff",
-            borderRadius: 12, fontSize: 14, fontWeight: 700,
-            cursor: "pointer", marginTop: 8,
-            boxShadow: "0 4px 16px #e8573d44",
-            transition: "transform 0.15s, box-shadow 0.15s"
-          }}
-          onMouseEnter={e => { e.target.style.transform = "scale(1.05)"; e.target.style.boxShadow = "0 6px 24px #e8573d66"; }}
-          onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.boxShadow = "0 4px 16px #e8573d44"; }}>
-            확인
-          </div>
+          <MiniNuclearButton label="확인" onPress={onComplete} />
         )}
 
         {/* Skip button */}
-        <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+        <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 // E09: 식탐 — 파일 탐색기 + 케이크 클릭 먹기 진행
-function E09Food({ active, onComplete, say }) {
+function E09Food({ active, onComplete, onDismiss, say }) {
   const [phase, setPhase] = useState(0); // 0=explorer, 1=cake visible, 2-5=eating stages
   const [cakeStage, setCakeStage] = useState(0); // 0=full, 1=3/4, 2=half, 3=crumbs
   const [showFinish, setShowFinish] = useState(false);
@@ -197,25 +197,12 @@ function E09Food({ active, onComplete, say }) {
           position: "absolute", bottom: "8%", left: "50%", transform: "translateX(-50%)",
           animation: "popIn 0.4s cubic-bezier(0.34,1.56,0.64,1)"
         }}>
-          <div
-            onClick={(e) => { e.stopPropagation(); onComplete(); }}
-            style={{
-              background: btnColor,
-              color: "#fff", fontSize: 16, fontWeight: 800,
-              padding: "14px 40px", borderRadius: 14,
-              cursor: "pointer", border: "none",
-              boxShadow: `0 8px 32px ${btnColor}66, 0 2px 8px rgba(0,0,0,0.2)`,
-              letterSpacing: 3,
-              animation: "glowPulse 1.5s ease infinite"
-            }}
-          >
-            🍽️ 다 먹기
-          </div>
+          <MiniNuclearButton label="다 먹기" onPress={onComplete} />
         </div>
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+      <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
     </div>
   );
 }

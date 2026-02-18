@@ -1,5 +1,5 @@
 // E11: 오타쿠 — 고양이 귀 나비 + 호감도 게이지 + 부위 클릭
-function E11Otaku({ active, onComplete, say }) {
+function E11Otaku({ active, onComplete, onDismiss, say }) {
   const [affection, setAffection] = useState(0);
   const [showComplete, setShowComplete] = useState(false);
   const [lastZone, setLastZone] = useState(null);
@@ -267,33 +267,11 @@ function E11Otaku({ active, onComplete, say }) {
         </div>
 
         {/* Skip button */}
-        <SkipButton active={active && !showComplete} delay={12} onSkip={onComplete} autoDismiss={35} />
+        <SkipButton active={active && !showComplete} delay={12} onSkip={onDismiss} autoDismiss={35} />
 
         {/* Complete button */}
         {showComplete && (
-          <div
-            onClick={(e) => { e.stopPropagation(); onComplete(); }}
-            style={{
-              padding: "14px 36px", borderRadius: 24,
-              background: `linear-gradient(135deg, ${btnColor}, #e84393)`,
-              color: "#fff", fontSize: 16, fontWeight: 800,
-              cursor: "pointer", letterSpacing: 3,
-              boxShadow: `0 8px 32px ${btnColor}55, 0 0 40px rgba(232,67,147,0.2)`,
-              animation: "glowPulse 1.5s ease infinite, popIn 0.4s cubic-bezier(0.34,1.56,0.64,1)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              position: "relative", overflow: "hidden"
-            }}
-          >
-            <span style={{ position: "relative", zIndex: 1 }}>쓰다듬기</span>
-            <span style={{
-              position: "absolute", left: -4, top: -2, fontSize: 14,
-              animation: "float 1.2s ease infinite", opacity: 0.7
-            }}>💕</span>
-            <span style={{
-              position: "absolute", right: -2, bottom: -2, fontSize: 12,
-              animation: "float 1.5s ease infinite 0.3s", opacity: 0.6
-            }}>✨</span>
-          </div>
+          <MiniNuclearButton label="쓰다듬기" onPress={onComplete} />
         )}
       </div>
     </div>

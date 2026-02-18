@@ -177,6 +177,55 @@ function SkipButton({ active, delay, onSkip, autoDismiss = 25 }) {
   );
 }
 
+// ── 미니 핵 버튼 (엔딩 오버레이 내 완료 버튼) ──
+// 메인 NuclearButton과 동일한 디자인으로 "이 버튼 = 엔딩 트리거"를 시각적으로 통일
+function MiniNuclearButton({ label, onPress }) {
+  const [hv, setHv] = useState(false);
+  const [pr, setPr] = useState(false);
+  const b = "#e8573d";
+  return (
+    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:4,pointerEvents:"auto" }}>
+      <div style={{ width:80,height:80,borderRadius:"50%",position:"relative",
+        background:`conic-gradient(from 0deg,${b}22,${b}08,${b}22,${b}08,${b}22)`,
+        boxShadow:`0 6px 24px ${b}25, inset 0 1px 2px rgba(255,255,255,0.2)`,
+        display:"flex",alignItems:"center",justifyContent:"center",
+        animation: hv && !pr ? "glowPulse 1.5s ease infinite" : "none" }}>
+        <div style={{ position:"absolute",inset:3,borderRadius:"50%",
+          border:`1.5px dashed ${b}25`,animation:"spin 20s linear infinite" }}/>
+        <div style={{ width:64,height:64,borderRadius:"50%",
+          background:"linear-gradient(160deg,#fafafa,#e8e4e0,#d8d4d0)",
+          boxShadow:`inset 0 3px 8px rgba(0,0,0,0.08), 0 4px 16px ${b}18`,
+          display:"flex",alignItems:"center",justifyContent:"center" }}>
+          <button
+            onMouseEnter={() => setHv(true)}
+            onMouseLeave={() => { setHv(false); setPr(false); }}
+            onMouseDown={() => setPr(true)}
+            onMouseUp={() => setPr(false)}
+            onClick={(e) => { e.stopPropagation(); onPress?.(); }}
+            style={{ width:48,height:48,borderRadius:"50%",border:"none",cursor:"pointer",outline:"none",
+              background: pr
+                ? `radial-gradient(circle at 50% 60%,${b},${b}cc)`
+                : `radial-gradient(circle at 36% 28%,${b}ff,${b} 50%,${b}aa 100%)`,
+              boxShadow: pr
+                ? `0 1px 4px ${b}44, inset 0 3px 8px rgba(0,0,0,0.25)`
+                : `0 4px 16px ${b}35, 0 2px 4px rgba(0,0,0,0.1), inset 0 -2px 4px ${b}22`,
+              transform: pr ? "translateY(2px) scale(0.92)" : hv ? "scale(1.08)" : "scale(1)",
+              transition:"all 0.12s ease", position:"relative" }}>
+            <div style={{ position:"absolute",top:"12%",left:"18%",width:"32%",height:"20%",
+              borderRadius:"50%",background:"rgba(255,255,255,0.5)",filter:"blur(3px)" }}/>
+            <div style={{ position:"absolute",top:"20%",left:"26%",width:"14%",height:"10%",
+              borderRadius:"50%",background:"rgba(255,255,255,0.7)",filter:"blur(1px)" }}/>
+          </button>
+        </div>
+      </div>
+      <div style={{ fontSize:10,fontWeight:800,letterSpacing:3,color:b,
+        textShadow:`0 1px 4px ${b}22` }}>
+        {label}
+      </div>
+    </div>
+  );
+}
+
 // ── 글래스 패널 ──
 function GlassPanel({ children, style }) {
   return (

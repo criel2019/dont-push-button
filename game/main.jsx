@@ -362,6 +362,13 @@ function DontPressTheButton() {
     say("누르지 말라고 했잖아~! ...아직 아무 일도 안 일어났지만.", "pouty");
   }, [activeEvent, pressEventButton, say, resetIdle]);
 
+  // ── 배너 자동 사라짐 (20초) ──
+  useEffect(() => {
+    if (!bannerVisible) return;
+    const t = setTimeout(() => setBannerVisible(false), 20000);
+    return () => clearTimeout(t);
+  }, [bannerVisible]);
+
   // ── 방치 감지 (E16) ──
   useEffect(() => {
     if (gs !== "room" || activeEvent) return;
@@ -718,27 +725,27 @@ function DontPressTheButton() {
           </div>
 
           {/* ═══ 엔딩 오버레이 컴포넌트 ═══ */}
-          <E01Rude active={activeEvent===1} onComplete={pressEventButton} say={say} doShake={doShake}/>
-          <E02Marshmallow active={activeEvent===2} onComplete={pressEventButton} say={say} doShake={doShake} frame={frame}/>
-          <E03Frog active={activeEvent===3} hoverCount={hoverCount} onComplete={pressEventButton} say={say}/>
-          <E04Surprise active={activeEvent===4} onComplete={pressEventButton} say={say}/>
-          <E05Scam active={showE05} onComplete={pressEventButton} say={say} doShake={doShake}/>
-          <E06Shopping active={showE06} onComplete={pressEventButton} say={say}/>
-          <E07Bluescreen active={showE07} onComplete={pressEventButton} say={say} doShake={doShake} totalBgClicks={totalBgClicks}/>
-          <E08Chase active={showE08} onComplete={() => { setShowE08(false); pressEventButton(); }} say={say}/>
-          <E09Food active={activeEvent===9} onComplete={pressEventButton} say={say}/>
-          <E10Stock active={showE10} onComplete={pressEventButton} say={say} frame={frame}/>
-          <E11Otaku active={showE11} onComplete={pressEventButton} say={say}/>
-          <E12Police active={showE12} onComplete={pressEventButton} say={say}/>
-          <E13Coward active={showE13} onComplete={pressEventButton} say={say} doShake={doShake}/>
-          <E14News active={showE14} onComplete={pressEventButton} say={say} doShake={doShake}/>
-          <E15Psycho active={showE15} onComplete={pressEventButton} say={say}/>
-          <E16Sleep active={showE16} onComplete={pressEventButton} say={say} doShake={doShake}/>
-          <E17Loop active={activeEvent===17} onComplete={pressEventButton} say={say} playCount={playCount}/>
-          <E18Door active={activeEvent===18} onComplete={pressEventButton} say={say} doorOpen={doorOpen}/>
-          <E19Transfer active={showE19} onComplete={pressEventButton} say={say}/>
-          <E20Blackout active={showE20} onComplete={pressEventButton} say={say} naviGone={naviGone}/>
-          <E22Noise active={showE22} onComplete={pressEventButton} say={say} doShake={doShake}/>
+          <E01Rude active={activeEvent===1} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doShake={doShake}/>
+          <E02Marshmallow active={activeEvent===2} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doShake={doShake} frame={frame}/>
+          <E03Frog active={activeEvent===3} hoverCount={hoverCount} onComplete={pressEventButton} onDismiss={dismissEnding} say={say}/>
+          <E04Surprise active={activeEvent===4} onComplete={pressEventButton} onDismiss={dismissEnding} say={say}/>
+          <E05Scam active={showE05} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doShake={doShake}/>
+          <E06Shopping active={showE06} onComplete={pressEventButton} onDismiss={dismissEnding} say={say}/>
+          <E07Bluescreen active={showE07} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doShake={doShake} totalBgClicks={totalBgClicks}/>
+          <E08Chase active={showE08} onComplete={() => { setShowE08(false); pressEventButton(); }} onDismiss={dismissEnding} say={say}/>
+          <E09Food active={activeEvent===9} onComplete={pressEventButton} onDismiss={dismissEnding} say={say}/>
+          <E10Stock active={showE10} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} frame={frame}/>
+          <E11Otaku active={showE11} onComplete={pressEventButton} onDismiss={dismissEnding} say={say}/>
+          <E12Police active={showE12} onComplete={pressEventButton} onDismiss={dismissEnding} say={say}/>
+          <E13Coward active={showE13} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doShake={doShake}/>
+          <E14News active={showE14} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doShake={doShake}/>
+          <E15Psycho active={showE15} onComplete={pressEventButton} onDismiss={dismissEnding} say={say}/>
+          <E16Sleep active={showE16} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doShake={doShake}/>
+          <E17Loop active={activeEvent===17} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} playCount={playCount}/>
+          <E18Door active={activeEvent===18} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doorOpen={doorOpen}/>
+          <E19Transfer active={showE19} onComplete={pressEventButton} onDismiss={dismissEnding} say={say}/>
+          <E20Blackout active={showE20} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} naviGone={naviGone}/>
+          <E22Noise active={showE22} onComplete={pressEventButton} onDismiss={dismissEnding} say={say} doShake={doShake}/>
 
           {/* 패널 */}
           <SettingsPanel open={settingsOpen} onClose={()=>setSettingsOpen(false)}

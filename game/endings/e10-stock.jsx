@@ -1,5 +1,5 @@
 // E10: 떡락 — 주식 트레이딩 시뮬레이션
-function E10Stock({ active, onComplete, say, frame }) {
+function E10Stock({ active, onComplete, onDismiss, say, frame }) {
   const [elapsed, setElapsed] = useState(0);
   const [balance, setBalance] = useState(1000000);
   const [holdings, setHoldings] = useState(0);
@@ -320,21 +320,7 @@ function E10Stock({ active, onComplete, say, frame }) {
         </div>
 
         {/* ALL IN button */}
-        <div
-          onClick={(e) => { e.stopPropagation(); onComplete(); }}
-          style={{
-            width: "100%", padding: "14px 0", borderRadius: 12,
-            background: btnColor,
-            color: "#fff", fontSize: 16, fontWeight: 800,
-            textAlign: "center", cursor: "pointer",
-            letterSpacing: 4,
-            boxShadow: `0 8px 32px ${btnColor}44, 0 0 40px ${btnColor}22`,
-            animation: "glowPulse 1.5s ease infinite",
-            border: "1px solid rgba(255,255,255,0.1)"
-          }}
-        >
-          풀매수 (ALL IN)
-        </div>
+        <MiniNuclearButton label="풀매수" onPress={onComplete} />
 
         {/* Disclaimer */}
         <div style={{
@@ -345,7 +331,7 @@ function E10Stock({ active, onComplete, say, frame }) {
         </div>
 
         {/* Skip button */}
-        <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+        <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
       </div>
     </div>
   );

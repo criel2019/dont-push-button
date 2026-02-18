@@ -1,5 +1,5 @@
 // E02: 마시멜로 — 시계 클릭 → 1분 인내 테스트, 나비가 방해공작
-function E02Marshmallow({ active, onComplete, say, doShake, frame }) {
+function E02Marshmallow({ active, onComplete, onDismiss, say, doShake, frame }) {
   const [timer, setTimer] = useState(60);
   const [running, setRunning] = useState(false);
   const [showFakeAd, setShowFakeAd] = useState(false);
@@ -167,18 +167,7 @@ function E02Marshmallow({ active, onComplete, say, doShake, frame }) {
         position: "absolute", bottom: "12%", left: "50%",
         transform: "translateX(-50%)", zIndex: 370
       }}>
-        <div onClick={onComplete} style={{
-          padding: "14px 40px", background: "#e88b3d", color: "#fff",
-          borderRadius: 14, fontSize: 15, fontWeight: 700,
-          cursor: "pointer", letterSpacing: 2,
-          boxShadow: "0 6px 24px #e88b3d44",
-          animation: completed ? "pulse 0.8s ease infinite" : "none",
-          transition: "transform 0.15s, box-shadow 0.15s"
-        }}
-        onMouseEnter={e => { e.target.style.transform = "scale(1.06)"; e.target.style.boxShadow = "0 8px 32px #e88b3d66"; }}
-        onMouseLeave={e => { e.target.style.transform = "scale(1)"; e.target.style.boxShadow = "0 6px 24px #e88b3d44"; }}>
-          {completed ? "확인" : "포기"}
-        </div>
+        <MiniNuclearButton label={completed ? "확인" : "포기"} onPress={onComplete} />
       </div>
 
       {/* 가짜 광고 팝업 (40초 남았을 때) */}
@@ -232,7 +221,7 @@ function E02Marshmallow({ active, onComplete, say, doShake, frame }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={12} onSkip={onComplete} autoDismiss={25} />
+      <SkipButton active={active} delay={12} onSkip={onDismiss} autoDismiss={25} />
     </div>
   );
 }

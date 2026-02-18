@@ -1,5 +1,5 @@
 // E14: 뉴스 속보 — TV 채널 서핑 → 뉴스 에스컬레이션
-function E14News({ active, onComplete, say, doShake }) {
+function E14News({ active, onComplete, onDismiss, say, doShake }) {
   const [channel, setChannel] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [escalated, setEscalated] = useState(false);
@@ -405,7 +405,7 @@ function E14News({ active, onComplete, say, doShake }) {
       </div>
 
       {/* Skip button */}
-      <SkipButton active={active} delay={12} onSkip={onComplete} autoDismiss={35} />
+      <SkipButton active={active} delay={12} onSkip={onDismiss} autoDismiss={35} />
 
       {/* Launch button */}
       {showLaunch && (
@@ -413,34 +413,7 @@ function E14News({ active, onComplete, say, doShake }) {
           marginTop: 24,
           animation: "fadeIn 0.5s ease"
         }}>
-          <div
-            onClick={(e) => { e.stopPropagation(); onComplete(); }}
-            style={{
-              padding: "18px 48px",
-              background: "radial-gradient(circle at 40% 30%, #f44336, #b71c1c)",
-              color: "#fff",
-              fontSize: 22,
-              fontWeight: 900,
-              borderRadius: 50,
-              cursor: "pointer",
-              letterSpacing: 6,
-              border: "3px solid #ff5252",
-              boxShadow: "0 0 30px rgba(244,67,54,0.5), 0 8px 32px rgba(0,0,0,0.4)",
-              textShadow: "0 2px 4px rgba(0,0,0,0.5)",
-              transition: "transform 0.15s, box-shadow 0.15s",
-              userSelect: "none"
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = "scale(1.08)";
-              e.currentTarget.style.boxShadow = "0 0 50px rgba(244,67,54,0.7), 0 8px 32px rgba(0,0,0,0.4)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "0 0 30px rgba(244,67,54,0.5), 0 8px 32px rgba(0,0,0,0.4)";
-            }}
-          >
-            {"\uBC1C\uC0AC"}
-          </div>
+          <MiniNuclearButton label="발사" onPress={onComplete} />
           <div style={{
             textAlign: "center", marginTop: 6,
             fontSize: 9, color: "#666", letterSpacing: 3

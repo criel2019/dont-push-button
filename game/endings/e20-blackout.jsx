@@ -1,5 +1,5 @@
 // E20: 암전 — 모든 스테이지 통과 후 무행동 시 발동
-function E20Blackout({ active, onComplete, say, naviGone }) {
+function E20Blackout({ active, onComplete, onDismiss, say, naviGone }) {
   const [darkness, setDarkness] = useState(0);
   const [phase, setPhase] = useState(0);
   const [showButton, setShowButton] = useState(false);
@@ -143,7 +143,7 @@ function E20Blackout({ active, onComplete, say, naviGone }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={10} onSkip={handleClick} autoDismiss={25} />
+      <SkipButton active={active} delay={10} onSkip={onDismiss} />
 
       <style>{`
         @keyframes skipPulse {

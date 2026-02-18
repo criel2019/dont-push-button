@@ -1,5 +1,5 @@
 // E19: 교대 — 프로필 → 권한 양도 → 관리자 콘솔
-function E19Transfer({ active, onComplete, say }) {
+function E19Transfer({ active, onComplete, onDismiss, say }) {
   const [phase, setPhase] = useState(0); // 0=init, 1=console, 2=denied, 3=accepted, 4=vortex, 5=done
   const [matrixChars, setMatrixChars] = useState([]);
   const [cursorBlink, setCursorBlink] = useState(true);
@@ -302,13 +302,7 @@ function E19Transfer({ active, onComplete, say }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active && phase < 3} delay={10} autoDismiss={25} onSkip={() => {
-        if (!completedRef.current) {
-          completedRef.current = true;
-          if (timerRef.current) clearInterval(timerRef.current);
-          onComplete();
-        }
-      }} />
+      <SkipButton active={active && phase < 3} delay={10} onSkip={onDismiss} />
 
       <style>{`
         @keyframes matrixFall {

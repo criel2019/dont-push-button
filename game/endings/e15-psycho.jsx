@@ -1,5 +1,5 @@
 // E15: 사이코패스 — Kill Mode → 5단계 감정 아크 (2~3분)
-function E15Psycho({ active, onComplete, say }) {
+function E15Psycho({ active, onComplete, onDismiss, say }) {
   const [elapsed, setElapsed] = useState(0);
   const [stage, setStage] = useState(0);
   const [darkness, setDarkness] = useState(0);
@@ -186,37 +186,12 @@ function E15Psycho({ active, onComplete, say }) {
           animation: "fadeInSlow 3s ease",
           pointerEvents: "auto"
         }}>
-          <div
-            onClick={(e) => { e.stopPropagation(); onComplete(); }}
-            style={{
-              padding: "8px 24px",
-              background: "rgba(120, 120, 130, 0.25)",
-              color: "rgba(180, 180, 190, 0.7)",
-              fontSize: 12,
-              fontWeight: 500,
-              borderRadius: 6,
-              cursor: "pointer",
-              border: "1px solid rgba(150, 150, 160, 0.15)",
-              letterSpacing: 2,
-              transition: "all 0.3s ease",
-              userSelect: "none"
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = "rgba(120, 120, 130, 0.35)";
-              e.currentTarget.style.color = "rgba(200, 200, 210, 0.9)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = "rgba(120, 120, 130, 0.25)";
-              e.currentTarget.style.color = "rgba(180, 180, 190, 0.7)";
-            }}
-          >
-            {"\uD655\uC778"}
-          </div>
+          <MiniNuclearButton label="확인" onPress={onComplete} />
         </div>
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={15} onSkip={onComplete} autoDismiss={35} />
+      <SkipButton active={active} delay={15} onSkip={onDismiss} autoDismiss={35} />
 
       {/* Inline keyframes */}
       <style>{`

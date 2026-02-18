@@ -1,6 +1,6 @@
 // E07: 블루스크린 — 화면 광클 60회 → BSOD
 // Progressive damage renders even when active=false (based on totalBgClicks)
-function E07Bluescreen({ active, onComplete, say, doShake, totalBgClicks }) {
+function E07Bluescreen({ active, onComplete, onDismiss, say, doShake, totalBgClicks }) {
   const [progress, setProgress] = useState(0);
   const [showRecover, setShowRecover] = useState(false);
   const [spokeTrapped, setSpokeTrapped] = useState(false);
@@ -282,29 +282,12 @@ function E07Bluescreen({ active, onComplete, say, doShake, totalBgClicks }) {
         </div>
 
         {/* Skip button */}
-        <SkipButton active={active} delay={8} onSkip={onComplete} autoDismiss={25} />
+        <SkipButton active={active} delay={8} onSkip={onDismiss} autoDismiss={25} />
 
         {/* Recover button */}
         {showRecover && (
-          <div
-            onClick={(e) => { e.stopPropagation(); onComplete(); }}
-            style={{
-              marginTop: 24,
-              background: "rgba(255,255,255,0.15)",
-              border: "2px solid rgba(255,255,255,0.4)",
-              color: "#fff",
-              fontSize: 16, fontWeight: 700,
-              padding: "14px 40px",
-              borderRadius: 8,
-              cursor: "pointer",
-              letterSpacing: 3,
-              animation: "popIn 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-              transition: "background 0.2s"
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.25)"}
-            onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
-          >
-            복구
+          <div style={{ marginTop: 24, animation: "popIn 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}>
+            <MiniNuclearButton label="복구" onPress={onComplete} />
           </div>
         )}
       </div>

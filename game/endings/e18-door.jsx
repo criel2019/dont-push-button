@@ -1,5 +1,5 @@
 // E18: 현실 만남 — 문 반복 노크 10회 → 문 열림 → 빛
-function E18Door({ active, onComplete, say, doorOpen }) {
+function E18Door({ active, onComplete, onDismiss, say, doorOpen }) {
   const [phase, setPhase] = useState(0);
   const [showEnter, setShowEnter] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -236,7 +236,7 @@ function E18Door({ active, onComplete, say, doorOpen }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+      <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
 
       <style>{`
         @keyframes doorWhiteout {

@@ -1,5 +1,5 @@
 // E08: 피지컬 — 버튼 드래그 → 도망가는 버튼 추격전
-function E08Chase({ active, onComplete, say }) {
+function E08Chase({ active, onComplete, onDismiss, say }) {
   const [pos, setPos] = useState({ x: 50, y: 50 });
   const [caught, setCaught] = useState(false);
   const [started, setStarted] = useState(false);
@@ -277,9 +277,7 @@ function E08Chase({ active, onComplete, say }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active && !caught} delay={8} autoDismiss={25} onSkip={() => {
-        if (!caught) { setCaught(true); if (animRef.current) cancelAnimationFrame(animRef.current); onComplete(); }
-      }} />
+      <SkipButton active={active && !caught} delay={8} onSkip={onDismiss} />
 
       {/* Tired indicator */}
       {isTired && !caught && (

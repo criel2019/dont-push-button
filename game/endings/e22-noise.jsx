@@ -1,5 +1,5 @@
 // E22: 시끄러워 — 마이크 감지, 어느 스테이지에서든 랜덤 발동
-function E22Noise({ active, onComplete, say, doShake }) {
+function E22Noise({ active, onComplete, onDismiss, say, doShake }) {
   const [gauge, setGauge] = useState(0);
   const [showButton, setShowButton] = useState(false);
   const [sabotageText, setSabotageText] = useState("");
@@ -316,7 +316,7 @@ function E22Noise({ active, onComplete, say, doShake }) {
       ))}
 
       {/* Skip button */}
-      <SkipButton active={active && !showButton} delay={10} onSkip={handleQuiet} autoDismiss={25} />
+      <SkipButton active={active && !showButton} delay={10} onSkip={onDismiss} />
 
       {/* Quiet button */}
       {showButton && (

@@ -3,7 +3,7 @@
 // main.jsx가 frogHuge 스케일 + 기존 버튼 확대 처리
 // 이 컴포넌트는 오버레이 거대 버튼 + 대사 연출 담당
 
-function E03Frog({ active, hoverCount, onComplete, say }) {
+function E03Frog({ active, hoverCount, onComplete, onDismiss, say }) {
   const [showButton, setShowButton] = useState(false);
   const [btnHover, setBtnHover] = useState(false);
 
@@ -104,7 +104,7 @@ function E03Frog({ active, hoverCount, onComplete, say }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={10} onSkip={onComplete} autoDismiss={25} />
+      <SkipButton active={active} delay={10} onSkip={onDismiss} autoDismiss={25} />
 
       {/* 커스텀 애니메이션 */}
       <style>{`

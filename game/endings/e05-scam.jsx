@@ -1,5 +1,5 @@
 // E05: 낚시 — 경품 배너 클릭 → 스팸 팝업 증식
-function E05Scam({ active, onComplete, say, doShake }) {
+function E05Scam({ active, onComplete, onDismiss, say, doShake }) {
   const [popups, setPopups] = useState([]);
   const [xClicks, setXClicks] = useState(0);
   const [showCollect, setShowCollect] = useState(false);
@@ -146,7 +146,7 @@ function E05Scam({ active, onComplete, say, doShake }) {
       ))}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={8} onSkip={onComplete} autoDismiss={25} />
+      <SkipButton active={active} delay={8} onSkip={onDismiss} autoDismiss={25} />
 
       {/* Collect button - appears after 5 X clicks */}
       {showCollect && (
@@ -156,24 +156,7 @@ function E05Scam({ active, onComplete, say, doShake }) {
           transform: "translate(-50%,-50%)",
           zIndex: 9999
         }}>
-          <div
-            onClick={(e) => { e.stopPropagation(); onComplete(); }}
-            style={{
-              background: "linear-gradient(135deg, #ffd700, #ff6f00)",
-              color: "#fff",
-              fontSize: 22, fontWeight: 800,
-              padding: "18px 48px",
-              borderRadius: 16,
-              cursor: "pointer",
-              border: "3px solid #fff",
-              boxShadow: "0 8px 40px rgba(255,152,0,0.6), 0 0 60px rgba(255,215,0,0.3)",
-              letterSpacing: 4,
-              textShadow: "0 2px 4px rgba(0,0,0,0.3)",
-              animation: "glowPulse 1.5s ease infinite"
-            }}
-          >
-            💰 수령 💰
-          </div>
+          <MiniNuclearButton label="수령" onPress={onComplete} />
         </div>
       )}
     </div>
