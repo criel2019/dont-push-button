@@ -502,6 +502,18 @@ function DontPressTheButton() {
     setContextMenu({ x: e.clientX, y: e.clientY });
   }, [activeEvent, resetIdle]);
 
+  // 네이티브 우클릭 이벤트 — React onContextMenu가 안 먹힐 경우 대비
+  useEffect(() => {
+    const handler = (e) => {
+      if (gs !== "room" || activeEvent) return;
+      e.preventDefault();
+      resetIdle();
+      setContextMenu({ x: e.clientX, y: e.clientY });
+    };
+    document.addEventListener("contextmenu", handler);
+    return () => document.removeEventListener("contextmenu", handler);
+  }, [gs, activeEvent, resetIdle]);
+
   const handleClockClick = useCallback(() => {
     if (activeEvent) return; resetIdle();
     if (isEndingActive(2)) triggerEnding(2);
