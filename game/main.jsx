@@ -511,6 +511,7 @@ function DontPressTheButton() {
   useEffect(() => {
     const handler = (e) => {
       if (gsRef.current !== "room" || activeEventRef.current) return;
+      if (!e.target.closest("[data-crt]")) return;
       e.preventDefault();
       e.stopPropagation();
       setContextMenu({ x: e.clientX, y: e.clientY });

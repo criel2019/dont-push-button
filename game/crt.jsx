@@ -73,7 +73,7 @@ function CRTMonitor({ nEmo, frame, naviSleeping, catEars, naviGone, nText, nKey,
   return (
     <div style={{ position:"absolute", ...posStyle, zIndex:60,
       transition: "left 0.5s ease, top 0.5s ease" }}>
-      <div onContextMenu={onContextMenu}
+      <div data-crt="true" onContextMenu={onContextMenu}
         style={{ width:150,padding:5,
           background:"linear-gradient(180deg,#4a4a4a,#333,#2a2a2a)",
           border:"3px solid #555",borderRadius:10,
