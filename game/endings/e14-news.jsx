@@ -405,7 +405,7 @@ function E14News({ active, onComplete, say, doShake }) {
       </div>
 
       {/* Skip button */}
-      <SkipButton active={active} delay={40} onSkip={onComplete} />
+      <SkipButton active={active} delay={12} onSkip={onComplete} autoDismiss={35} />
 
       {/* Launch button */}
       {showLaunch && (

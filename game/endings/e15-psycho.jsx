@@ -216,7 +216,7 @@ function E15Psycho({ active, onComplete, say }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={60} onSkip={onComplete} />
+      <SkipButton active={active} delay={15} onSkip={onComplete} autoDismiss={35} />
 
       {/* Inline keyframes */}
       <style>{`

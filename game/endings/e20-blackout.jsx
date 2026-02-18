@@ -143,7 +143,7 @@ function E20Blackout({ active, onComplete, say, naviGone }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active} delay={45} onSkip={handleClick} />
+      <SkipButton active={active} delay={10} onSkip={handleClick} autoDismiss={25} />
 
       <style>{`
         @keyframes skipPulse {

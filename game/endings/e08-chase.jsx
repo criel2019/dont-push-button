@@ -277,7 +277,7 @@ function E08Chase({ active, onComplete, say }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active && !caught} delay={30} onSkip={() => {
+      <SkipButton active={active && !caught} delay={8} autoDismiss={25} onSkip={() => {
         if (!caught) { setCaught(true); if (animRef.current) cancelAnimationFrame(animRef.current); onComplete(); }
       }} />
 

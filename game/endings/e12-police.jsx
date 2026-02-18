@@ -284,7 +284,7 @@ function E12Police({ active, onComplete, say }) {
         </div>
 
         {/* Skip button */}
-        <SkipButton active={active && !callConnected} delay={40} onSkip={onComplete} />
+        <SkipButton active={active && !callConnected} delay={12} onSkip={onComplete} autoDismiss={35} />
 
         {/* Bottom decoration */}
         <div style={{

@@ -303,7 +303,7 @@ function E16Sleep({ active, onComplete, say, doShake }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active && !waking} delay={55} onSkip={() => {
+      <SkipButton active={active && !waking} delay={15} autoDismiss={35} onSkip={() => {
         if (!completedRef.current) { completedRef.current = true; onComplete(); }
       }} />
 

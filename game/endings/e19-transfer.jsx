@@ -302,7 +302,7 @@ function E19Transfer({ active, onComplete, say }) {
       )}
 
       {/* Skip button */}
-      <SkipButton active={active && phase < 3} delay={35} onSkip={() => {
+      <SkipButton active={active && phase < 3} delay={10} autoDismiss={25} onSkip={() => {
         if (!completedRef.current) {
           completedRef.current = true;
           if (timerRef.current) clearInterval(timerRef.current);

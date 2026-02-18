@@ -267,7 +267,7 @@ function E11Otaku({ active, onComplete, say }) {
         </div>
 
         {/* Skip button */}
-        <SkipButton active={active && !showComplete} delay={45} onSkip={onComplete} />
+        <SkipButton active={active && !showComplete} delay={12} onSkip={onComplete} autoDismiss={35} />
 
         {/* Complete button */}
         {showComplete && (

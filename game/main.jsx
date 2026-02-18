@@ -24,6 +24,12 @@ function DontPressTheButton() {
   const [crtOff, setCrtOff] = useState(false);
   const [stageTransitioning, setStageTransitioning] = useState(false);
 
+  // ── CRT 이동 시스템 (오브젝트 소개 시 나비가 이동) ──
+  const [crtTarget, setCrtTarget] = useState(null); // null = 홈, "showBanner" 등
+  const [crtMoving, setCrtMoving] = useState(false);
+  const crtMovingRef = useRef(false);
+  const crtMoveTimers = useRef([]);
+
   // ── 나비 스크립트 엔진 ──
   const [naviScriptIdx, setNaviScriptIdx] = useState(0);
 
@@ -120,10 +126,68 @@ function DontPressTheButton() {
     return () => clearInterval(iv);
   }, [gs, stageTransitioning]);
 
-  // ── 나비 스크립트 시퀀스 엔진 (대사 주도 + 오브젝트 등장 + 전환) ──
-  // stageElapsed가 현재 script entry의 t에 도달하면 실행
+  // ── 오브젝트 등장 액션 실행 ──
+  const executeAction = useCallback((action) => {
+    switch (action) {
+      case "showBanner": setBannerVisible(true); break;
+      case "showWallet": setWalletVisible(true); break;
+      case "showCake": setCakeVisible(true); break;
+      case "showPhone": setPhoneVisible(true); break;
+      case "showSOS": setSOSVisible(true); break;
+      case "showTV": setTVVisible(true); break;
+      case "showSafetyCover": setSafetyCoverVisible(true); break;
+    }
+  }, []);
+
+  // ── CRT 이동 시퀀스 (오브젝트 소개용) ──
+  // 꺼짐 → 이동 → 켜짐 → 대사+오브젝트 등장 → 꺼짐 → 복귀 → 켜짐
+  const doCRTMove = useCallback((targetAction, text, emotion, onDone) => {
+    crtMovingRef.current = true;
+    setCrtMoving(true);
+    const timers = crtMoveTimers.current;
+    timers.length = 0;
+
+    // Phase 1: CRT 꺼짐
+    setCrtOff(true);
+    timers.push(setTimeout(() => {
+      // Phase 2: 오브젝트 위치로 텔레포트 (CRT 꺼진 상태)
+      setCrtTarget(targetAction);
+      timers.push(setTimeout(() => {
+        // Phase 3: CRT 켜짐 + 대사 + 오브젝트 등장
+        setCrtOff(false);
+        say(text, emotion);
+        executeAction(targetAction);
+        timers.push(setTimeout(() => {
+          // Phase 4: CRT 꺼짐 (복귀 준비)
+          setCrtOff(true);
+          timers.push(setTimeout(() => {
+            // Phase 5: 홈으로 텔레포트
+            setCrtTarget(null);
+            timers.push(setTimeout(() => {
+              // Phase 6: CRT 켜짐 (홈 복귀 완료)
+              setCrtOff(false);
+              setCrtMoving(false);
+              crtMovingRef.current = false;
+              onDone();
+            }, 600));
+          }, 400));
+        }, 3500)); // 오브젝트 옆에서 대사 시간
+      }, 600)); // 이동 대기
+    }, 500)); // 꺼짐 애니메이션
+  }, [say, executeAction]);
+
+  // CRT 이동 타이머 정리 (방 나가기/엔딩 시)
+  const cleanupCRTMove = useCallback(() => {
+    crtMoveTimers.current.forEach(t => clearTimeout(t));
+    crtMoveTimers.current.length = 0;
+    setCrtMoving(false);
+    crtMovingRef.current = false;
+    setCrtTarget(null);
+  }, []);
+
+  // ── 나비 스크립트 시퀀스 엔진 (대사 주도 + 오브젝트 등장 + CRT 이동 + 전환) ──
   useEffect(() => {
-    if (gs !== "room" || activeEvent || stageTransitioning) return;
+    if (gs !== "room" || activeEvent || stageTransitioning || crtMoving) return;
     const seq = NAVI_STAGE_SEQUENCES[currentStage];
     if (!seq?.script) return;
 
@@ -131,24 +195,24 @@ function DontPressTheButton() {
     if (!entry) return; // 스크립트 소진 — 대기
 
     if (stageElapsed >= entry.t) {
-      // 대사 출력
-      say(entry.text, entry.e);
-
-      // 오브젝트 등장 액션 (나비가 언급할 때 등장)
-      if (entry.action) {
-        switch (entry.action) {
-          case "showBanner": setBannerVisible(true); break;
-          case "showWallet": setWalletVisible(true); break;
-          case "showCake": setCakeVisible(true); break;
-          case "showPhone": setPhoneVisible(true); break;
-          case "showSOS": setSOSVisible(true); break;
-          case "showTV": setTVVisible(true); break;
-          case "showSafetyCover": setSafetyCoverVisible(true); break;
-          case "triggerE20": triggerEnding(20); return;
-        }
+      // 오브젝트 등장 액션 → CRT 이동 연출
+      if (entry.action && entry.action !== "triggerE20") {
+        doCRTMove(entry.action, entry.text, entry.e, () => {
+          setNaviScriptIdx(p => p + 1);
+        });
+        return;
       }
 
-      // 스테이지 전환 (스크립트가 전환을 지시할 때)
+      // E20 트리거 (CRT 이동 없음)
+      if (entry.action === "triggerE20") {
+        triggerEnding(20);
+        return;
+      }
+
+      // 일반 대사
+      say(entry.text, entry.e);
+
+      // 스테이지 전환
       if (entry.transition) {
         setNaviScriptIdx(p => p + 1);
         initiateStageTransition();
@@ -157,7 +221,7 @@ function DontPressTheButton() {
 
       setNaviScriptIdx(p => p + 1);
     }
-  }, [gs, stageElapsed, activeEvent, stageTransitioning, currentStage, naviScriptIdx]);
+  }, [gs, stageElapsed, activeEvent, stageTransitioning, crtMoving, currentStage, naviScriptIdx]);
 
   const initiateStageTransition = useCallback(() => {
     if (currentStage >= STAGE_COUNT) return; // 마지막 스테이지면 전환 없음
@@ -190,9 +254,11 @@ function DontPressTheButton() {
   }, []);
 
   const triggerEnding = useCallback((id) => {
-    if (activeEvent) return;
+    if (activeEvent || crtMovingRef.current) return;
     if (!isEndingActive(id)) return;
     resetIdle();
+    cleanupCRTMove(); // CRT 이동 중이었다면 정리
+    setCrtOff(false);
     const ed = ENDINGS[id];
     if (!ed) return;
     setActiveEvent(id);
@@ -224,7 +290,7 @@ function DontPressTheButton() {
     if (!overlayHandled.includes(id)) {
       say(ed.eventText, ed.eventEmo);
     }
-  }, [activeEvent, isEndingActive, resetIdle, say, doShake]);
+  }, [activeEvent, isEndingActive, resetIdle, cleanupCRTMove, say, doShake]);
 
   const pressEventButton = useCallback(() => {
     if (!activeEvent) return;
@@ -312,6 +378,7 @@ function DontPressTheButton() {
     setWasHidden(false); setContextMenu(null); idleRef.current = 0;
     setStageElapsed(0); setNaviScriptIdx(0);
     setCrtOff(false); setStageTransitioning(false);
+    cleanupCRTMove(); setCrtTarget(null);
     setWalletVisible(false); setCakeVisible(false); setPhoneVisible(false);
     setSOSVisible(false); setTVVisible(false); setSafetyCoverVisible(false);
 
@@ -535,6 +602,7 @@ function DontPressTheButton() {
             onContextMenu={handleNaviContextMenu}
             onCatEarClick={isEndingActive(11) ? handleCatEarClick : null}
             crtOff={crtOff}
+            crtTarget={crtTarget}
           />
 
           {/* 메인 버튼 — E03 호버 시각 변화 반영 */}

@@ -282,7 +282,7 @@ function E07Bluescreen({ active, onComplete, say, doShake, totalBgClicks }) {
         </div>
 
         {/* Skip button */}
-        <SkipButton active={active} delay={35} onSkip={onComplete} />
+        <SkipButton active={active} delay={8} onSkip={onComplete} autoDismiss={25} />
 
         {/* Recover button */}
         {showRecover && (

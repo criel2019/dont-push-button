@@ -316,7 +316,7 @@ function E22Noise({ active, onComplete, say, doShake }) {
       ))}
 
       {/* Skip button */}
-      <SkipButton active={active && !showButton} delay={40} onSkip={handleQuiet} />
+      <SkipButton active={active && !showButton} delay={10} onSkip={handleQuiet} autoDismiss={25} />
 
       {/* Quiet button */}
       {showButton && (
