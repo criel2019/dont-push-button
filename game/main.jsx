@@ -164,8 +164,9 @@ function DontPressTheButton() {
             // Phase 5: 홈으로 텔레포트
             setCrtTarget(null);
             timers.push(setTimeout(() => {
-              // Phase 6: CRT 켜짐 (홈 복귀 완료)
+              // Phase 6: CRT 켜짐 (홈 복귀 완료) — 대사 초기화
               setCrtOff(false);
+              setNText(""); setNEmo("idle");
               setCrtMoving(false);
               crtMovingRef.current = false;
               onDone();

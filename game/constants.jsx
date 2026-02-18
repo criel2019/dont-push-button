@@ -107,7 +107,7 @@ const NAVI_STAGE_SEQUENCES = {
     { t:86, text:"이거 한정 이벤트인데... 지금 안 하면 사라져.", e:"confident" },
     { t:95, text:"아직도 끄떡없어? 진짜?", e:"pouty" },
     { t:105, text:"하, 끈질기네.", e:"pouty" },
-    { t:110, text:"좋아좋아. 다음 거는 진짜 안 버틸걸.", e:"smug", transition:true },
+    { t:110, text:"좋아좋아. 다음 거는 진짜 못 버틸걸.", e:"smug", transition:true },
   ]},
   // ═══ S3: 욕망 (엔딩 9-12) ═══
   3: { script: [
