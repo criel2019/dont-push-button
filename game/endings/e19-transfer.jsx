@@ -41,6 +41,7 @@ function E19Transfer({ active, onComplete, onDismiss, say }) {
     if (!active) {
       setPhase(0);
       setVortexScale(1);
+      setShowConfirm(false);
       elapsedRef.current = 0;
       spokenRef.current = new Set();
       completedRef.current = false;
@@ -83,22 +84,18 @@ function E19Transfer({ active, onComplete, onDismiss, say }) {
     };
   }, [active]);
 
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const handleDeny = () => {
     setPhase(2);
+    if (timerRef.current) clearInterval(timerRef.current);
     say("...\uADF8\uB798.", "idle");
-    // Auto-complete 8s after deny
-    setTimeout(() => {
-      if (!completedRef.current) {
-        completedRef.current = true;
-        if (timerRef.current) clearInterval(timerRef.current);
-        onComplete();
-      }
-    }, 8000);
+    // 거부 후 잠시 뒤 확인 버튼 표시
+    setTimeout(() => setShowConfirm(true), 3000);
   };
 
   const handleAccept = () => {
     if (completedRef.current) return;
-    completedRef.current = true;
     if (timerRef.current) clearInterval(timerRef.current);
     setPhase(3);
 
@@ -120,9 +117,8 @@ function E19Transfer({ active, onComplete, onDismiss, say }) {
       say("\uC774\uC81C \uB124 \uCC28\uB840\uC57C.", "yandere");
     }, 2000);
 
-    setTimeout(() => {
-      onComplete();
-    }, 4000);
+    // 보텍스 후 확인 버튼 표시
+    setTimeout(() => setShowConfirm(true), 4000);
   };
 
   if (!active) return null;
@@ -299,6 +295,24 @@ function E19Transfer({ active, onComplete, onDismiss, say }) {
           zIndex: 10,
           animation: "pulse 0.3s ease infinite"
         }} />
+      )}
+
+      {/* 확인 MiniNuclearButton — 수락/거부 내러티브 후 등장 */}
+      {showConfirm && (
+        <div style={{
+          position: "absolute",
+          bottom: "15%", left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 20,
+          animation: "fadeIn 1s ease"
+        }}>
+          <MiniNuclearButton label="확인" onPress={() => {
+            if (!completedRef.current) {
+              completedRef.current = true;
+              onComplete();
+            }
+          }} />
+        </div>
       )}
 
       {/* Skip button */}

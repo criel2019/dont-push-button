@@ -196,32 +196,7 @@ function E18Door({ active, onComplete, onDismiss, say, doorOpen }) {
           zIndex: 10,
           animation: "fadeInUp 0.8s ease"
         }}>
-          <div
-            onClick={(e) => { e.stopPropagation(); handleEnter(); }}
-            style={{
-              padding: "16px 48px",
-              background: "rgba(255,255,255,0.95)",
-              color: "#8d6e63",
-              fontSize: 18, fontWeight: 800,
-              borderRadius: 14,
-              cursor: "pointer",
-              letterSpacing: 6,
-              border: "none",
-              boxShadow: `0 0 30px rgba(255,240,200,0.6), 0 8px 32px rgba(255,230,180,0.4)`,
-              animation: "glowPulse 2s ease infinite",
-              transition: "all 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 50px rgba(255,240,200,0.8), 0 12px 40px rgba(255,230,180,0.6)";
-              e.currentTarget.style.transform = "scale(1.05)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = "0 0 30px rgba(255,240,200,0.6), 0 8px 32px rgba(255,230,180,0.4)";
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-          >
-            Enter
-          </div>
+          <MiniNuclearButton label="Enter" onPress={handleEnter} />
         </div>
       )}
 

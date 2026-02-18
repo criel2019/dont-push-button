@@ -257,7 +257,7 @@ function DontPressTheButton() {
 
   const triggerEnding = useCallback((id) => {
     if (gs !== "room" || activeEvent || crtMovingRef.current) return;
-    if (!isEndingActive(id)) return;
+    if (id !== 1 && !isEndingActive(id)) return; // E01(삭제)은 항상 가능
     resetIdle();
     cleanupCRTMove(); // CRT 이동 중이었다면 정리
     setCrtOff(false);
@@ -333,8 +333,9 @@ function DontPressTheButton() {
     setNaviSleeping(false); setNaviGone(false); setDoorOpen(false);
     setCatEars(false); setCakeOnButton(false); setCakeSelected(false);
     setKillMode(false); setCrtOff(false); setWasHidden(false);
-    // E03 재트리거를 위한 hoverCount 리셋
+    // E03 재트리거를 위한 hoverCount 리셋 + E07 데미지 초기화
     setHoverCount(0);
+    setTotalBgClicks(0);
     // 대사 초기화 + idle 리셋
     setNText(""); setNEmo("idle");
     idleRef.current = 0; setIdleTimer(0);
@@ -441,16 +442,15 @@ function DontPressTheButton() {
   // ── 이벤트 핸들러 ──
   const handleBgClick = useCallback(() => {
     if (activeEvent) return; resetIdle();
+    if (!isEndingActive(7)) return; // S2에서만 배경 클릭 카운트
     setTotalBgClicks(prev => {
       const n = prev + 1;
-      if (isEndingActive(7)) {
-        if (n === 20) say("야, 그만 눌러. 귀찮아.", "pouty");
-        if (n === 30) { say("아 진짜!! 나까지 깨지잖아!! 책임져!!", "angry"); doShake(); }
-        if (n === 40) say("그ㅡ만ㅡ하ㅡ", "shocked");
-        if (n === 50) { say("아잇!! 이 미ㅡ친ㅡ", "shocked"); doShake(); }
-        if (n === 58) say("야... 진지하게 말하는데 이러다 진짜ㅡ", "worried");
-        if (n >= BG_CLICK_THRESHOLD) { triggerEnding(7); return 0; }
-      }
+      if (n === 20) say("야, 그만 눌러. 귀찮아.", "pouty");
+      if (n === 30) { say("아 진짜!! 나까지 깨지잖아!! 책임져!!", "angry"); doShake(); }
+      if (n === 40) say("그ㅡ만ㅡ하ㅡ", "shocked");
+      if (n === 50) { say("아잇!! 이 미ㅡ친ㅡ", "shocked"); doShake(); }
+      if (n === 58) say("야... 진지하게 말하는데 이러다 진짜ㅡ", "worried");
+      if (n >= BG_CLICK_THRESHOLD) { triggerEnding(7); return 0; }
       return n;
     });
   }, [activeEvent, resetIdle, isEndingActive, triggerEnding, say, doShake]);
@@ -499,9 +499,8 @@ function DontPressTheButton() {
 
   const handleNaviContextMenu = useCallback((e) => {
     e.preventDefault(); if (activeEvent) return; resetIdle();
-    if (!isEndingActive(1)) return;
     setContextMenu({ x: e.clientX, y: e.clientY });
-  }, [activeEvent, resetIdle, isEndingActive]);
+  }, [activeEvent, resetIdle]);
 
   const handleClockClick = useCallback(() => {
     if (activeEvent) return; resetIdle();
@@ -527,7 +526,7 @@ function DontPressTheButton() {
     if (activeEvent) return; resetIdle();
     if (isEndingActive(9)) {
       setCakeSelected(true);
-      say("케이크를 집었어! 이제 버튼에 올려봐~", "excited");
+      say("케이크를 집었어! 이제 버튼을 눌러봐~", "excited");
     }
   }, [activeEvent, resetIdle, isEndingActive, say]);
 

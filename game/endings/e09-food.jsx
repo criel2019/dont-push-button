@@ -36,7 +36,7 @@ function E09Food({ active, onComplete, onDismiss, say }) {
         break;
       case "cake":
         setPhase(1);
-        say("...맛있겠다. 아 아니 그냥 그렇다고.", "teasing");
+        say("오, 진짜 열었어? 대단한 미식가시네~", "teasing");
         break;
     }
   };

@@ -51,7 +51,7 @@ function E17Loop({ active, onComplete, onDismiss, say, playCount }) {
       }
       if (t >= 20 && !spoken.has(20)) {
         spoken.add(20);
-        say("\u314B, 그럴 리가.", "smug");
+        say("ㅋ, 그럴 리가.", "smug");
       }
       // 30s: silence
       if (t >= 40 && !spoken.has(40)) {
@@ -144,8 +144,8 @@ function E17Loop({ active, onComplete, onDismiss, say, playCount }) {
               : "모든 진행이 초기화됩니다."}
           </div>
 
-          {/* Buttons */}
-          <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+          {/* 취소 버튼 */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
             <div
               onClick={(e) => { e.stopPropagation(); handleCancel(); }}
               style={{
@@ -164,25 +164,10 @@ function E17Loop({ active, onComplete, onDismiss, say, playCount }) {
             >
               취소
             </div>
-            <div
-              onClick={(e) => { e.stopPropagation(); handleReset(); }}
-              style={{
-                padding: "11px 28px",
-                background: "#78909c",
-                border: "none",
-                borderRadius: 10,
-                fontSize: 14, fontWeight: 700,
-                color: "#fff",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                letterSpacing: 2,
-                boxShadow: "0 4px 16px rgba(120,144,156,0.3)"
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#607d8b"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#78909c"; }}
-            >
-              Reset
-            </div>
+          </div>
+          {/* Reset — MiniNuclearButton */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <MiniNuclearButton label="Reset" onPress={handleReset} />
           </div>
         </div>
       )}
@@ -202,31 +187,7 @@ function E17Loop({ active, onComplete, onDismiss, say, playCount }) {
             ...
           </div>
           {/* Small reset button that reappears */}
-          <div
-            onClick={(e) => { e.stopPropagation(); handleReset(); }}
-            style={{
-              padding: "10px 24px",
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: 10,
-              fontSize: 12, fontWeight: 600,
-              color: "rgba(255,255,255,0.35)",
-              cursor: "pointer",
-              transition: "all 0.3s",
-              letterSpacing: 2,
-              animation: "fadeIn 3s ease"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.15)";
-              e.currentTarget.style.color = "rgba(255,255,255,0.6)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-              e.currentTarget.style.color = "rgba(255,255,255,0.35)";
-            }}
-          >
-            Reset
-          </div>
+          <MiniNuclearButton label="Reset" onPress={handleReset} />
         </div>
       )}
 

@@ -327,33 +327,7 @@ function E22Noise({ active, onComplete, onDismiss, say, doShake }) {
           zIndex: 20,
           animation: "popIn 0.3s cubic-bezier(0.34,1.56,0.64,1)"
         }}>
-          <div
-            onClick={(e) => { e.stopPropagation(); handleQuiet(); }}
-            style={{
-              padding: "16px 40px",
-              background: "linear-gradient(135deg, #ff5722, #e64a19)",
-              border: "2px solid #ff8a65",
-              borderRadius: 12,
-              fontSize: 18, fontWeight: 900,
-              color: "#fff",
-              cursor: "pointer",
-              letterSpacing: 4,
-              boxShadow: "0 0 30px rgba(255,87,34,0.5), 0 8px 32px rgba(255,87,34,0.3)",
-              animation: "glowPulse 1.5s ease infinite",
-              transition: "all 0.2s",
-              textShadow: "0 2px 4px rgba(0,0,0,0.3)"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.08)";
-              e.currentTarget.style.boxShadow = "0 0 40px rgba(255,87,34,0.7), 0 12px 40px rgba(255,87,34,0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "0 0 30px rgba(255,87,34,0.5), 0 8px 32px rgba(255,87,34,0.3)";
-            }}
-          >
-            {"\uC870\uC6A9!!"}
-          </div>
+          <MiniNuclearButton label="조용!!" onPress={handleQuiet} />
         </div>
       )}
     </div>

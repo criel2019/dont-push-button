@@ -7,6 +7,8 @@ function E12Police({ active, onComplete, onDismiss, say }) {
   const [callConnected, setCallConnected] = useState(false);
   const [pressedKey, setPressedKey] = useState(null);
   const [showSiren, setShowSiren] = useState(false);
+  const [wrongFlash, setWrongFlash] = useState(false);
+  const spokenRef = useRef({});
 
   const TARGET = "0101234";
 
@@ -19,79 +21,78 @@ function E12Police({ active, onComplete, onDismiss, say }) {
       setCallConnected(false);
       setPressedKey(null);
       setShowSiren(false);
+      setWrongFlash(false);
+      spokenRef.current = {};
       return;
     }
     setShowDialer(true);
     say("번호 아는 데 있어? 없지? 알려줄까~", "teasing");
-    // Auto-hint after 25s
+    // 10초 후 힌트
     const hintTimer = setTimeout(() => {
       setHintGiven(true);
       say("힌트 줄게~ 010-1234야~", "teasing");
-    }, 25000);
+    }, 10000);
     return () => clearTimeout(hintTimer);
   }, [active]);
 
-  // Check for special numbers and correct sequence
-  const specialPrefixes = ["119", "112", "114"];
-  const isSpecialPrefix = (d) => specialPrefixes.some(s => s.startsWith(d) && d.length <= s.length);
-
+  // 이스터에그 번호 + 정답 체크
   useEffect(() => {
     if (!active || !dialed) return;
+    const spoken = spokenRef.current;
 
-    // Special number checks — full match
+    // 이스터에그: 119, 112, 114
     if (dialed === "119") {
       say("불났어? 어디? 니 머리?", "smug");
-      setTimeout(() => setDialed(""), 1200);
+      setTimeout(() => setDialed(""), 1000);
       return;
     }
     if (dialed === "112") {
       say("신고할 거야? 뭔 죄로? 게임했다고?", "pouty");
-      setTimeout(() => setDialed(""), 1200);
+      setTimeout(() => setDialed(""), 1000);
       return;
     }
     if (dialed === "114") {
       say("나비님의 번호는~ 010~", "teasing");
       setHintGiven(true);
-      setTimeout(() => setDialed(""), 1200);
+      setTimeout(() => setDialed(""), 1000);
       return;
     }
 
-    // If currently typing a special prefix, don't validate against TARGET yet
-    if (isSpecialPrefix(dialed)) return;
+    // 이스터에그 입력 중이면 검증 스킵
+    if (["119", "112", "114"].some(s => s.startsWith(dialed) && dialed.length < s.length)) return;
 
-    // Check correct sequence progress
-    if (dialed.length <= TARGET.length) {
-      const expected = TARGET.slice(0, dialed.length);
-      if (dialed === expected) {
-        // Correct so far
-        if (dialed.length === TARGET.length) {
-          // Full number entered!
-          say("여보세요~? ...히히. 전화해줬네.", "happy");
-          setShowCall(true);
-        } else if (dialed.length >= 2) {
-          say("맞아맞아! 오 의외로 머리 돌아가네.", "excited");
-        }
+    // 정답 체크: 7자리 다 입력했을 때만 검증
+    if (dialed.length === TARGET.length) {
+      if (dialed === TARGET) {
+        say("여보세요~? ...히히. 전화해줬네.", "happy");
+        setShowCall(true);
       } else {
-        // Wrong digit
-        say("땡. 그것도 못 맞혀? 다시.", "pouty");
-        // Remove last digit
-        setTimeout(() => setDialed(prev => prev.slice(0, -1)), 500);
+        say("땡~ 번호가 틀렸어.", "pouty");
+        setWrongFlash(true);
+        setTimeout(() => { setDialed(""); setWrongFlash(false); }, 800);
       }
+      return;
+    }
+
+    // 중간 리액션 (한 번씩만)
+    if (dialed.length === 3 && !spoken.s3) {
+      spoken.s3 = true;
+      say("오, 010? 좋아좋아~", "excited");
     }
   }, [dialed, active]);
 
   if (!active || !showDialer) return null;
 
   const handleKeyPress = (key) => {
-    if (showCall || callConnected) return;
-    if (dialed.length >= 11) return; // max phone number length
+    if (showCall || callConnected || wrongFlash) return;
+    if (dialed.length >= 7) return;
     setPressedKey(key);
     setTimeout(() => setPressedKey(null), 150);
     setDialed(prev => prev + key);
   };
 
   const handleBackspace = () => {
-    if (showCall || callConnected) return;
+    if (showCall || callConnected || wrongFlash) return;
     setDialed(prev => prev.slice(0, -1));
   };
 
@@ -105,12 +106,10 @@ function E12Police({ active, onComplete, onDismiss, say }) {
 
   const btnColor = ENDINGS[12]?.btnColor || "#43a047";
 
-  // Format dialed number for display
   const formatNumber = (num) => {
     if (!num) return "";
     if (num.length <= 3) return num;
-    if (num.length <= 7) return num.slice(0, 3) + "-" + num.slice(3);
-    return num.slice(0, 3) + "-" + num.slice(3, 7) + "-" + num.slice(7);
+    return num.slice(0, 3) + "-" + num.slice(3);
   };
 
   const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"];
@@ -124,9 +123,7 @@ function E12Police({ active, onComplete, onDismiss, say }) {
       {/* Dark backdrop */}
       <div style={{
         position: "absolute", inset: 0,
-        background: callConnected
-          ? "rgba(0,0,0,0.6)"
-          : "rgba(0,0,0,0.45)",
+        background: callConnected ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.45)",
         transition: "background 0.5s"
       }} />
 
@@ -170,13 +167,14 @@ function E12Police({ active, onComplete, onDismiss, say }) {
 
         {/* Number display */}
         <div style={{
-          fontSize: dialed.length > 7 ? 22 : 28,
-          fontWeight: 800, color: "#fff",
+          fontSize: 28,
+          fontWeight: 800, color: wrongFlash ? "#e8573d" : "#fff",
           textAlign: "center", marginBottom: 16,
           letterSpacing: 3, minHeight: 42,
           fontFamily: "'SF Mono', monospace",
           display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "font-size 0.2s"
+          transition: "color 0.2s",
+          animation: wrongFlash ? "shake 0.3s ease" : "none"
         }}>
           {dialed ? formatNumber(dialed) : (
             <span style={{ color: "#ffffff22", fontSize: 20 }}>번호를 입력하세요</span>
@@ -246,25 +244,6 @@ function E12Police({ active, onComplete, onDismiss, say }) {
             </div>
           )}
 
-          {/* Call button */}
-          {showCall && !callConnected && (
-            <div
-              onClick={handleCall}
-              style={{
-                flex: 1, padding: "12px 28px", borderRadius: 14,
-                background: btnColor,
-                color: "#fff", fontSize: 16, fontWeight: 800,
-                textAlign: "center", cursor: "pointer",
-                letterSpacing: 3,
-                boxShadow: `0 6px 24px ${btnColor}66`,
-                animation: "glowPulse 1.5s ease infinite, popIn 0.3s ease",
-                border: "1px solid rgba(255,255,255,0.15)"
-              }}
-            >
-              Call
-            </div>
-          )}
-
           {/* Connected state */}
           {callConnected && (
             <div style={{
@@ -283,8 +262,15 @@ function E12Police({ active, onComplete, onDismiss, say }) {
           )}
         </div>
 
+        {/* Call MiniNuclearButton — 다이얼 하단에 자연스럽게 배치 */}
+        {showCall && !callConnected && (
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>
+            <MiniNuclearButton label="통화" onPress={handleCall} />
+          </div>
+        )}
+
         {/* Skip button */}
-        <SkipButton active={active && !callConnected} delay={12} onSkip={onDismiss} autoDismiss={35} />
+        <SkipButton active={active && !callConnected} delay={12} onSkip={onDismiss} />
 
         {/* Bottom decoration */}
         <div style={{

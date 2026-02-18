@@ -258,26 +258,7 @@ function E13Coward({ active, onComplete, onDismiss, say, doShake }) {
           transform: "translateX(-50%)",
           zIndex: 20
         }}>
-          <div
-            onClick={(e) => { e.stopPropagation(); handleEmergencyStop(); }}
-            style={{
-              padding: "16px 36px",
-              background: "linear-gradient(180deg, #d32f2f, #b71c1c)",
-              color: "#fff",
-              fontSize: 18,
-              fontWeight: 900,
-              borderRadius: 8,
-              cursor: "pointer",
-              letterSpacing: 4,
-              border: "3px solid #ff5252",
-              boxShadow: "0 0 20px rgba(255,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2)",
-              animation: "emergencyFlash 0.5s ease infinite alternate",
-              textShadow: "0 2px 4px rgba(0,0,0,0.5)",
-              userSelect: "none"
-            }}
-          >
-            {"\u26A0"} {"\uAE34\uAE09"} {"\uC815\uC9C0"}
-          </div>
+          <MiniNuclearButton label="긴급 정지" onPress={handleEmergencyStop} />
         </div>
       )}
 

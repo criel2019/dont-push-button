@@ -59,13 +59,13 @@ function E05Scam({ active, onComplete, onDismiss, say, doShake }) {
         say("야!! 나 끼었어!! ...이것도 니 탓이야.", "shocked");
         spawnPopups(3);
       } else if (n === 3) {
-        say("야!! 나 끼었어!! ...이것도 니 탓이야.", "shocked");
+        say("닫아도 닫아도 끝이 없잖아!!", "angry");
         spawnPopups(4);
       } else if (n === 4) {
         say("음... 수령 누르면 없어지려나? 나는 모르겠는데~", "smug");
         spawnPopups(5);
       } else if (n >= 5) {
-        say("음... 수령 누르면 없어지려나? 나는 모르겠는데~", "smug");
+        say("에이 몰라, 그냥 수령 눌러!", "excited");
         spawnPopups(6);
         setTimeout(() => setShowCollect(true), 600);
       }

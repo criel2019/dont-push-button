@@ -28,7 +28,6 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
   const showSOS = sosVisible;
   const showTV = tvVisible;
   const showSafetyCover = safetyCoverVisible;
-  const showNotebook = walletVisible; // 지갑과 함께 등장
 
   return (
     <div style={{ width:"100%",height:"100%",position:"relative",overflow:"hidden" }}>
@@ -406,7 +405,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
         {/* 스마트폰 (S3+) */}
         {showPhone && (
           <RoomObj disabled={!phoneInteractive} onClick={(e) => { e.stopPropagation(); onPhoneClick?.(); }}
-            style={{ position:"absolute",right:"24%",bottom:"40%",zIndex:20,
+            style={{ position:"absolute",right:"24%",bottom:"40%",zIndex:22,
               width:46,height:78,borderRadius:12,
               background:"linear-gradient(180deg,#333,#222,#1a1a1a)",
               border:"3px solid #444",
@@ -448,25 +447,6 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
           </div>
         )}
 
-        {/* 노트북 (S2+) */}
-        {showNotebook && (
-          <div style={{ position:"absolute",right:"14%",bottom:"40%",zIndex:20 }}>
-            <div style={{ width:150,height:96,
-              background:"linear-gradient(180deg,#e8e0d8,#d8d0c8)",
-              borderRadius:"10px 10px 0 0",border:"4px solid #c0b8b0",
-              boxShadow:"0 6px 24px rgba(0,0,0,0.1)",
-              display:"flex",alignItems:"center",justifyContent:"center" }}>
-              <div style={{ width:132,height:76,
-                background:"linear-gradient(180deg,#2a3a4a,#1a2a3a,#1a2030)",
-                borderRadius:5,display:"flex",alignItems:"center",justifyContent:"center" }}>
-                <div style={{ fontSize:12,color:"#4a6a8a",letterSpacing:3 }}>⌨️ _</div>
-              </div>
-            </div>
-            <div style={{ width:162,height:12,marginLeft:-6,
-              background:"linear-gradient(180deg,#d0c8c0,#c0b8b0)",
-              borderRadius:"0 0 5px 5px",border:"3px solid #b0a8a0",borderTop:"none" }}/>
-          </div>
-        )}
 
         {/* children: 메인 버튼, CRT, 오버레이 등 */}
         {children}

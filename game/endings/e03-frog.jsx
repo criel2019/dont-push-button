@@ -5,7 +5,6 @@
 
 function E03Frog({ active, hoverCount, onComplete, onDismiss, say }) {
   const [showButton, setShowButton] = useState(false);
-  const [btnHover, setBtnHover] = useState(false);
 
   useEffect(() => {
     if (!active) { setShowButton(false); return; }
@@ -32,74 +31,22 @@ function E03Frog({ active, hoverCount, onComplete, onDismiss, say }) {
           justifyContent: "center", pointerEvents: "auto",
           animation: "fadeIn 0.3s ease"
         }}>
-          {/* 거대 빨간 버튼 */}
-          <div
-            onClick={onComplete}
-            onMouseEnter={() => setBtnHover(true)}
-            onMouseLeave={() => setBtnHover(false)}
-            style={{
-              width: 280, height: 280, borderRadius: "50%",
-              background: btnHover
-                ? "radial-gradient(circle at 36% 28%, #ff4433, #e8573d 50%, #c9402a 100%)"
-                : "radial-gradient(circle at 36% 28%, #ff6b5a, #e8573d 50%, #c9402a 100%)",
-              boxShadow: btnHover
-                ? "0 0 80px #e8573d88, 0 0 160px #e8573d44, 0 16px 64px rgba(0,0,0,0.3), inset 0 -6px 12px #c9402a44"
-                : "0 0 60px #e8573d55, 0 0 120px #e8573d22, 0 12px 48px rgba(0,0,0,0.25), inset 0 -4px 8px #c9402a33",
-              cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              flexDirection: "column",
-              transform: btnHover ? "scale(1.08)" : "scale(1)",
-              transition: "transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s",
-              animation: "frogPulse 2s ease infinite",
-              position: "relative"
-            }}
-          >
-            {/* 하이라이트 */}
-            <div style={{
-              position: "absolute", top: "12%", left: "18%",
-              width: "32%", height: "20%", borderRadius: "50%",
-              background: "rgba(255,255,255,0.45)", filter: "blur(6px)"
-            }} />
-            <div style={{
-              position: "absolute", top: "20%", left: "26%",
-              width: "14%", height: "10%", borderRadius: "50%",
-              background: "rgba(255,255,255,0.6)", filter: "blur(3px)"
-            }} />
-
-            {/* 텍스트 */}
-            <div style={{
-              fontSize: 28, fontWeight: 800, color: "#fff",
-              textShadow: "0 2px 8px rgba(0,0,0,0.3)",
-              letterSpacing: 4, fontFamily: "'Noto Sans KR', sans-serif",
-              position: "relative", zIndex: 1
-            }}>
-              누르지 마
-            </div>
-            <div style={{
-              fontSize: 11, color: "rgba(255,255,255,0.6)",
-              marginTop: 6, letterSpacing: 2,
-              position: "relative", zIndex: 1
-            }}>
-              DON'T PRESS
-            </div>
-          </div>
-
-          {/* 글로우 링 */}
+          {/* 외부 글로우 — 거대 버튼 분위기 */}
           <div style={{
-            position: "absolute", width: 320, height: 320,
-            borderRadius: "50%", border: "2px dashed #e8573d33",
-            animation: "spin 15s linear infinite",
-            pointerEvents: "none"
-          }} />
-
-          {/* 외부 글로우 */}
-          <div style={{
-            position: "absolute", width: 360, height: 360,
+            position: "absolute", width: 280, height: 280,
             borderRadius: "50%",
-            background: "radial-gradient(circle, #e8573d11, transparent 70%)",
+            background: "radial-gradient(circle, #e8573d18, transparent 70%)",
             animation: "frogPulse 2s ease infinite",
             pointerEvents: "none"
           }} />
+          {/* 글로우 링 */}
+          <div style={{
+            position: "absolute", width: 180, height: 180,
+            borderRadius: "50%", border: "1.5px dashed #e8573d25",
+            animation: "spin 15s linear infinite",
+            pointerEvents: "none"
+          }} />
+          <MiniNuclearButton label="누르지 마" onPress={onComplete} />
         </div>
       )}
 

@@ -121,7 +121,7 @@ function E16Sleep({ active, onComplete, onDismiss, say, doShake }) {
     }, 2000);
 
     setTimeout(() => {
-      say("...\uC798\uAC04 \uB0B4\uAC00 \uC654 \uD63C\uB098\uACE0 \uC788\uB294 \uAC70\uC9C0.", "pouty");
+      say("...잠깐 내가 왜 혼나고 있는 거지.", "pouty");
     }, 5000);
 
     setTimeout(() => {
@@ -261,44 +261,17 @@ function E16Sleep({ active, onComplete, onDismiss, say, doShake }) {
         </div>
       )}
 
-      {/* Wake button */}
+      {/* Wake button — MiniNuclearButton으로 엔딩 트리거 시각적 통일 */}
       {showWakeButton && !waking && (
         <div style={{
           position: "absolute",
           bottom: 50, left: "50%",
           transform: "translateX(-50%)",
           animation: "fadeIn 2s ease",
-          pointerEvents: "auto"
+          pointerEvents: "auto",
+          zIndex: 10
         }}>
-          <div
-            onClick={(e) => { e.stopPropagation(); handleWake(); }}
-            style={{
-              padding: "10px 28px",
-              background: "rgba(100, 140, 200, 0.2)",
-              color: "rgba(160, 185, 230, 0.7)",
-              fontSize: 13,
-              fontWeight: 600,
-              borderRadius: 20,
-              cursor: "pointer",
-              border: "1px solid rgba(120, 160, 220, 0.2)",
-              letterSpacing: 3,
-              transition: "all 0.3s ease",
-              userSelect: "none",
-              backdropFilter: "blur(4px)"
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = "rgba(100, 140, 200, 0.35)";
-              e.currentTarget.style.color = "rgba(200, 215, 240, 0.9)";
-              e.currentTarget.style.borderColor = "rgba(120, 160, 220, 0.4)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = "rgba(100, 140, 200, 0.2)";
-              e.currentTarget.style.color = "rgba(160, 185, 230, 0.7)";
-              e.currentTarget.style.borderColor = "rgba(120, 160, 220, 0.2)";
-            }}
-          >
-            {"\uAE68\uC6B0\uAE30"}
-          </div>
+          <MiniNuclearButton label="깨우기" onPress={handleWake} />
         </div>
       )}
 

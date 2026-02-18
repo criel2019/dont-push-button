@@ -167,7 +167,6 @@ function E08Chase({ active, onComplete, onDismiss, say }) {
     setCaught(true);
     say("잡았다!", "excited");
     if (animRef.current) cancelAnimationFrame(animRef.current);
-    setTimeout(() => onComplete(), 800);
   }, [caught, say, onComplete]);
 
   if (!active) return null;
@@ -249,17 +248,16 @@ function E08Chase({ active, onComplete, onDismiss, say }) {
         </div>
       )}
 
-      {/* Caught overlay */}
+      {/* Caught: MiniNuclearButton at bottom center */}
       {caught && (
         <div style={{
           position: "absolute",
-          left: `${pos.x}%`, top: `${pos.y - 8}%`,
-          transform: "translate(-50%,-100%)",
-          fontSize: 14, fontWeight: 800, color: "#e8573d",
-          animation: "fadeInUp 0.5s ease",
-          pointerEvents: "none", zIndex: 361
+          bottom: "15%", left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 362,
+          animation: "fadeIn 0.5s ease"
         }}>
-          잡았다!
+          <MiniNuclearButton label="잡았다!" onPress={onComplete} />
         </div>
       )}
 
