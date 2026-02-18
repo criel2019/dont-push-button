@@ -15,7 +15,58 @@
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/babel" src="game.jsx"></script>
+
+  <!-- Step 1: Constants & Utils (no dependencies) -->
+  <script type="text/babel" src="game/constants.jsx"></script>
+  <script type="text/babel" src="game/utils.jsx"></script>
+
+  <!-- Step 2: Shared UI components (depends on constants) -->
+  <script type="text/babel" src="game/ui.jsx"></script>
+
+  <!-- Step 3: CRT & Room (depends on ui) -->
+  <script type="text/babel" src="game/crt.jsx"></script>
+  <script type="text/babel" src="game/room.jsx"></script>
+
+  <!-- Step 4: Panels & Screens -->
+  <script type="text/babel" src="game/panels.jsx"></script>
+  <script type="text/babel" src="game/screens.jsx"></script>
+
+  <!-- Step 5: Ending components (S1: 간보기) -->
+  <script type="text/babel" src="game/endings/e01-rude.jsx"></script>
+  <script type="text/babel" src="game/endings/e02-marshmallow.jsx"></script>
+  <script type="text/babel" src="game/endings/e03-frog.jsx"></script>
+  <script type="text/babel" src="game/endings/e04-surprise.jsx"></script>
+
+  <!-- Step 5: Ending components (S2: 장난) -->
+  <script type="text/babel" src="game/endings/e05-scam.jsx"></script>
+  <script type="text/babel" src="game/endings/e06-shopping.jsx"></script>
+  <script type="text/babel" src="game/endings/e07-bluescreen.jsx"></script>
+  <script type="text/babel" src="game/endings/e08-chase.jsx"></script>
+
+  <!-- Step 5: Ending components (S3: 욕망) -->
+  <script type="text/babel" src="game/endings/e09-food.jsx"></script>
+  <script type="text/babel" src="game/endings/e10-stock.jsx"></script>
+  <script type="text/babel" src="game/endings/e11-otaku.jsx"></script>
+  <script type="text/babel" src="game/endings/e12-police.jsx"></script>
+
+  <!-- Step 5: Ending components (S4: 위기) -->
+  <script type="text/babel" src="game/endings/e13-coward.jsx"></script>
+  <script type="text/babel" src="game/endings/e14-news.jsx"></script>
+  <script type="text/babel" src="game/endings/e15-psycho.jsx"></script>
+  <script type="text/babel" src="game/endings/e16-sleep.jsx"></script>
+
+  <!-- Step 5: Ending components (S5: 히든 + 진엔딩) -->
+  <script type="text/babel" src="game/endings/e17-loop.jsx"></script>
+  <script type="text/babel" src="game/endings/e18-door.jsx"></script>
+  <script type="text/babel" src="game/endings/e19-transfer.jsx"></script>
+  <script type="text/babel" src="game/endings/e20-blackout.jsx"></script>
+  <script type="text/babel" src="game/endings/e21-credits.jsx"></script>
+  <script type="text/babel" src="game/endings/e22-noise.jsx"></script>
+
+  <!-- Step 6: Main game controller (depends on everything above) -->
+  <script type="text/babel" src="game/main.jsx"></script>
+
+  <!-- Step 7: Mount -->
   <script type="text/babel">
     ReactDOM.createRoot(document.getElementById("root")).render(<DontPressTheButton />);
   </script>

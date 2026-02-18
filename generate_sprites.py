@@ -1,7 +1,7 @@
 """
 Generate WebP sprite sheets for Nabi character animations.
 
-7 emotions, 24 frames each (sampled every 6th from 145),
+24 frames each (sampled every 6th from 145),
 160x256 frame size, 6x4 grid = 960x1024 sprite sheet.
 Unified bounding box across all emotions for consistent positioning.
 """
@@ -15,13 +15,32 @@ OUT = BASE / "sprites"
 
 # Emotion name -> source folder
 EMOTIONS = {
-    "idle":    "smug2",
-    "excited": "excited",
-    "pouty":   "pouty",
-    "shocked": "shocked",
-    "smug":    "smug",
-    "cry":     "cry",
-    "catears": "catears",
+    # 기존
+    "idle":      "smug2",
+    "excited":   "excited",
+    "pouty":     "pouty",
+    "shocked":   "shocked",
+    "smug":      "smug",
+    "cry":       "cry",
+    "catears":   "catears",
+    # 기존 미생성 변형
+    "excited2":  "excited2",
+    "shocked2":  "shocked2",
+    "smug2":     "smug2",
+    # 신규
+    "yandere":   "yandere",
+    "teasing":   "teasing",
+    "teasing2":  "teasing2",
+    "shy":       "shy",
+    "shy2":      "shy2",
+    "shy3":      "shy3",
+    "bored":     "bored",
+    "shush":     "shush",
+    "peace":     "peace",
+    "happy":     "happy",
+    "confident": "confident",
+    "worried":   "worried",
+    "angry":     "angry",
 }
 
 TOTAL_FRAMES = 145
