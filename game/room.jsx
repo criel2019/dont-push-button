@@ -7,7 +7,9 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
   doorKnocks, doorOpen, bannerVisible,
   walletVisible, cakeVisible, phoneVisible, sosVisible, tvVisible, safetyCoverVisible,
   cakeSelected, activeEvent, isEndingActive, frame, children,
-  doorInteractive, clockInteractive }) {
+  doorInteractive, clockInteractive,
+  walletInteractive, cakeInteractive, phoneInteractive,
+  sosInteractive, tvInteractive, safetyCoverInteractive, bannerInteractive }) {
 
   // 기본 방 오브젝트 (항상 표시)
   const showDoor = true;
@@ -255,7 +257,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* 비상연락 SOS (S3+) */}
         {showSOS && (
-          <RoomObj onClick={(e) => { e.stopPropagation(); onSOSClick?.(); }}
+          <RoomObj disabled={!sosInteractive} onClick={(e) => { e.stopPropagation(); onSOSClick?.(); }}
             style={{ position:"absolute",left:"64%",top:"5%",zIndex:10,
               width:52,height:62,borderRadius:6,
               background:"linear-gradient(180deg,#e8e4e0,#d8d4d0,#ccc8c4)",
@@ -302,7 +304,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* TV (S4+) */}
         {showTV && (
-          <RoomObj onClick={(e) => { e.stopPropagation(); onTVClick?.(); }}
+          <RoomObj disabled={!tvInteractive} onClick={(e) => { e.stopPropagation(); onTVClick?.(); }}
             style={{ position:"absolute",left:"35%",top:"18%",zIndex:10,
               width:160,height:105,borderRadius:10,
               background:"linear-gradient(180deg,#3a3a3a,#2a2a2a,#222)",
@@ -338,10 +340,12 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* 배너 (S2+) */}
         {showBanner && (
-          <div onClick={(e) => { e.stopPropagation(); onBannerClick?.(); }}
+          <div onClick={bannerInteractive ? (e) => { e.stopPropagation(); onBannerClick?.(); } : undefined}
             style={{ position:"absolute",top:"18%",left:"50%",transform:"translateX(-50%)",
               zIndex:55,background:"linear-gradient(135deg,#ffd700,#ff8f00)",border:"3px solid #ff6f00",
-              borderRadius:24,padding:"24px 44px",textAlign:"center",cursor:"pointer",
+              borderRadius:24,padding:"24px 44px",textAlign:"center",
+              cursor:bannerInteractive?"pointer":"default",
+              opacity:bannerInteractive?1:0.5,transition:"opacity 0.5s",
               animation:"popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",
               boxShadow:"0 16px 60px rgba(255,152,0,0.45), inset 0 2px 0 rgba(255,255,255,0.3)" }}>
             <div style={{ fontSize:10,color:"#fff",letterSpacing:5,marginBottom:8,opacity:0.8 }}>★ CONGRATULATIONS ★</div>
@@ -355,7 +359,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* 지갑 (S2+) */}
         {showWallet && (
-          <RoomObj onClick={(e) => { e.stopPropagation(); onWalletClick?.(); }}
+          <RoomObj disabled={!walletInteractive} onClick={(e) => { e.stopPropagation(); onWalletClick?.(); }}
             style={{ position:"absolute",left:"22%",bottom:"40%",zIndex:20,
               width:80,height:50,borderRadius:8,
               background:"linear-gradient(150deg,#8d6e63,#6d4c41,#5d4037)",
@@ -372,7 +376,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* 케이크 (S3+) */}
         {showCake && (
-          <RoomObj onClick={(e) => { e.stopPropagation(); onCakeClick?.(); }}
+          <RoomObj disabled={!cakeInteractive} onClick={(e) => { e.stopPropagation(); onCakeClick?.(); }}
             style={{ position:"absolute",left:"34%",bottom:"40%",zIndex:20,
               width:72,height:72,borderRadius:"50%",
               background:cakeSelected
@@ -401,7 +405,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* 스마트폰 (S3+) */}
         {showPhone && (
-          <RoomObj onClick={(e) => { e.stopPropagation(); onPhoneClick?.(); }}
+          <RoomObj disabled={!phoneInteractive} onClick={(e) => { e.stopPropagation(); onPhoneClick?.(); }}
             style={{ position:"absolute",right:"24%",bottom:"40%",zIndex:20,
               width:46,height:78,borderRadius:12,
               background:"linear-gradient(180deg,#333,#222,#1a1a1a)",
@@ -429,14 +433,17 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* 안전커버 (S4+) */}
         {showSafetyCover && (
-          <div onClick={(e) => { e.stopPropagation(); onSafetyCoverClick?.(); }}
+          <div onClick={safetyCoverInteractive ? (e) => { e.stopPropagation(); onSafetyCoverClick?.(); } : undefined}
             style={{ position:"absolute",left:"50%",bottom:"calc(39% + 170px)",transform:"translateX(-50%)",zIndex:51,
               width:60,height:30,
               background:"linear-gradient(180deg,#ffd54f,#ffca28,#ffb300)",
-              border:"3px solid #ff8f00",borderRadius:"8px 8px 0 0",cursor:"pointer",
+              border:"3px solid #ff8f00",borderRadius:"8px 8px 0 0",
+              cursor:safetyCoverInteractive?"pointer":"default",
+              opacity:safetyCoverInteractive?1:0.5,
               display:"flex",alignItems:"center",justifyContent:"center",
               fontSize:9,color:"#e65100",fontWeight:800,letterSpacing:1,
-              boxShadow:"0 4px 14px rgba(255,152,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4)" }}>
+              boxShadow:"0 4px 14px rgba(255,152,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4)",
+              transition:"opacity 0.5s" }}>
             ⚠ COVER
           </div>
         )}

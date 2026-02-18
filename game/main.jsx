@@ -638,6 +638,13 @@ function DontPressTheButton() {
           frame={frame}
           doorInteractive={isEndingActive(18)}
           clockInteractive={isEndingActive(2)}
+          walletInteractive={isEndingActive(6)}
+          cakeInteractive={isEndingActive(9)}
+          phoneInteractive={isEndingActive(10)}
+          sosInteractive={isEndingActive(12)}
+          tvInteractive={isEndingActive(14)}
+          safetyCoverInteractive={isEndingActive(13)}
+          bannerInteractive={isEndingActive(5)}
         >
           {/* CRT 모니터 + 나비 */}
           <CRTMonitor
