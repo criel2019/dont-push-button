@@ -205,6 +205,7 @@ function DontPressTheButton() {
 
       // E20 트리거 (CRT 이동 없음)
       if (entry.action === "triggerE20") {
+        setNaviScriptIdx(p => p + 1); // 재트리거 방지
         triggerEnding(20);
         return;
       }
@@ -254,7 +255,7 @@ function DontPressTheButton() {
   }, []);
 
   const triggerEnding = useCallback((id) => {
-    if (activeEvent || crtMovingRef.current) return;
+    if (gs !== "room" || activeEvent || crtMovingRef.current) return;
     if (!isEndingActive(id)) return;
     resetIdle();
     cleanupCRTMove(); // CRT 이동 중이었다면 정리
@@ -290,7 +291,7 @@ function DontPressTheButton() {
     if (!overlayHandled.includes(id)) {
       say(ed.eventText, ed.eventEmo);
     }
-  }, [activeEvent, isEndingActive, resetIdle, cleanupCRTMove, say, doShake]);
+  }, [gs, activeEvent, isEndingActive, resetIdle, cleanupCRTMove, say, doShake]);
 
   const pressEventButton = useCallback(() => {
     if (!activeEvent) return;
@@ -317,6 +318,42 @@ function DontPressTheButton() {
     doShake();
     setGs("ending");
   }, [activeEvent, recordEnding, playCount, doShake]);
+
+  // ── 엔딩 dismiss (기록하지 않고 오버레이만 닫기) ──
+  const dismissEnding = useCallback(() => {
+    if (!activeEvent) return;
+    setActiveEvent(null);
+    // 모든 오버레이 플래그 리셋
+    setShowE05(false); setShowE06(false); setShowE07(false); setShowE08(false);
+    setShowE10(false); setShowE11(false); setShowE12(false); setShowE13(false);
+    setShowE14(false); setShowE15(false); setShowE16(false); setShowE19(false);
+    setShowE20(false); setShowE22(false);
+    // 엔딩별 부작용 상태 리셋
+    setNaviSleeping(false); setNaviGone(false); setDoorOpen(false);
+    setCatEars(false); setCakeOnButton(false); setCakeSelected(false);
+    setKillMode(false); setCrtOff(false); setWasHidden(false);
+    // 대사 초기화 + idle 리셋
+    setNText(""); setNEmo("idle");
+    idleRef.current = 0; setIdleTimer(0);
+  }, [activeEvent]);
+
+  // ── 30초 비활동 auto-dismiss (엔딩 오버레이 열린 상태에서) ──
+  useEffect(() => {
+    if (!activeEvent || gs !== "room") return;
+    let timer;
+    const resetTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => dismissEnding(), 30000);
+    };
+    resetTimer();
+    document.addEventListener("click", resetTimer);
+    document.addEventListener("mousemove", resetTimer);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("click", resetTimer);
+      document.removeEventListener("mousemove", resetTimer);
+    };
+  }, [activeEvent, gs, dismissEnding]);
 
   const pressMainButton = useCallback(() => {
     if (activeEvent) { pressEventButton(); return; }

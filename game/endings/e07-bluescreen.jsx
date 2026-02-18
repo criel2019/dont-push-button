@@ -104,7 +104,7 @@ function E07Bluescreen({ active, onComplete, say, doShake, totalBgClicks }) {
 
     return (
       <div style={{
-        position: "absolute", inset: 0, zIndex: 350, pointerEvents: "none",
+        position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
         overflow: "hidden"
       }}>
         {/* Dead pixels (10+) */}

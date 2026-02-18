@@ -161,13 +161,6 @@ function SkipButton({ active, delay, onSkip, autoDismiss = 25 }) {
     return () => clearTimeout(t);
   }, [active, delay]);
 
-  // 자동 해제 (안전망) — autoDismiss초 후 자동 건너뛰기
-  useEffect(() => {
-    if (!active || !autoDismiss) return;
-    const t = setTimeout(() => onSkipRef.current(), autoDismiss * 1000);
-    return () => clearTimeout(t);
-  }, [active, autoDismiss]);
-
   if (!show) return null;
   return (
     <div style={{ position:"absolute",bottom:16,right:20,zIndex:9999,animation:"fadeIn 1s ease",pointerEvents:"auto" }}>
