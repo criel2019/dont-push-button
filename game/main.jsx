@@ -339,8 +339,10 @@ function DontPressTheButton() {
   }, [activeEvent]);
 
   // ── 30초 비활동 auto-dismiss (엔딩 오버레이 열린 상태에서) ──
+  // E16(수면), E20(암전)은 비활동으로 트리거되므로 auto-dismiss 제외
   useEffect(() => {
     if (!activeEvent || gs !== "room") return;
+    if (activeEvent === 16 || activeEvent === 20) return;
     let timer;
     const resetTimer = () => {
       clearTimeout(timer);
