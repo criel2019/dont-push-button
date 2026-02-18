@@ -340,7 +340,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
         {showBanner && (
           <div onClick={(e) => { e.stopPropagation(); onBannerClick?.(); }}
             style={{ position:"absolute",top:"18%",left:"50%",transform:"translateX(-50%)",
-              zIndex:450,background:"linear-gradient(135deg,#ffd700,#ff8f00)",border:"3px solid #ff6f00",
+              zIndex:55,background:"linear-gradient(135deg,#ffd700,#ff8f00)",border:"3px solid #ff6f00",
               borderRadius:24,padding:"24px 44px",textAlign:"center",cursor:"pointer",
               animation:"popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",
               boxShadow:"0 16px 60px rgba(255,152,0,0.45), inset 0 2px 0 rgba(255,255,255,0.3)" }}>
