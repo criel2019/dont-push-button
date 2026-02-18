@@ -124,15 +124,15 @@ function E20Blackout({ active, onComplete, onDismiss, say, naviGone }) {
       // ══════════════════════════════════════
       if (t === 76 && !spoken.has(76)) {
         spoken.add(76);
-        setFloatingTexts(["버튼을 누르지 않았습니다."]);
+        setFloatingTexts(["엔딩 #20"]);
       }
       if (t === 82 && !spoken.has(82)) {
         spoken.add(82);
-        setFloatingTexts(p => [...p, "...그래서 뭐가 달라졌을까요?"]);
+        setFloatingTexts(p => [...p, "아무 일도 일어나지 않았습니다."]);
       }
       if (t === 88 && !spoken.has(88)) {
         spoken.add(88);
-        setFloatingTexts(p => [...p, "다음엔 눌러보세요. 아마도."]);
+        setFloatingTexts(p => [...p, "눌렀으면 뭔가 있었는데."]);
       }
 
       // Phase 8: 버튼 등장 (94s)
