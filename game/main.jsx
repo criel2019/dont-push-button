@@ -568,7 +568,7 @@ function DontPressTheButton() {
   // ════════════════════════════════════════════════
   return (
     <div onClick={gs === "room" && !activeEvent ? handleBgClick : undefined}
-      onMouseMove={gs === "room" ? resetIdle : undefined}
+      onMouseDown={gs === "room" ? resetIdle : undefined}
       style={{ width:"100vw",height:"100vh",overflow:"hidden",position:"relative",
         fontFamily:"'Noto Sans KR',sans-serif",
         background:darkMode?"#000":"#f5f2ee",transition:"background 1.5s",
