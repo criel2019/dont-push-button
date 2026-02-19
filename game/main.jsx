@@ -76,6 +76,7 @@ function DontPressTheButton({ mobileScale = 1 }) {
   const [collectionOpen, setCollectionOpen] = useState(false);
   const [killMode, setKillMode] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
+  const contextMenuOpenRef = useRef(0);
 
   // ── 나비 스크립트 액션: 오브젝트 개별 가시성 ──
   const [walletVisible, setWalletVisible] = useState(false);
@@ -524,6 +525,7 @@ function DontPressTheButton({ mobileScale = 1 }) {
   const handleNaviContextMenu = useCallback((e) => {
     e.preventDefault(); if (activeEvent) return; resetIdle();
     setContextMenu({ x: e.clientX / mobileScale, y: e.clientY / mobileScale });
+    contextMenuOpenRef.current = Date.now();
   }, [activeEvent, resetIdle, mobileScale]);
 
   // 네이티브 우클릭 이벤트 — capture phase + ref로 stale closure 방지
@@ -543,6 +545,7 @@ function DontPressTheButton({ mobileScale = 1 }) {
       e.stopPropagation();
       const s = mobileScaleRef.current;
       setContextMenu({ x: e.clientX / s, y: e.clientY / s });
+      contextMenuOpenRef.current = Date.now();
     };
     window.addEventListener("contextmenu", handler, true);
     return () => window.removeEventListener("contextmenu", handler, true);
@@ -832,7 +835,7 @@ function DontPressTheButton({ mobileScale = 1 }) {
 
           {/* 우클릭 메뉴 */}
           {contextMenu && <>
-            <div onClick={()=>setContextMenu(null)} style={{ position:"absolute",inset:0,zIndex:850 }}/>
+            <div onClick={()=>{ if (Date.now() - contextMenuOpenRef.current > 400) setContextMenu(null); }} style={{ position:"absolute",inset:0,zIndex:850 }}/>
             <ContextMenu x={contextMenu.x} y={contextMenu.y}
               say={say}
               onDelete={() => { setContextMenu(null); triggerEnding(1); }}
