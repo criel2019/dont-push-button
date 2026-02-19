@@ -439,12 +439,12 @@ function DontPressTheButton({ mobileScale = 1 }) {
   }, [gs, collected]);
 
   // ── E22 마이크 감지 (세션당 1회) ──
-  useMicMonitor(gs === "room" && !activeEvent && !e22TriggeredRef.current, useCallback(() => {
+  useMicMonitor(gs === "room" && !activeEvent && !e22TriggeredRef.current, () => {
     if (!activeEvent && !e22TriggeredRef.current) {
       e22TriggeredRef.current = true;
       triggerEnding(22);
     }
-  }, [activeEvent]));
+  });
 
   // ── 방 진입 초기화 ──
   useEffect(() => {
