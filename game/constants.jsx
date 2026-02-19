@@ -195,5 +195,5 @@ const PHASE_COLORS = {
 };
 
 // ── E22 마이크 감지 설정 ──
-const MIC_NOISE_THRESHOLD = 85;
+const MIC_NOISE_THRESHOLD = 45;
 const MIC_NOISE_DURATION = 2000;
