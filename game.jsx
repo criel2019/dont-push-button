@@ -2636,6 +2636,7 @@ function DontPressTheButton() {
         @keyframes crtFlicker{0%,100%{opacity:0.02}50%{opacity:0.05}}
         @keyframes crtStatic{0%{background-position:0 0}100%{background-position:100% 100%}}
         @keyframes triggerPulse{0%,100%{box-shadow:0 0 12px #e8573d44,0 4px 18px rgba(0,0,0,0.2)}50%{box-shadow:0 0 28px #e8573d77,0 8px 28px rgba(0,0,0,0.25)}}
+        @keyframes interactiveHint{0%,100%{outline-color:rgba(255,220,100,0)}50%{outline-color:rgba(255,220,100,0.6)}}
         .cursor-blink{animation:pulse 0.6s step-end infinite;opacity:0.5}
         *{box-sizing:border-box;margin:0;padding:0;user-select:none;}
       `}</style>

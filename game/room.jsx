@@ -345,7 +345,9 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
               borderRadius:24,padding:"24px 44px",textAlign:"center",
               cursor:bannerInteractive?"pointer":"default",
               opacity:bannerInteractive?1:0.5,transition:"opacity 0.5s",
-              animation:"popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+              animation:bannerInteractive?"popIn 0.5s cubic-bezier(0.34,1.56,0.64,1), interactiveHint 2s ease-in-out infinite":"popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+              outline:bannerInteractive?"2px solid rgba(255,220,100,0.4)":"none",
+              outlineOffset:4,
               boxShadow:"0 16px 60px rgba(255,152,0,0.45), inset 0 2px 0 rgba(255,255,255,0.3)" }}>
             <div style={{ fontSize:10,color:"#fff",letterSpacing:5,marginBottom:8,opacity:0.8 }}>★ CONGRATULATIONS ★</div>
             <div style={{ fontSize:30,fontWeight:800,color:"#fff",textShadow:"0 3px 10px rgba(0,0,0,0.2)" }}>
@@ -442,6 +444,9 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
               display:"flex",alignItems:"center",justifyContent:"center",
               fontSize:9,color:"#e65100",fontWeight:800,letterSpacing:1,
               boxShadow:"0 4px 14px rgba(255,152,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4)",
+              outline:safetyCoverInteractive?"2px solid rgba(255,220,100,0.4)":"none",
+              outlineOffset:4,
+              animation:safetyCoverInteractive?"interactiveHint 2s ease-in-out infinite":"none",
               transition:"opacity 0.5s" }}>
             ⚠ COVER
           </div>

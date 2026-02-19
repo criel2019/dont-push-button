@@ -107,7 +107,7 @@ function E02Marshmallow({ active, onComplete, onDismiss, say, doShake, frame }) 
   const isUrgent = timer <= 10;
 
   return (
-    <div style={{ position: "absolute", inset: 0, zIndex: 350, pointerEvents: "auto" }}>
+    <div style={{ position: "absolute", inset: 0, zIndex: 350, pointerEvents: "none" }}>
       {/* 타이머 디스플레이 */}
       <div style={{
         position: "absolute", top: "38%", left: "50%",
@@ -162,14 +162,6 @@ function E02Marshmallow({ active, onComplete, onDismiss, say, doShake, frame }) 
         )}
       </div>
 
-      {/* 포기 버튼 (항상 표시) */}
-      <div style={{
-        position: "absolute", bottom: "12%", left: "50%",
-        transform: "translateX(-50%)", zIndex: 370
-      }}>
-        <MiniNuclearButton label={completed ? "확인" : "포기"} onPress={onComplete} />
-      </div>
-
       {/* 가짜 광고 팝업 (40초 남았을 때) */}
       {showFakeAd && (
         <div style={{
@@ -179,7 +171,8 @@ function E02Marshmallow({ active, onComplete, onDismiss, say, doShake, frame }) 
           borderRadius: 16, padding: "20px 24px", textAlign: "center",
           boxShadow: "0 12px 40px rgba(255,111,0,0.4)",
           animation: "popIn 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-          zIndex: 380, border: "3px solid #fff"
+          zIndex: 380, border: "3px solid #fff",
+          pointerEvents: "auto"
         }}>
           <div style={{ fontSize: 10, color: "#fff8", marginBottom: 4 }}>ADVERTISEMENT</div>
           <div style={{ fontSize: 18, fontWeight: 800, color: "#fff", marginBottom: 6 }}>
