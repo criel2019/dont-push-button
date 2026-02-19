@@ -714,8 +714,9 @@ function DontPressTheButton({ mobileScale = 1 }) {
             const frogPre = isEndingActive(3) && hoverCount >= 7 && hoverCount < 10 && !activeEvent;
             const frogHuge = activeEvent === 3;
             const frogLabel = (isEndingActive(3) && hoverCount >= 6 && !activeEvent) ? "누르지 마" : buttonLabel;
+            const btnScale = mobileScale < 1 ? 0.7 : 1;
             return (
-              <div style={{ position:"absolute",left:"50%",bottom:"39%",transform:`translateX(-50%) scale(${frogHuge?2.5:1})`,
+              <div style={{ position:"absolute",left:"50%",bottom: mobileScale < 1 ? "36%" : "39%",transform:`translateX(-50%) scale(${frogHuge?2.5:btnScale})`,
                 zIndex:50,transition:"transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
                 opacity:frogPre?0:1,pointerEvents:frogPre?"none":"auto" }}>
                 <NuclearButton

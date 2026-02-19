@@ -83,18 +83,21 @@ function useLongPress(callback, ms = 600) {
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
   const touchStartPos = useRef(null);
+  const firedRef = useRef(false);
 
   const clear = useCallback(() => {
     if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
   }, []);
 
   const onTouchStart = useCallback((e) => {
+    firedRef.current = false;
     const touch = e.touches[0];
     touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     clear();
     timerRef.current = setTimeout(() => {
       const t = touchStartPos.current;
       if (t) callbackRef.current(t.x, t.y);
+      firedRef.current = true;
       timerRef.current = null;
     }, ms);
   }, [ms, clear]);
@@ -108,7 +111,13 @@ function useLongPress(callback, ms = 600) {
     }
   }, [clear]);
 
-  const onTouchEnd = useCallback(() => { clear(); }, [clear]);
+  const onTouchEnd = useCallback((e) => {
+    clear();
+    if (firedRef.current) {
+      e.preventDefault(); // 합성 click 이벤트 차단 — 메뉴 즉시 닫힘 방지
+      firedRef.current = false;
+    }
+  }, [clear]);
 
   useEffect(() => () => clear(), [clear]);
 
