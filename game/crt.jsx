@@ -53,7 +53,7 @@ function CRTMonitor({ nEmo, frame, naviSleeping, catEars, naviGone, nText, nKey,
   // 롱프레스로 모바일 우클릭 대체
   const longPressHandlers = useLongPress((touchX, touchY) => {
     if (onContextMenu) {
-      onContextMenu({ preventDefault: () => {}, clientX: touchX / mobileScale, clientY: touchY / mobileScale });
+      onContextMenu({ preventDefault: () => {}, clientX: touchX, clientY: touchY });
     }
   }, 600);
   const [poweringOn, setPoweringOn] = useState(false);
