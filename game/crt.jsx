@@ -49,7 +49,13 @@ const CRT_TARGETS = {
   showSafetyCover: { left:"52%", top:"14%" },
 };
 
-function CRTMonitor({ nEmo, frame, naviSleeping, catEars, naviGone, nText, nKey, onContextMenu, onCatEarClick, crtOff, crtTarget, children }) {
+function CRTMonitor({ nEmo, frame, naviSleeping, catEars, naviGone, nText, nKey, onContextMenu, onCatEarClick, crtOff, crtTarget, mobileScale = 1, children }) {
+  // 롱프레스로 모바일 우클릭 대체
+  const longPressHandlers = useLongPress((touchX, touchY) => {
+    if (onContextMenu) {
+      onContextMenu({ preventDefault: () => {}, clientX: touchX / mobileScale, clientY: touchY / mobileScale });
+    }
+  }, 600);
   const [poweringOn, setPoweringOn] = useState(false);
   const [showContent, setShowContent] = useState(!crtOff);
 
@@ -74,6 +80,7 @@ function CRTMonitor({ nEmo, frame, naviSleeping, catEars, naviGone, nText, nKey,
     <div style={{ position:"absolute", ...posStyle, zIndex:60,
       transition: "left 0.5s ease, top 0.5s ease" }}>
       <div data-crt="true" onContextMenu={onContextMenu}
+        {...longPressHandlers}
         style={{ width:150,padding:5,
           background:"linear-gradient(180deg,#4a4a4a,#333,#2a2a2a)",
           border:"3px solid #555",borderRadius:10,

@@ -44,3 +44,73 @@ function preloadNaviSprite(emotion) {
 
 // Preload idle immediately
 preloadNaviSprite("idle");
+
+// ── 반응형 훅 (모바일 대응) ──
+const DESIGN_HEIGHT = 600;
+
+function useResponsive() {
+  const [state, setState] = useState(() => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const shortSide = Math.min(w, h);
+    const isMobile = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && shortSide < 500;
+    const scale = Math.min(1, h / DESIGN_HEIGHT);
+    return { isMobile, scale: isMobile ? scale : 1, isPortrait: h > w };
+  });
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const shortSide = Math.min(w, h);
+      const isMobile = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && shortSide < 500;
+      const scale = Math.min(1, h / DESIGN_HEIGHT);
+      setState({ isMobile, scale: isMobile ? scale : 1, isPortrait: h > w });
+    };
+    window.addEventListener("resize", update);
+    window.addEventListener("orientationchange", () => setTimeout(update, 200));
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("orientationchange", update);
+    };
+  }, []);
+
+  return state;
+}
+
+function useLongPress(callback, ms = 600) {
+  const timerRef = useRef(null);
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+  const touchStartPos = useRef(null);
+
+  const clear = useCallback(() => {
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+  }, []);
+
+  const onTouchStart = useCallback((e) => {
+    const touch = e.touches[0];
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    clear();
+    timerRef.current = setTimeout(() => {
+      const t = touchStartPos.current;
+      if (t) callbackRef.current(t.x, t.y);
+      timerRef.current = null;
+    }, ms);
+  }, [ms, clear]);
+
+  const onTouchMove = useCallback((e) => {
+    if (!timerRef.current) return;
+    const touch = e.touches[0];
+    const start = touchStartPos.current;
+    if (start && dist(touch.clientX, touch.clientY, start.x, start.y) > 10) {
+      clear();
+    }
+  }, [clear]);
+
+  const onTouchEnd = useCallback(() => { clear(); }, [clear]);
+
+  useEffect(() => () => clear(), [clear]);
+
+  return { onTouchStart, onTouchEnd, onTouchMove };
+}

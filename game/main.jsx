@@ -3,7 +3,31 @@
 // 비가시적 스테이지 시스템 + 나비 대사 시퀀스 엔진
 // ============================================================
 
-function DontPressTheButton() {
+// ── GameScaler: 모바일 대응 래퍼 ──
+function GameScaler() {
+  const { isMobile, scale, isPortrait } = useResponsive();
+
+  if (isMobile && isPortrait) return <PortraitWarning />;
+
+  if (!isMobile || scale >= 1) return <DontPressTheButton mobileScale={1} />;
+
+  const designW = window.innerWidth / scale;
+  const designH = window.innerHeight / scale;
+
+  return (
+    <div style={{ width: window.innerWidth, height: window.innerHeight, overflow:"hidden", position:"relative" }}>
+      <div style={{
+        width: designW, height: designH,
+        transform: `scale(${scale})`,
+        transformOrigin: "top left",
+      }}>
+        <DontPressTheButton mobileScale={scale} />
+      </div>
+    </div>
+  );
+}
+
+function DontPressTheButton({ mobileScale = 1 }) {
   // ── 핵심 상태 ──
   const [gs, setGs] = useState("title"); // title | room | ending | credits
   const [activeEvent, setActiveEvent] = useState(null);
@@ -499,8 +523,8 @@ function DontPressTheButton() {
 
   const handleNaviContextMenu = useCallback((e) => {
     e.preventDefault(); if (activeEvent) return; resetIdle();
-    setContextMenu({ x: e.clientX, y: e.clientY });
-  }, [activeEvent, resetIdle]);
+    setContextMenu({ x: e.clientX / mobileScale, y: e.clientY / mobileScale });
+  }, [activeEvent, resetIdle, mobileScale]);
 
   // 네이티브 우클릭 이벤트 — capture phase + ref로 stale closure 방지
   const gsRef = useRef(gs);
@@ -508,13 +532,17 @@ function DontPressTheButton() {
   useEffect(() => { gsRef.current = gs; }, [gs]);
   useEffect(() => { activeEventRef.current = activeEvent; }, [activeEvent]);
 
+  const mobileScaleRef = useRef(mobileScale);
+  useEffect(() => { mobileScaleRef.current = mobileScale; }, [mobileScale]);
+
   useEffect(() => {
     const handler = (e) => {
       if (gsRef.current !== "room" || activeEventRef.current) return;
       if (!e.target.closest("[data-crt]")) return;
       e.preventDefault();
       e.stopPropagation();
-      setContextMenu({ x: e.clientX, y: e.clientY });
+      const s = mobileScaleRef.current;
+      setContextMenu({ x: e.clientX / s, y: e.clientY / s });
     };
     window.addEventListener("contextmenu", handler, true);
     return () => window.removeEventListener("contextmenu", handler, true);
@@ -591,7 +619,8 @@ function DontPressTheButton() {
   return (
     <div onClick={gs === "room" && !activeEvent ? handleBgClick : undefined}
       onMouseDown={gs === "room" ? resetIdle : undefined}
-      style={{ width:"100vw",height:"100vh",overflow:"hidden",position:"relative",
+      onTouchStart={gs === "room" ? resetIdle : undefined}
+      style={{ width:"100%",height:"100%",overflow:"hidden",position:"relative",
         fontFamily:"'Noto Sans KR',sans-serif",
         background:darkMode?"#000":"#f5f2ee",transition:"background 1.5s",
         transform:screenShake?"translate(2px,-2px)":"none" }}>
@@ -677,6 +706,7 @@ function DontPressTheButton() {
             onCatEarClick={isEndingActive(11) ? handleCatEarClick : null}
             crtOff={crtOff}
             crtTarget={crtTarget}
+            mobileScale={mobileScale}
           />
 
           {/* 메인 버튼 — E03 호버 시각 변화 반영 */}
@@ -801,7 +831,7 @@ function DontPressTheButton() {
 
           {/* 우클릭 메뉴 */}
           {contextMenu && <>
-            <div onClick={()=>setContextMenu(null)} style={{ position:"fixed",inset:0,zIndex:850 }}/>
+            <div onClick={()=>setContextMenu(null)} style={{ position:"absolute",inset:0,zIndex:850 }}/>
             <ContextMenu x={contextMenu.x} y={contextMenu.y}
               say={say}
               onDelete={() => { setContextMenu(null); triggerEnding(1); }}

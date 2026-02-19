@@ -226,6 +226,27 @@ function MiniNuclearButton({ label, onPress }) {
   );
 }
 
+// ── 세로 모드 경고 ──
+function PortraitWarning() {
+  return (
+    <div style={{ position:"fixed",inset:0,zIndex:99999,
+      background:"linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)",
+      display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:24,
+      fontFamily:"'Noto Sans KR',sans-serif",color:"#fff" }}>
+      <div style={{ fontSize:48,animation:"rotatePhone 2s ease-in-out infinite" }}>📱</div>
+      <div style={{ fontSize:18,fontWeight:700,letterSpacing:4 }}>가로로 돌려주세요</div>
+      <div style={{ fontSize:12,color:"rgba(255,255,255,0.5)",letterSpacing:2 }}>Rotate to landscape</div>
+      <style>{`
+        @keyframes rotatePhone{
+          0%,100%{transform:rotate(0deg)}
+          25%{transform:rotate(-90deg)}
+          50%,75%{transform:rotate(-90deg)}
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // ── 글래스 패널 ──
 function GlassPanel({ children, style }) {
   return (
