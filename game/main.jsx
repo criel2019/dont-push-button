@@ -832,7 +832,7 @@ function DontPressTheButton({ mobileScale = 1 }) {
 
           {/* 우클릭 메뉴 */}
           {contextMenu && <>
-            <div onPointerDown={()=>setContextMenu(null)} style={{ position:"absolute",inset:0,zIndex:850 }}/>
+            <div onPointerDown={()=>setContextMenu(null)} style={{ position:"fixed",inset:0,zIndex:850 }}/>
             <ContextMenu x={contextMenu.x} y={contextMenu.y}
               say={say}
               onDelete={() => { setContextMenu(null); triggerEnding(1); }}

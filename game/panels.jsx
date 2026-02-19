@@ -136,7 +136,7 @@ function ContextMenu({ x, y, onDelete, onClose, say }) {
 
   if (showConfirm) {
     return (
-      <div style={{ position:"absolute",inset:0,zIndex:950,display:"flex",alignItems:"center",justifyContent:"center",
+      <div style={{ position:"fixed",inset:0,zIndex:950,display:"flex",alignItems:"center",justifyContent:"center",
         background:"rgba(0,0,0,0.3)",backdropFilter:"blur(4px)",animation:"fadeIn 0.2s ease" }}>
         <div style={{ background:"#fff",borderRadius:16,padding:"24px 32px",boxShadow:"0 16px 48px rgba(0,0,0,0.25)",
           textAlign:"center",animation:"popIn 0.2s ease",minWidth:260 }}>
@@ -158,7 +158,7 @@ function ContextMenu({ x, y, onDelete, onClose, say }) {
   );
 
   return (
-    <div style={{ position:"absolute",left:x,top:y,zIndex:900,background:"#fff",borderRadius:8,
+    <div style={{ position:"fixed",left:x,top:y,zIndex:900,background:"#fff",borderRadius:8,
       boxShadow:"0 2px 16px rgba(0,0,0,0.22)",padding:"4px 0",minWidth:200,animation:"fadeIn 0.1s ease",
       border:"1px solid #e0e0e0",fontFamily:"'Segoe UI','Noto Sans KR',sans-serif" }}>
       {greyItem("← 뒤로")}
