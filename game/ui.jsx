@@ -29,9 +29,9 @@ function RoomObj({ children, onClick, style, hoverGlow, title, disabled }) {
         transform: !disabled && hv ? "scale(1.08) translateY(-4px)" : "scale(1)",
         filter: !disabled && hv && hoverGlow ? `drop-shadow(0 4px 16px ${hoverGlow})` : "none",
         opacity: disabled ? 0.5 : 1,
-        outline: disabled === false ? "2px solid rgba(255,220,100,0.4)" : "none",
+        outline: disabled === false ? "3px solid #ffd740" : "none",
         outlineOffset: 4,
-        animation: disabled === false ? "interactiveHint 2s ease-in-out infinite" : "none",
+        animation: disabled === false ? "interactiveHint 1.5s ease-in-out infinite" : "none",
         ...style }}>
       {children}
     </div>
