@@ -437,8 +437,8 @@ function DontPressTheButton({ mobileScale = 1 }) {
     }
   }, [gs, collected]);
 
-  // ── E22 마이크 감지 (항상 활성) ──
-  useMicMonitor(gs === "room" && !activeEvent, useCallback(() => {
+  // ── E22 마이크 감지 (데스크톱 전용 — 모바일에서는 마이크 권한 요청 UX 부적절) ──
+  useMicMonitor(gs === "room" && !activeEvent && mobileScale >= 1, useCallback(() => {
     if (!activeEvent) triggerEnding(22);
   }, [activeEvent]));
 
