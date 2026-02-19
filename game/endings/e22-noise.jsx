@@ -361,9 +361,16 @@ function useMicMonitor(enabled, onNoiseTrigger) {
 
         const checkVolume = () => {
           if (cancelled || !analyserRef.current) return;
-          const data = new Uint8Array(analyserRef.current.frequencyBinCount);
-          analyserRef.current.getByteFrequencyData(data);
-          const avg = data.reduce((a, b) => a + b, 0) / data.length;
+          const data = new Uint8Array(analyserRef.current.fftSize);
+          analyserRef.current.getByteTimeDomainData(data);
+          // RMS 볼륨 계산 (0-100 스케일)
+          let sum = 0;
+          for (let i = 0; i < data.length; i++) {
+            const v = (data[i] - 128) / 128;
+            sum += v * v;
+          }
+          const rms = Math.sqrt(sum / data.length);
+          const avg = Math.min(rms * 100, 100);
 
           if (avg > MIC_NOISE_THRESHOLD) {
             if (!noiseStartRef.current) noiseStartRef.current = Date.now();

@@ -96,8 +96,7 @@ function E12Police({ active, onComplete, onDismiss, say }) {
     setDialed(prev => prev.slice(0, -1));
   };
 
-  const handleCall = (e) => {
-    e.stopPropagation();
+  const handleCall = () => {
     say("통화 연결? 나랑? ...좋아.", "shy");
     setCallConnected(true);
     setShowSiren(true);
