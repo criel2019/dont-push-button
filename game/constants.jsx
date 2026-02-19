@@ -195,5 +195,5 @@ const PHASE_COLORS = {
 };
 
 // ── E22 마이크 감지 설정 ──
-const MIC_NOISE_THRESHOLD = 50;  // RMS 기반 (0-100 스케일)
+const MIC_NOISE_THRESHOLD = 8;  // RMS 기반 (0-100 스케일), 보통 목소리 ~10
 const MIC_NOISE_DURATION = 2000;

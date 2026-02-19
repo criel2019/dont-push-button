@@ -653,6 +653,7 @@ function DontPressTheButton({ mobileScale = 1 }) {
         @keyframes crtFlicker{0%,100%{opacity:0.02}50%{opacity:0.05}}
         @keyframes crtOffLine{0%{height:2px;opacity:1}100%{height:0px;opacity:0}}
         @keyframes crtPowerOn{0%{opacity:0;transform:scale(0.8,0.01)}50%{opacity:1;transform:scale(1,0.01)}100%{opacity:1;transform:scale(1,1)}}
+        @keyframes interactiveHint{0%,100%{outline-color:rgba(255,220,100,0)}50%{outline-color:rgba(255,220,100,0.6)}}
         .cursor-blink{animation:pulse 0.6s step-end infinite;opacity:0.5}
         *{box-sizing:border-box;margin:0;padding:0;user-select:none;}
       `}</style>
