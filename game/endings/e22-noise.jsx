@@ -339,7 +339,9 @@ function useMicMonitor(enabled, onNoiseTrigger) {
   const audioRef = useRef(null);
   const analyserRef = useRef(null);
   const noiseStartRef = useRef(null);
-  const animRef = useRef(null);
+  const intervalRef = useRef(null);
+  const triggerRef = useRef(onNoiseTrigger);
+  triggerRef.current = onNoiseTrigger;
 
   useEffect(() => {
     if (!enabled) return;
@@ -358,35 +360,34 @@ function useMicMonitor(enabled, onNoiseTrigger) {
         src.connect(analyser);
         audioRef.current = { stream, ctx };
         analyserRef.current = analyser;
+        console.log("[E22 Mic] 마이크 연결 성공, 모니터링 시작");
 
-        const checkVolume = () => {
+        intervalRef.current = setInterval(() => {
           if (cancelled || !analyserRef.current) return;
           const data = new Uint8Array(analyserRef.current.fftSize);
           analyserRef.current.getByteTimeDomainData(data);
-          // RMS 볼륨 계산 (0-100 스케일)
           let sum = 0;
           for (let i = 0; i < data.length; i++) {
             const v = (data[i] - 128) / 128;
             sum += v * v;
           }
           const rms = Math.sqrt(sum / data.length);
-          const avg = Math.min(rms * 100, 100);
+          const vol = Math.min(rms * 100, 100);
 
-          if (avg > MIC_NOISE_THRESHOLD) {
+          if (vol > MIC_NOISE_THRESHOLD) {
             if (!noiseStartRef.current) noiseStartRef.current = Date.now();
             else if (Date.now() - noiseStartRef.current > MIC_NOISE_DURATION) {
-              onNoiseTrigger?.();
+              console.log("[E22 Mic] 트리거! vol:", vol.toFixed(1));
+              triggerRef.current?.();
               noiseStartRef.current = null;
-              return;
+              clearInterval(intervalRef.current);
             }
           } else {
             noiseStartRef.current = null;
           }
-          animRef.current = requestAnimationFrame(checkVolume);
-        };
-        checkVolume();
-      } catch {
-        // 마이크 사용 불가 — 무시
+        }, 100);
+      } catch (err) {
+        console.warn("[E22 Mic] 마이크 접근 실패:", err);
       }
     };
 
@@ -394,12 +395,12 @@ function useMicMonitor(enabled, onNoiseTrigger) {
 
     return () => {
       cancelled = true;
-      if (animRef.current) cancelAnimationFrame(animRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
       if (audioRef.current) {
         audioRef.current.stream.getTracks().forEach(t => t.stop());
         audioRef.current.ctx.close();
       }
       analyserRef.current = null;
     };
-  }, [enabled, onNoiseTrigger]);
+  }, [enabled]);
 }
