@@ -351,6 +351,7 @@ function useMicMonitor(enabled, onNoiseTrigger) {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         if (cancelled) { stream.getTracks().forEach(t => t.stop()); return; }
         const ctx = new AudioContext();
+        if (ctx.state === "suspended") await ctx.resume();
         const src = ctx.createMediaStreamSource(stream);
         const analyser = ctx.createAnalyser();
         analyser.fftSize = 256;
