@@ -102,6 +102,7 @@ function DontPressTheButton({ mobileScale = 1 }) {
   const [showE22, setShowE22] = useState(false);
 
   const idleRef = useRef(0);
+  const e22TriggeredRef = useRef(false);
 
   // ── 기본 함수 ──
   const say = useCallback((text, emotion) => {
@@ -437,9 +438,12 @@ function DontPressTheButton({ mobileScale = 1 }) {
     }
   }, [gs, collected]);
 
-  // ── E22 마이크 감지 (항상 활성) ──
-  useMicMonitor(gs === "room" && !activeEvent, useCallback(() => {
-    if (!activeEvent) triggerEnding(22);
+  // ── E22 마이크 감지 (세션당 1회) ──
+  useMicMonitor(gs === "room" && !activeEvent && !e22TriggeredRef.current, useCallback(() => {
+    if (!activeEvent && !e22TriggeredRef.current) {
+      e22TriggeredRef.current = true;
+      triggerEnding(22);
+    }
   }, [activeEvent]));
 
   // ── 방 진입 초기화 ──
@@ -449,7 +453,7 @@ function DontPressTheButton({ mobileScale = 1 }) {
     setBannerVisible(false); setCatEars(false); setDoorOpen(false);
     setKillMode(false); setNaviSleeping(false); setCakeSelected(false);
     setCakeOnButton(false); setDarkMode(false); setNaviGone(false);
-    setWasHidden(false); setContextMenu(null); idleRef.current = 0;
+    setWasHidden(false); setContextMenu(null); idleRef.current = 0; e22TriggeredRef.current = false;
     setStageElapsed(0); setNaviScriptIdx(0);
     setCrtOff(false); setStageTransitioning(false);
     cleanupCRTMove(); setCrtTarget(null);
