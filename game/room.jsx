@@ -22,12 +22,12 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
   const showSafetyCover = safetyCoverVisible;
 
   return (
-    <div style={{ width:"100%",height:"100%",position:"relative",overflow:"hidden" }}>
-      {/* 양쪽 여백 배경색 (1100px 초과 화면) */}
-      <div style={{ position:"absolute",inset:0,background:"#c8a878" }}/>
+    <div style={{ width:"100%",height:"100%",position:"relative",overflow:"hidden",
+      background:"#2a1f14",display:"flex",alignItems:"center",justifyContent:"center" }}>
 
-      {/* 중앙 고정 컨테이너 */}
-      <div style={{ position:"relative",width:"100%",maxWidth:1100,height:"100%",margin:"0 auto",overflow:"visible" }}>
+      {/* 비율 고정 컨테이너 (이미지 2752x1536 = 43:24) */}
+      <div style={{ position:"relative",width:"100%",maxWidth:1100,maxHeight:"100%",
+        aspectRatio:"43/24",overflow:"visible" }}>
 
         {/* 배경 일러스트 */}
         <img src="assets/room-bg.png" alt=""
@@ -53,12 +53,12 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* ══ 시계 (투명 오버레이 + SVG 시침/분침만) ══ */}
         <RoomObj disabled={!clockInteractive} onClick={(e) => { e.stopPropagation(); onClockClick?.(); }}
-          style={{ position:"absolute",left:"62%",top:"15%",transform:"translateX(-50%)",zIndex:10,
-            width:56,height:56,borderRadius:"50%",
+          style={{ position:"absolute",left:"65.5%",top:"19%",transform:"translate(-50%,-50%)",zIndex:10,
+            width:66,height:66,borderRadius:"50%",
             background:"transparent",
             display:"flex",alignItems:"center",justifyContent:"center" }}
           hoverGlow="#e88b3d">
-          <svg viewBox="0 0 40 40" width="42" height="42">
+          <svg viewBox="0 0 40 40" width="50" height="50">
             <line x1="20" y1="20" x2="20" y2="8" stroke="#4a3a2a" strokeWidth="2.2" strokeLinecap="round"
               transform={`rotate(${(frame*6)%360} 20 20)`}/>
             <line x1="20" y1="20" x2="20" y2="5" stroke="#e8573d" strokeWidth="1.2" strokeLinecap="round"
@@ -139,7 +139,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
         {/* ══ 지갑 (S2+) — 책상 위 ══ */}
         {showWallet && (
           <RoomObj disabled={!walletInteractive} onClick={(e) => { e.stopPropagation(); onWalletClick?.(); }}
-            style={{ position:"absolute",left:"52%",top:"51%",zIndex:20,
+            style={{ position:"absolute",left:"52%",top:"49%",zIndex:20,
               width:80,height:50,borderRadius:8,
               background:"linear-gradient(150deg,#8d6e63,#6d4c41,#5d4037)",
               border:"2.5px solid #4e342e",
@@ -156,7 +156,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
         {/* ══ 케이크 (S3+) — 책상 위 ══ */}
         {showCake && (
           <RoomObj disabled={!cakeInteractive} onClick={(e) => { e.stopPropagation(); onCakeClick?.(); }}
-            style={{ position:"absolute",left:"59%",top:"48%",zIndex:20,
+            style={{ position:"absolute",left:"59%",top:"45%",zIndex:20,
               width:72,height:72,borderRadius:"50%",
               background:cakeSelected
                 ?"linear-gradient(180deg,#fff3e0,#ffe0b2)"
@@ -174,7 +174,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
         {/* ══ 스마트폰 (S3+) — 책상 위 ══ */}
         {showPhone && (
           <RoomObj disabled={!phoneInteractive} onClick={(e) => { e.stopPropagation(); onPhoneClick?.(); }}
-            style={{ position:"absolute",left:"76%",top:"49%",zIndex:22,
+            style={{ position:"absolute",left:"76%",top:"44%",zIndex:22,
               width:46,height:78,borderRadius:12,
               background:"linear-gradient(180deg,#333,#222,#1a1a1a)",
               border:"3px solid #444",
@@ -202,7 +202,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
         {/* ══ 안전커버 (S4+) — 버튼 바로 위 ══ */}
         {showSafetyCover && (
           <div onClick={safetyCoverInteractive ? (e) => { e.stopPropagation(); onSafetyCoverClick?.(); } : undefined}
-            style={{ position:"absolute",left:"67%",bottom:"calc(38% + 170px)",transform:"translateX(-50%)",zIndex:51,
+            style={{ position:"absolute",left:"67%",bottom:"calc(43% + 170px)",transform:"translateX(-50%)",zIndex:51,
               width:60,height:30,
               background:"linear-gradient(180deg,#ffd54f,#ffca28,#ffb300)",
               border:"3px solid #ff8f00",borderRadius:"8px 8px 0 0",
