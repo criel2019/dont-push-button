@@ -53,7 +53,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
 
         {/* ══ 시계 (투명 오버레이 + SVG 시침/분침만) ══ */}
         <RoomObj disabled={!clockInteractive} onClick={(e) => { e.stopPropagation(); onClockClick?.(); }}
-          style={{ position:"absolute",left:"65.5%",top:"19%",transform:"translate(-50%,-50%)",zIndex:10,
+          style={{ position:"absolute",left:"70%",top:"19%",transform:"translate(-50%,-50%)",zIndex:10,
             width:66,height:66,borderRadius:"50%",
             background:"transparent",
             display:"flex",alignItems:"center",justifyContent:"center" }}
@@ -202,7 +202,7 @@ function GameRoom({ onDoorKnock, onClockClick, onSOSClick, onTVClick, onWalletCl
         {/* ══ 안전커버 (S4+) — 버튼 바로 위 ══ */}
         {showSafetyCover && (
           <div onClick={safetyCoverInteractive ? (e) => { e.stopPropagation(); onSafetyCoverClick?.(); } : undefined}
-            style={{ position:"absolute",left:"67%",bottom:"calc(43% + 170px)",transform:"translateX(-50%)",zIndex:51,
+            style={{ position:"absolute",left:"67%",bottom:"calc(33% + 170px)",transform:"translateX(-50%)",zIndex:51,
               width:60,height:30,
               background:"linear-gradient(180deg,#ffd54f,#ffca28,#ffb300)",
               border:"3px solid #ff8f00",borderRadius:"8px 8px 0 0",
