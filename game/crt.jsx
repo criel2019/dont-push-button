@@ -39,14 +39,14 @@ function NaviCharacter({ emotion = "idle", frame = 0, sleeping = false, catEars 
 
 // CRT 이동 위치 맵 (오브젝트 소개 시 나비가 이동)
 const CRT_TARGETS = {
-  home:            { left:"83%", top:"3%" },
-  showBanner:      { left:"56%", top:"2%" },
-  showWallet:      { left:"4%",  top:"16%" },
-  showCake:        { left:"18%", top:"16%" },
-  showPhone:       { left:"56%", top:"16%" },
-  showSOS:         { left:"50%", top:"1%" },
-  showTV:          { left:"18%", top:"6%" },
-  showSafetyCover: { left:"52%", top:"14%" },
+  home:            { left:"84%", top:"3%" },
+  showBanner:      { left:"30%", top:"2%" },
+  showWallet:      { left:"38%", top:"36%" },
+  showCake:        { left:"45%", top:"34%" },
+  showPhone:       { left:"62%", top:"34%" },
+  showSOS:         { left:"54%", top:"1%" },
+  showTV:          { left:"22%", top:"4%" },
+  showSafetyCover: { left:"54%", top:"22%" },
 };
 
 function CRTMonitor({ nEmo, frame, naviSleeping, catEars, naviGone, nText, nKey, onContextMenu, onCatEarClick, crtOff, crtTarget, mobileScale = 1, children }) {
